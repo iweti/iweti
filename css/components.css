@@ -4,8 +4,10 @@
 }
 
 .brand {
-  display: inline-block;
+  display: inline-flex;
   flex-shrink: 0;
+  align-items: center;
+  gap: 0.25rem;
   color: #fff;
   font-size: 1.875rem;
   font-weight: 900;
@@ -14,8 +16,11 @@
   white-space: nowrap;
 }
 
-.brand span {
-  color: var(--color-blue);
+.brand-logo {
+  display: block;
+  width: auto;
+  height: 2.3rem;
+  object-fit: contain;
 }
 
 .brand small {

@@ -1,76 +1,103 @@
 .site-header {
+  position: relative;
   min-height: 680px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 66% 46%, rgb(0 123 255 / 36%), transparent 27%),
-    linear-gradient(115deg, #020d2b 25%, rgb(2 13 43 / 70%));
+    linear-gradient(180deg, rgb(1 8 22 / 88%) 0%, rgb(1 8 22 / 75%) 30%, rgb(1 8 22 / 90%) 100%),
+    url("../assets/images/hero-background.jpg") center bottom/cover no-repeat;
+}
+
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 62% 34%, rgb(34 124 255 / 36%), transparent 20%),
+    radial-gradient(circle at 72% 52%, rgb(18 104 255 / 22%), transparent 25%),
+    linear-gradient(90deg, rgb(1 7 18 / 30%) 0%, rgb(1 7 18 / 20%) 42%, rgb(1 7 18 / 30%) 30%);
 }
 
 .hero {
   position: relative;
+  z-index: 1;
   display: flex;
-  min-height: 600px;
+  min-height: 640px;
   align-items: center;
+  padding-top: 2rem;
 }
 
 .hero-copy {
   position: relative;
   z-index: 20;
-  max-width: 470px;
+  max-width: 620px;
   padding-top: 2rem;
+  padding-bottom: 4rem;
 }
 
 .hero h1 {
-  font-size: clamp(3rem, 5vw, 3.75rem);
+  font-size: clamp(3rem, 4.5vw, 5.4rem);
   font-weight: 700;
-  line-height: 0.91;
-  letter-spacing: -0.06em;
+  line-height: 0.9;
+  letter-spacing: -0.08em;
 }
 
 .hero strong,
 .about strong {
-  color: var(--color-blue);
+  display: block;
+  background: linear-gradient(90deg, #3ac2ff 0%, #00a5ff 35%, #0a90ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .lead {
-  max-width: 24rem;
-  margin-top: 1.5rem;
-  color: #cbd5e1;
-  font-size: 0.875rem;
+  max-width: 25rem;
+  margin-top: 1.75rem;
+  color: #d9e6f5;
+  font-size: 1.05rem;
   line-height: 1.625;
 }
 
-.hero-mascot {
+.hero-visual {
   position: absolute;
-  right: 3%;
-  bottom: 1.75rem;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 52%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hero-mascot {
+  position: relative;
   z-index: 10;
-  width: auto;
-  max-width: 52%;
-  height: 480px;
+  width: min(100%, 760px);
+  max-width: 46rem;
+  height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 10px 30px rgb(0 0 0 / 60%));
-  mix-blend-mode: screen;
+  filter: drop-shadow(0 20px 36px rgb(0 0 0 / 65%));
 }
 
 .hero-tags {
   position: absolute;
   top: 34%;
-  right: 0;
+  right: 0rem;
   z-index: 20;
   display: flex;
   gap: 1rem;
-  color: #e2e8f0;
-  font-size: 0.58rem;
-  line-height: 1.625;
+  color: #ebf4ff;
+  font-size: 0.7rem;
+  line-height: 1.45;
 }
 
 .hero-tags span {
-  padding: 0.75rem;
-  border: 1px solid rgb(0 141 255 / 30%);
-  border-radius: 0.5rem;
-  background: rgb(3 25 67 / 80%);
-  box-shadow: 0 10px 20px rgb(0 0 0 / 20%);
+  padding: 0.9rem 1rem;
+  border: 1px solid rgb(57 143 245 / 42%);
+  border-radius: 0.9rem;
+  background: rgb(4 19 42 / 68%);
+  box-shadow: 0 20px 30px rgb(2 11 24 / 25%);
   backdrop-filter: blur(8px);
 }
 

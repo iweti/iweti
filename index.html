@@ -10,9 +10,10 @@
   <body>
     <header class="site-header" id="home">
       <nav class="shell nav" aria-label="Navegação principal">
-        <a class="brand" href="#home" aria-label="IwetI, página inicial"
-          >iw<span>e</span>ti <small>TECNOLOGIA SEM LIMITES</small></a
-        >
+        <a class="brand" href="#home" aria-label="IwetI, página inicial">
+          <img class="brand-logo" src="./assets/images/logo.png" alt="IwetI" />
+          <small>TECNOLOGIA SEM LIMITES</small>
+        </a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu">
           <span></span>
           <span></span>
@@ -32,7 +33,7 @@
         <div class="hero-copy reveal">
           <p class="eyebrow">IDEIAS EM GRANDES SOLUÇÕES</p>
 
-          <h1>Transformamos<br />ideias em<br /><strong>experiências digitais</strong>.</h1>
+          <h1>Transformamos<br />ideias em<br /><strong>experiências digitais</strong></h1>
           <p class="lead">
             Desenvolvimento de sites, sistemas e soluções digitais para transformar seus objetivos
             em possibilidades.
@@ -42,17 +43,14 @@
             <a class="btn btn-ghost" href="#solucoes">Conheça nossas soluções</a>
           </div>
         </div>
-        <img
-          class="mascot hero-mascot"
-          src="./assets/images/mascote.png"
-          alt="Mascote IwetI trabalhando em um notebook"
-        />
+        <div class="hero-visual" aria-hidden="true">
+          <img
+            class="mascot hero-mascot"
+            src="./assets/images/mascot-hero.png"
+            alt="Mascote IwetI trabalhando em um notebook"
+          />
+        </div>
         <div class="hero-tags">
-          <span>
-            Tecnologia
-            <br />
-            <b>sem limites</b>
-          </span>
           <span>
             Mais tecnologia para
             <br />
@@ -229,7 +227,10 @@
     </main>
     <footer id="contato">
       <div class="shell footer-cta">
-        <a class="brand" href="#home">iw<span>e</span>ti <small>TECNOLOGIA SEM LIMITES</small></a>
+        <a class="brand" href="#home">
+          <img class="brand-logo" src="./assets/images/logo.png" alt="IwetI" />
+          <small>TECNOLOGIA SEM LIMITES</small>
+        </a>
         <div>
           <h2>Vamos tirar o seu projeto do papel?</h2>
           <p>Fale com nosso time e descubra como a IwetI pode ajudar o seu negócio.</p>
