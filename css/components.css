@@ -26,7 +26,7 @@
 .brand small {
   display: block;
   margin-top: 0.25rem;
-  font-size: 0.34rem;
+  font-size: 0.6rem;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.18em;
@@ -47,27 +47,56 @@
   align-items: center;
   gap: 1.5rem;
   color: #e2e8f0;
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   font-weight: 500;
 }
 
 .nav-links a {
-  transition: color 180ms ease;
+  position: relative;
+  transition:
+    color 180ms ease,
+    text-shadow 180ms ease;
 }
 
-.nav-links a:hover {
-  color: var(--color-cyan);
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -0.45rem;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-blue);
+  box-shadow: 0 0 10px rgb(0 141 255 / 70%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+  color: #fff;
+  text-shadow: 0 0 12px rgb(112 190 255 / 62%);
+}
+
+.nav-links a:hover::after,
+.nav-links a:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .nav-links .nav-cta {
   padding: 0.5rem 1rem;
   border-radius: 999px;
-  background: var(--color-blue);
+  background: var(--color-action);
   color: #fff;
 }
 
+.nav-links .nav-cta::after {
+  display: none;
+}
+
 .nav-links .nav-cta:hover {
-  background: var(--color-cyan);
+  background: var(--color-action-hover);
   color: #fff;
 }
 
@@ -94,7 +123,7 @@
 .eyebrow {
   margin-bottom: 1rem;
   color: var(--color-cyan);
-  font-size: 0.57rem;
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.28em;
 }
@@ -118,7 +147,7 @@
 
 .section-heading > a {
   color: var(--color-cyan);
-  font-size: 0.75rem;
+  font-size: 0.82rem;
 }
 
 .section-heading > p {
@@ -140,7 +169,7 @@
   justify-content: center;
   padding: 0.75rem 1.25rem;
   border-radius: 999px;
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   font-weight: 700;
   transition:
     transform 180ms ease,
@@ -153,12 +182,12 @@
 }
 
 .btn-primary {
-  background: var(--color-blue);
+  background: var(--color-action);
   color: #fff;
 }
 
 .btn-primary:hover {
-  background: var(--color-cyan);
+  background: var(--color-action-hover);
 }
 
 .btn-ghost {
