@@ -3,6 +3,10 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .portfolio-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .about-inner {
     grid-template-columns: 0.8fr 1.45fr 1fr;
   }
@@ -32,6 +36,10 @@
   .service-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  .portfolio-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -41,7 +49,7 @@
 
   .hero-mascot {
     right: 0;
-    height: 400px;
+    height: 370px;
   }
 
   .hero-tags {
@@ -109,7 +117,7 @@
     right: 50%;
     bottom: 1.25rem;
     max-width: none;
-    height: 290px;
+    height: 270px;
     transform: translateX(50%);
   }
 
@@ -135,6 +143,7 @@
   }
 
   .section-heading h2,
+  .portfolio-page .section-heading h1,
   .about h2,
   .footer-cta h2 {
     font-size: 1.875rem;

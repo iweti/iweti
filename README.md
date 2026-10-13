@@ -1,6 +1,6 @@
 # IwetI
 
-Landing page institucional da IwetI, uma empresa de tecnologia focada em transformar ideias em experiências digitais. O projeto reproduz a identidade visual escura, com acentos em azul e ciano, da referência fornecida.
+Site institucional da IwetI, uma empresa de tecnologia focada em transformar ideias em experiências digitais. O projeto reproduz a identidade visual escura, com acentos em azul e ciano, da referência fornecida.
 
 ## Tecnologias
 
@@ -23,7 +23,8 @@ Não há framework JavaScript, bibliotecas de componentes ou backend. O site é 
 │   ├── sections.css     # Aparência das seções da página
 │   └── styles.css       # Ponto de entrada dos estilos
 ├── js/main.js           # Menu mobile e animações de entrada
-└── index.html           # Estrutura e conteúdo da landing page
+├── index.html           # Página inicial
+└── portifolios.html     # Página de portfólios
 ```
 
 ## Seções da página
@@ -34,6 +35,8 @@ Não há framework JavaScript, bibliotecas de componentes ou backend. O site é 
 4. Portfólio de projetos.
 5. Depoimentos.
 6. CTA de contato e rodapé.
+
+A página `portifolios.html` traz cartões-modelo. Substitua as imagens, nomes, categorias, descrições e endereços de exemplo pelos dados dos projetos publicados.
 
 ## Interações e acessibilidade
 
