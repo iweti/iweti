@@ -159,17 +159,21 @@ footer {
   transform: translateY(-4px);
 }
 
-.service-card i {
+.service-icon {
   display: flex;
   width: 3rem;
   height: 3rem;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   border: 1px solid rgb(0 141 255 / 50%);
   border-radius: 50%;
-  color: var(--color-cyan);
-  font-size: 1.25rem;
-  font-style: normal;
+}
+
+.service-icon img {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
 }
 
 .service-card h3 {
@@ -336,6 +340,149 @@ footer {
   color: var(--color-cyan);
   font-size: 0.75rem;
   font-weight: 700;
+}
+
+.contact-page {
+  min-height: calc(100vh - 12rem);
+  padding-block: 5rem;
+  background:
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem),
+    var(--color-ink);
+}
+
+.contact-layout {
+  display: grid;
+  gap: 2rem;
+}
+
+.contact-intro h1 {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.contact-intro > p:last-child {
+  max-width: 30rem;
+  margin-top: 1rem;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.contact-form {
+  display: grid;
+  gap: 1.15rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-card);
+  box-shadow: 0 18px 48px rgb(0 105 255 / 8%);
+}
+
+.contact-form label {
+  display: grid;
+  gap: 0.5rem;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgb(0 141 255 / 28%);
+  border-radius: 0.5rem;
+  outline: none;
+  background: rgb(2 13 36 / 76%);
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.contact-form textarea {
+  min-height: 10rem;
+  resize: vertical;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: #7187a3;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 0 3px rgb(0 216 255 / 12%);
+}
+
+.contact-form .btn {
+  justify-self: start;
+  border: 0;
+}
+
+.contact-help {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.about-page {
+  min-height: calc(100vh - 12rem);
+  padding-block: 5rem;
+  background:
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem),
+    var(--color-ink);
+}
+
+.about-page-content {
+  display: grid;
+  align-items: center;
+  gap: 2rem;
+}
+
+.about-page-copy h1 {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.about-page-copy > p:last-child {
+  max-width: 35rem;
+  margin-top: 1rem;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.about-page-placeholder {
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background:
+    radial-gradient(ellipse at 78% 45%, rgb(0 141 255 / 10%), transparent 55%),
+    var(--color-card);
+}
+
+.about-page-placeholder img {
+  width: 100%;
+  max-height: 18rem;
+  margin-inline: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 1.4rem rgb(0 145 255 / 28%));
+}
+
+.about-page-placeholder p {
+  margin-top: 1rem;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  text-align: center;
 }
 
 .projects {

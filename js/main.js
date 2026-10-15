@@ -38,3 +38,22 @@ if ("IntersectionObserver" in window) {
 } else {
   revealElements.forEach((element) => element.classList.add("visible"));
 }
+
+const contactForm = document.querySelector(".contact-form");
+
+if (contactForm) {
+  contactForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(contactForm);
+    const name = String(formData.get("name")).trim();
+    const email = String(formData.get("email")).trim();
+    const message = String(formData.get("message")).trim();
+    const emailContent = new URLSearchParams({
+      subject: `Contato pelo site - ${name}`,
+      body: `Nome: ${name}\nE-mail: ${email}\n\nMensagem:\n${message}`,
+    });
+
+    window.location.href = `mailto:contato@iweti.com.br?${emailContent.toString()}`;
+  });
+}

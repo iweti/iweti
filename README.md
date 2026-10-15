@@ -24,7 +24,9 @@ Não há framework JavaScript, bibliotecas de componentes ou backend. O site é 
 │   └── styles.css       # Ponto de entrada dos estilos
 ├── js/main.js           # Menu mobile e animações de entrada
 ├── index.html           # Página inicial
-└── portifolios.html     # Página de portfólios
+├── portifolios.html     # Página de portfólios
+├── about.html           # Página Quem somos
+└── contact.html         # Página de contato
 ```
 
 ## Seções da página
@@ -37,6 +39,10 @@ Não há framework JavaScript, bibliotecas de componentes ou backend. O site é 
 6. CTA de contato e rodapé.
 
 A página `portifolios.html` traz cartões-modelo. Substitua as imagens, nomes, categorias, descrições e endereços de exemplo pelos dados dos projetos publicados.
+
+A página `contact.html` prepara a mensagem em um aplicativo de e-mail para envio a `contato@iweti.com.br`. Como o site é estático e não possui backend, o formulário não envia mensagens diretamente pelo navegador.
+
+A página `about.html` está preparada para receber o conteúdo institucional da IwetI.
 
 ## Interações e acessibilidade
 
