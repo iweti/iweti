@@ -34,7 +34,6 @@
           <a href="./portifolios.html" aria-current="page">Portfólio</a>
           <a href="./about.html">Quem somos</a>
           <a href="./index.html#depoimentos">Depoimentos</a>
-          <a href="./contact.html">Contato</a>
           <a class="nav-cta" href="./contact.html">Fale com a gente →</a>
         </div>
       </nav>
@@ -53,11 +52,38 @@
           </div>
           <div class="portfolio-grid">
             <article class="portfolio-card reveal">
-              <img
-                src="./assets/images/projects.png"
-                alt="Prévia do Projeto 01"
-                loading="lazy"
-              />
+              <div class="portfolio-card-gallery">
+                <img
+                  class="is-active"
+                  src="./assets/images/projects.png"
+                  alt="Prévia do Projeto 01"
+                  loading="lazy"
+                />
+                <img
+                  src="./assets/images/office.png"
+                  alt="Prévia do Projeto 01"
+                  loading="lazy"
+                />
+                <img
+                  src="./assets/images/mountains.png"
+                  alt="Prévia do Projeto 01"
+                  loading="lazy"
+                />
+                <div class="portfolio-gallery-controls">
+                  <button
+                    class="portfolio-gallery-prev"
+                    type="button"
+                    aria-label="Foto anterior do Projeto 01"
+                  >
+                  </button>
+                  <button
+                    class="portfolio-gallery-next"
+                    type="button"
+                    aria-label="Próxima foto do Projeto 01"
+                  >
+                  </button>
+                </div>
+              </div>
               <div class="portfolio-card-content">
                 <span>Categoria do projeto</span>
                 <h2>Nome do Projeto 01</h2>
@@ -68,11 +94,38 @@
               </div>
             </article>
             <article class="portfolio-card reveal">
-              <img
-                src="./assets/images/projects.png"
-                alt="Prévia do Projeto 02"
-                loading="lazy"
-              />
+              <div class="portfolio-card-gallery">
+                <img
+                  class="is-active"
+                  src="./assets/images/projects.png"
+                  alt="Prévia do Projeto 02"
+                  loading="lazy"
+                />
+                <img
+                  src="./assets/images/office.png"
+                  alt="Prévia do Projeto 02"
+                  loading="lazy"
+                />
+                <img
+                  src="./assets/images/mountains.png"
+                  alt="Prévia do Projeto 02"
+                  loading="lazy"
+                />
+                <div class="portfolio-gallery-controls">
+                  <button
+                    class="portfolio-gallery-prev"
+                    type="button"
+                    aria-label="Foto anterior do Projeto 02"
+                  >
+                  </button>
+                  <button
+                    class="portfolio-gallery-next"
+                    type="button"
+                    aria-label="Próxima foto do Projeto 02"
+                  >
+                  </button>
+                </div>
+              </div>
               <div class="portfolio-card-content">
                 <span>Categoria do projeto</span>
                 <h2>Nome do Projeto 02</h2>
@@ -83,11 +136,38 @@
               </div>
             </article>
             <article class="portfolio-card reveal">
-              <img
-                src="./assets/images/projects.png"
-                alt="Prévia do Projeto 03"
-                loading="lazy"
-              />
+              <div class="portfolio-card-gallery">
+                <img
+                  class="is-active"
+                  src="./assets/images/projects.png"
+                  alt="Prévia do Projeto 03"
+                  loading="lazy"
+                />
+                <img
+                  src="./assets/images/office.png"
+                  alt="Prévia do Projeto 03"
+                  loading="lazy"
+                />
+                <img
+                  src="./assets/images/mountains.png"
+                  alt="Prévia do Projeto 03"
+                  loading="lazy"
+                />
+                <div class="portfolio-gallery-controls">
+                  <button
+                    class="portfolio-gallery-prev"
+                    type="button"
+                    aria-label="Foto anterior do Projeto 03"
+                  >
+                  </button>
+                  <button
+                    class="portfolio-gallery-next"
+                    type="button"
+                    aria-label="Próxima foto do Projeto 03"
+                  >
+                  </button>
+                </div>
+              </div>
               <div class="portfolio-card-content">
                 <span>Categoria do projeto</span>
                 <h2>Nome do Projeto 03</h2>
@@ -101,6 +181,43 @@
         </div>
       </section>
     </main>
+    <dialog class="portfolio-lightbox" aria-label="Galeria de imagens do portfólio">
+      <div class="portfolio-lightbox-content">
+        <button
+          class="portfolio-lightbox-close"
+          type="button"
+          aria-label="Fechar galeria"
+        >
+          ×
+        </button>
+        <div class="portfolio-lightbox-layout">
+          <div class="portfolio-lightbox-viewer">
+            <button
+              class="portfolio-lightbox-prev"
+              type="button"
+              aria-label="Foto anterior"
+            >
+            </button>
+            <img class="portfolio-lightbox-image-background" alt="" aria-hidden="true" />
+            <img class="portfolio-lightbox-image" alt="" />
+            <button
+              class="portfolio-lightbox-next"
+              type="button"
+              aria-label="Próxima foto"
+            >
+            </button>
+          </div>
+          <div class="portfolio-lightbox-details">
+            <span class="portfolio-lightbox-category"></span>
+            <h2 class="portfolio-lightbox-title"></h2>
+            <p class="portfolio-lightbox-description"></p>
+            <a class="portfolio-lightbox-link" target="_blank" rel="noopener noreferrer">
+              Acessar projeto →
+            </a>
+          </div>
+        </div>
+      </div>
+    </dialog>
     <footer id="contato">
       <div class="shell footer-cta">
         <a class="brand" href="./index.html" aria-label="IwetI, página inicial">
@@ -111,7 +228,7 @@
           <h2>Vamos tirar o seu projeto do papel?</h2>
           <p>Fale com nosso time e descubra como a IwetI pode ajudar o seu negócio.</p>
         </div>
-        <a class="btn btn-primary" href="mailto:contato@iweti.com.br">Quero conversar agora →</a>
+        <a class="btn btn-primary" href="./contact.html">Quero conversar agora →</a>
       </div>
       <div class="shell footer-bottom">
         <span>© 2026 IWETI. Todos os direitos reservados.</span>

@@ -124,6 +124,10 @@
 }
 
 @media (min-width: 901px) and (max-width: 1024px) {
+  .hero-copy {
+    width: 55%;
+  }
+
   .hero-visual::before {
     top: calc(50% + 8.5rem);
   }
@@ -153,6 +157,7 @@
 
   .hero-visual {
     position: relative;
+    top: auto;
     right: auto;
     bottom: auto;
     width: 100%;
@@ -195,6 +200,7 @@
 
   .hero-visual {
     position: relative;
+    top: auto;
     right: auto;
     bottom: auto;
     width: 100%;
@@ -293,6 +299,15 @@
   .reveal.visible {
     opacity: 1;
     transform: none;
+    transition: none;
+  }
+
+  .portfolio-card,
+  .portfolio-card-gallery img,
+  .portfolio-gallery-controls,
+  .portfolio-lightbox-image,
+  .portfolio-lightbox-prev,
+  .portfolio-lightbox-next {
     transition: none;
   }
 }

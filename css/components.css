@@ -1,5 +1,5 @@
 .shell {
-  width: min(1120px, calc(100% - 3rem));
+  width: min(1600px, calc(100% - 3rem));
   margin-inline: auto;
 }
 
