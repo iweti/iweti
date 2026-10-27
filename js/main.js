@@ -299,6 +299,35 @@ portfolioLightbox?.addEventListener("close", () => {
   lightboxGallery = undefined;
 });
 
+const externalSiteConfirmation = document.querySelector(".external-site-confirmation");
+const externalSiteUrl = externalSiteConfirmation?.querySelector(".external-site-url");
+const externalSiteConfirm = externalSiteConfirmation?.querySelector(".external-site-confirm");
+const externalSiteCancel = externalSiteConfirmation?.querySelector(".external-site-cancel");
+
+if (
+  externalSiteConfirmation instanceof HTMLDialogElement &&
+  externalSiteUrl instanceof HTMLElement &&
+  externalSiteConfirm instanceof HTMLAnchorElement
+) {
+  document
+    .querySelectorAll(".portfolio-card-content a, .portfolio-lightbox-link")
+    .forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        const destination = new URL(link.href, window.location.href);
+        externalSiteUrl.textContent = destination.hostname;
+        externalSiteConfirm.href = destination.href;
+        externalSiteConfirmation.showModal();
+      });
+    });
+
+  externalSiteCancel?.addEventListener("click", () => externalSiteConfirmation.close());
+  externalSiteConfirmation.addEventListener("click", (event) => {
+    if (event.target === externalSiteConfirmation) externalSiteConfirmation.close();
+  });
+  externalSiteConfirm.addEventListener("click", () => externalSiteConfirmation.close());
+}
+
 if (!prefersReducedMotion && maxPortfolioSlides > 1) {
   window.setInterval(() => {
     if (portfolioLightbox?.open) return;
