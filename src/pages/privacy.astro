@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout title="Política de Privacidade | IwetI" description="Política de privacidade da IwetI.">
+  <SiteHeader currentPage="privacy" />
+  <main>
+    <section class="privacy-page">
+      <article class="shell privacy-content">
+        <p class="eyebrow">PRIVACIDADE E PROTEÇÃO DE DADOS</p>
+        <h1>Política de Privacidade</h1>
+        <p class="privacy-document-link">
+          Se o documento não aparecer abaixo,{' '}
+          <a href="/docs/POL%C3%8DTICA%20DE%20PRIVACIDADE.pdf" target="_blank" rel="noopener">
+            abra a política de privacidade em uma nova aba{' '}
+          </a>
+          .
+        </p>
+        <iframe
+          class="privacy-document"
+          src="/docs/POL%C3%8DTICA%20DE%20PRIVACIDADE.pdf"
+          title="Documento da Política de Privacidade da IwetI"
+        ></iframe>
+      </article>
+    </section>
+  </main>
+  <SiteFooter currentPage="privacy" />
+</BaseLayout>

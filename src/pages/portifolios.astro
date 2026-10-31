@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import PortfolioGrid from '../components/portfolio/PortfolioGrid.astro';
+import PortfolioLightbox from '../components/portfolio/PortfolioLightbox.astro';
+import ExternalSiteDialog from '../components/portfolio/ExternalSiteDialog.astro';
+---
+
+<BaseLayout
+  title="Portfólios | IwetI"
+  description="Conheça projetos de sites e soluções digitais desenvolvidos pela IwetI."
+>
+  <SiteHeader currentPage="portifolios" />
+  <main>
+    <PortfolioGrid />
+  </main>
+  <PortfolioLightbox />
+  <ExternalSiteDialog />
+  <SiteFooter contactAnchor ctaLabel="Quero conversar agora →" />
+</BaseLayout>

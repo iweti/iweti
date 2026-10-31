@@ -1,59 +1,89 @@
-# IwetI
+# IWETI
 
-Site institucional da IwetI, uma empresa de tecnologia focada em transformar ideias em experiências digitais. O projeto reproduz a identidade visual escura, com acentos em azul e ciano, da referência fornecida.
+Site institucional da IWETI, migrado para **Astro estático**, TypeScript e CSS puro. A estrutura compartilha layouts e componentes e preserva o visual e as URLs anteriores.
 
-## Tecnologias
+## Requisitos e comandos
 
-- HTML5 semântico
-- CSS puro organizado por responsabilidade
-- JavaScript puro
+- Node.js 22.23.4 ou superior, conforme o requisito do Astro instalado.
+- npm e dependências instaladas com `npm ci`.
 
-Não há framework JavaScript, bibliotecas de componentes ou backend. O site é estático.
+```sh
+npm run dev       # Desenvolvimento local
+npm run check     # Verificação de Astro e TypeScript
+npm run build     # Verificação e build estático em dist/
+npm run preview   # Conferir o build localmente
+npm run format    # Padronizar os arquivos com Prettier e suporte a Astro
+npm run format:check # Conferir a formatação sem alterar arquivos
+```
 
+O TypeScript permanece na versão 6, compatível com `@astrojs/check`. As versões exatas estão registradas em `package-lock.json`.
 
-## Estrutura
+## Organização
 
 ```text
 .
-├── assets/images/       # Imagens utilizadas na página
-├── css/
-│   ├── base.css         # Variáveis, reset e estilos globais
-│   ├── components.css   # Elementos reutilizáveis
-│   ├── responsive.css   # Breakpoints e ajustes mobile
-│   ├── sections.css     # Aparência das seções da página
-│   └── styles.css       # Ponto de entrada dos estilos
-├── js/main.js           # Menu mobile e animações de entrada
-├── index.html           # Página inicial
-├── portifolios.html     # Página de portfólios
-├── about.html           # Página Quem somos
-├── contact.html         # Página de contato
-└── privacy.html         # Página da política de privacidade
+├── public/                       # Arquivos copiados sem processamento
+│   ├── assets/images/            # Imagens e favicon; URLs /assets/images/...
+│   └── docs/                     # PDFs públicos; URLs /docs/...
+├── src/
+│   ├── components/
+│   │   ├── Brand.astro
+│   │   ├── SiteHeader.astro
+│   │   ├── SiteFooter.astro
+│   │   ├── home/                 # Seções da página inicial
+│   │   ├── contact/              # Formulário de contato
+│   │   └── portfolio/            # Galerias e diálogos
+│   ├── layouts/BaseLayout.astro  # Documento HTML e metadados compartilhados
+│   ├── lib/contact.ts            # Contrato e cliente HTTP da API
+│   ├── pages/                    # Páginas e rotas do Astro
+│   ├── scripts/                  # Menu, animações, modais, portfólio e contato
+│   ├── styles/                   # CSS global e estilos do novo formulário
+│   └── env.d.ts                  # Tipos da configuração pública
+├── docs/contact-api.md           # Contrato proposto e limites da integração
+├── tests/                        # Verificação de navegador e API local simulada
+├── .env.example                  # Configuração pública de exemplo
+├── astro.config.mjs
+├── playwright.config.ts
+├── package.json
+├── package-lock.json
+└── tsconfig.json
 ```
 
-## Seções da página
+As páginas são `/`, `/index.html`, `/about.html`, `/contact.html`, `/portifolios.html` e `/privacy.html`. `build.format: 'file'` mantém os arquivos `.html`; `/` serve a página inicial.
 
-1. Hero com chamada principal e ações.
-2. Soluções e serviços digitais.
-3. Bloco institucional com indicadores.
-4. Portfólio de projetos.
-5. Depoimentos.
-6. CTA de contato e rodapé.
+O CSS global mantém a ordem original: base, componentes, seções e responsividade. As imagens estão em `public/` para preservar os arquivos e seus endereços, sem alterar sua aparência. Documentos de manutenção ficam em `docs/`; somente os PDFs públicos ficam em `public/docs/`.
 
-A página `portifolios.html` traz cartões-modelo. Substitua as imagens, nomes, categorias, descrições e endereços de exemplo pelos dados dos projetos publicados.
+## Contato e variáveis de ambiente
 
-A página `contact.html` prepara a mensagem em um aplicativo de e-mail para envio a `contato@iweti.com.br`. Como o site é estático e não possui backend, o formulário não envia mensagens diretamente pelo navegador.
+Copie `.env.example` para `.env.local` se precisar alterar a configuração local:
 
-A página `about.html` está preparada para receber o conteúdo institucional da IwetI.
-A página `privacy.html` é o local destinado à política de privacidade. Substitua o texto
-indicativo dessa página pelo conteúdo do arquivo da política.
+```dotenv
+PUBLIC_API_URL=https://api.iweti.com
+```
 
-## Interações e acessibilidade
+O formulário chama diretamente `POST <PUBLIC_API_URL>/contato`, com JSON e sem `X-API-Key`. A variável é **pública**, inserida no build; seu valor pode ser visto no navegador. O padrão é `https://api.iweti.com`. Não coloque chaves ou outros segredos nessa variável.
 
-- Menu mobile com controle de `aria-expanded`.
-- Fechamento do menu ao escolher um link ou pressionar `Escape`.
-- Animações sutis ativadas com `IntersectionObserver`.
-- Textos alternativos nas imagens e navegação por âncoras.
+O destinatário e o remetente são configurados no servidor da API. O e-mail do visitante deve ser usado como `Reply-To`. As rotas administrativas não são chamadas pelo site e não precisam de credenciais neste projeto.
 
-## Manutenção de estilos
+O contrato de `/contato` ainda é uma **proposta ligada à issue #2**. A implementação externa precisa confirmar o CORS, os limites de texto, os limites de frequência e as respostas definitivas antes do uso em produção. Veja [o contrato e os estados do formulário](./docs/contact-api.md).
 
-O HTML carrega [`css/styles.css`](./css/styles.css), que apenas importa os demais arquivos. Edite o arquivo correspondente ao tipo de mudança: estilos globais em `base.css`, componentes reutilizáveis em `components.css`, seções em `sections.css` e breakpoints em `responsive.css`.
+## Vercel
+
+Configure o projeto como Astro, com instalação `npm ci`, build `npm run build` e saída `dist`. O site é estático e não precisa de adaptador de servidor nem de uma rota intermediária.
+
+Defina `PUBLIC_API_URL` nos ambientes apropriados da Vercel e gere um novo deployment após alterar o valor. A API deve permitir via CORS as origens de produção, desenvolvimento e previews autorizados, incluindo preflight `OPTIONS` para `POST` com `Content-Type: application/json`. CORS não substitui validação nem proteção contra abuso na API.
+
+Nenhum deployment é realizado automaticamente pelos comandos deste repositório.
+
+## Verificação
+
+```sh
+npx playwright install chromium
+npm test
+```
+
+Os testes iniciam uma API HTTP simulada em `127.0.0.1:4399`, constroem o site apontando para ela em `.astro/test-dist/` e servem esse build em `127.0.0.1:4321`. Esse build fica separado de `dist/`, destinado à produção.
+
+Verificam as URLs, os arquivos públicos, o menu mobile, os diálogos, as galerias e o fluxo do formulário, incluindo inscrição opcional, falha parcial, erros e prevenção de envios simultâneos.
+
+Os testes não enviam e-mails nem alteram o banco real. O mock representa o contrato fornecido; não comprova a implementação da API externa.

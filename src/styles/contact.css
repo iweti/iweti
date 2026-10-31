@@ -1,0 +1,37 @@
+.contact-form label.contact-newsletter {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.contact-form .contact-newsletter input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  margin: 0.15rem 0 0;
+  accent-color: var(--color-action);
+}
+
+.contact-feedback {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.contact-feedback[data-state='success'] {
+  color: var(--color-cyan);
+}
+
+.contact-feedback[data-state='error'],
+.contact-feedback[data-state='partial'] {
+  color: #ffd6a3;
+}
+
+.contact-form .btn:disabled {
+  cursor: default;
+  opacity: 0.7;
+  transform: none;
+}

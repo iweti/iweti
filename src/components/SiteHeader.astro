@@ -1,0 +1,43 @@
+---
+import Brand from './Brand.astro';
+
+interface Props {
+  home?: boolean;
+  currentPage?: 'about' | 'contact' | 'portifolios' | 'privacy';
+}
+
+const { home = false, currentPage } = Astro.props;
+---
+
+<header
+  class:list={['site-header', { 'site-header-compact': !home }]}
+  id={home ? 'home' : undefined}
+>
+  <nav class="shell nav" aria-label="Navegação principal">
+    <Brand href={home ? '#home' : '/index.html'} />
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span class="sr-only">Abrir menu</span>
+    </button>
+    <div class="nav-links" id="menu">
+      <a href={home ? '#solucoes' : '/index.html#solucoes'}>Soluções</a>
+      <a href="/portifolios.html" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
+        Portfólio
+      </a>
+      <a href="/about.html" aria-current={currentPage === 'about' ? 'page' : undefined}>
+        Quem somos
+      </a>
+      <a href={home ? '#depoimentos' : '/index.html#depoimentos'}>Depoimentos</a>
+      <a
+        class="nav-cta"
+        href="/contact.html"
+        aria-current={currentPage === 'contact' ? 'page' : undefined}
+      >
+        Fale com a gente →
+      </a>
+    </div>
+  </nav>
+  <slot />
+</header>

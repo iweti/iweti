@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Hero from '../components/home/Hero.astro';
+import Services from '../components/home/Services.astro';
+import AboutSection from '../components/home/AboutSection.astro';
+import PortfolioSection from '../components/home/PortfolioSection.astro';
+import TestimonialsSection from '../components/home/TestimonialsSection.astro';
+---
+
+<BaseLayout
+  title="IwetI | Tecnologia sem limites"
+  description="IwetI - tecnologia, ideias e resultados sem limites."
+>
+  <SiteHeader home>
+    <Hero />
+  </SiteHeader>
+  <main>
+    <Services />
+    <AboutSection />
+    <PortfolioSection />
+    <TestimonialsSection />
+  </main>
+  <SiteFooter home contactAnchor ctaLabel="Quero conversar agora →" />
+</BaseLayout>

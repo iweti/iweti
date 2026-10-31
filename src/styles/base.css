@@ -8,7 +8,8 @@
   --color-surface: #020d24;
   --color-card: #01091c;
   --color-border: rgb(0 141 255 / 20%);
-  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans:
+    'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 *,

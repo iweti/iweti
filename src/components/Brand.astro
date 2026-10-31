@@ -1,0 +1,12 @@
+---
+interface Props {
+  href?: string;
+}
+
+const { href = '/index.html' } = Astro.props;
+---
+
+<a class="brand" href={href} aria-label="IwetI, página inicial">
+  <img class="brand-logo" src="/assets/images/logo.png" alt="IwetI" />
+  <small>TECNOLOGIA SEM LIMITES</small>
+</a>

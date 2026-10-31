@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout
+  title="Quem somos | IwetI"
+  description="Conheça a IwetI. Em breve, mais informações sobre a empresa."
+>
+  <SiteHeader currentPage="about" />
+  <main>
+    <section class="about-page">
+      <div class="shell about-page-content">
+        <div class="about-page-copy reveal">
+          <p class="eyebrow">QUEM SOMOS</p>
+          <h1>Conheça a IwetI</h1>
+          <p>
+            Esta página será atualizada em breve com a história, os valores e as informações
+            institucionais da IwetI.
+          </p>
+        </div>
+        <div class="about-page-placeholder reveal">
+          <img
+            src="/assets/images/mascot-about.png"
+            alt="Mascote IwetI trabalhando em um notebook"
+            loading="lazy"
+          />
+          <p>Em breve, mais sobre a IwetI.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</BaseLayout>

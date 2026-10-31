@@ -4,7 +4,7 @@
   overflow: hidden;
   background:
     linear-gradient(180deg, rgb(1 8 22 / 56%) 0%, rgb(1 8 22 / 42%) 35%, rgb(1 8 22 / 72%) 100%),
-    url("../assets/images/hero-background.jpg") center bottom/cover no-repeat;
+    url('/assets/images/hero-background.jpg') center bottom/cover no-repeat;
 }
 
 .site-header-compact {
@@ -12,11 +12,15 @@
 }
 
 .site-header::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgb(1 7 18 / 34%) 0%, rgb(1 7 18 / 12%) 52%, rgb(1 7 18 / 8%) 100%);
+  background: linear-gradient(
+    90deg,
+    rgb(1 7 18 / 34%) 0%,
+    rgb(1 7 18 / 12%) 52%,
+    rgb(1 7 18 / 8%) 100%
+  );
 }
 
 main > section,
@@ -46,7 +50,7 @@ footer {
   font-size: clamp(3rem, 4.5vw, 5.4rem);
   font-weight: 900;
   line-height: 1.26;
-  letter-spacing: -0.10em;
+  letter-spacing: -0.1em;
 }
 
 .hero strong,
@@ -81,14 +85,19 @@ footer {
 }
 
 .hero-visual::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   left: 50%;
   width: min(84%, 38rem);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgb(0 126 255 / 45%) 0%, rgb(0 91 222 / 24%) 38%, transparent 72%);
+  background: radial-gradient(
+    ellipse,
+    rgb(0 126 255 / 45%) 0%,
+    rgb(0 91 222 / 24%) 38%,
+    transparent 72%
+  );
   filter: blur(12px);
   transform: translate(-50%, -50%);
 }
@@ -101,9 +110,7 @@ footer {
   max-height: 100%;
   height: 100%;
   object-fit: contain;
-  filter:
-    drop-shadow(0 0 1.4rem rgb(0 145 255 / 46%))
-    drop-shadow(0 0 3rem rgb(0 108 255 / 24%))
+  filter: drop-shadow(0 0 1.4rem rgb(0 145 255 / 46%)) drop-shadow(0 0 3rem rgb(0 108 255 / 24%))
     drop-shadow(0 20px 36px rgb(0 0 0 / 65%));
 }
 
@@ -218,8 +225,7 @@ footer {
   border: 1px solid rgb(0 141 255 / 45%);
   border-radius: 1rem;
   background:
-    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 12%), transparent 26rem),
-    var(--color-card);
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 12%), transparent 26rem), var(--color-card);
   color: #fff;
   box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
   transition:
@@ -287,7 +293,7 @@ footer {
     radial-gradient(ellipse at 20% 58%, rgb(0 126 255 / 21%), transparent 25rem),
     radial-gradient(ellipse at 86% 24%, rgb(0 216 255 / 9%), transparent 23rem),
     linear-gradient(95deg, rgb(1 8 22 / 60%), rgb(1 8 22 / 74%)),
-    url("../assets/images/hero-background.jpg") center/cover no-repeat;
+    url('/assets/images/hero-background.jpg') center/cover no-repeat;
 }
 
 .about-inner {
@@ -303,9 +309,7 @@ footer {
   max-height: none;
   margin-inline: auto;
   object-fit: contain;
-  filter:
-    drop-shadow(0 0 1.4rem rgb(0 145 255 / 46%))
-    drop-shadow(0 0 3rem rgb(0 108 255 / 24%));
+  filter: drop-shadow(0 0 1.4rem rgb(0 145 255 / 46%)) drop-shadow(0 0 3rem rgb(0 108 255 / 24%));
 }
 
 .about p:not(.eyebrow) {
@@ -343,16 +347,14 @@ footer {
 
 .portfolio {
   background:
-    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 8%), transparent 26rem),
-    var(--color-ink);
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 8%), transparent 26rem), var(--color-ink);
 }
 
 .portfolio-page {
   min-height: calc(100vh - 12rem);
   padding-block: 5rem;
   background:
-    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem),
-    var(--color-ink);
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem), var(--color-ink);
 }
 
 .portfolio-page .section-heading {
@@ -447,7 +449,7 @@ footer {
   height: 0.65rem;
   border-top: 2px solid currentColor;
   border-right: 2px solid currentColor;
-  content: "";
+  content: '';
 }
 
 .portfolio-gallery-prev::before,
@@ -483,8 +485,7 @@ footer {
   border: 1px solid var(--color-border);
   border-radius: 1.25rem;
   background:
-    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 12%), transparent 26rem),
-    var(--color-card);
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 12%), transparent 26rem), var(--color-card);
   color: #fff;
   box-shadow: 0 24px 80px rgb(0 0 0 / 65%);
 }
@@ -549,7 +550,7 @@ footer {
   z-index: -1;
   inset: 0;
   background: rgb(1 9 28 / 35%);
-  content: "";
+  content: '';
 }
 
 .portfolio-lightbox-image {
@@ -745,8 +746,7 @@ footer {
   border: 1px solid var(--color-border);
   border-radius: 1rem;
   background:
-    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 12%), transparent 18rem),
-    var(--color-card);
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 12%), transparent 18rem), var(--color-card);
   color: #fff;
   box-shadow: 0 24px 80px rgb(0 0 0 / 65%);
 }
@@ -813,8 +813,7 @@ footer {
   min-height: calc(100vh - 12rem);
   padding-block: 5rem;
   background:
-    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem),
-    var(--color-ink);
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem), var(--color-ink);
 }
 
 .contact-layout {
@@ -902,8 +901,7 @@ footer {
   min-height: calc(100vh - 12rem);
   padding-block: 5rem;
   background:
-    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem),
-    var(--color-ink);
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem), var(--color-ink);
 }
 
 .about-page-content {
@@ -932,8 +930,7 @@ footer {
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
   background:
-    radial-gradient(ellipse at 78% 45%, rgb(0 141 255 / 10%), transparent 55%),
-    var(--color-card);
+    radial-gradient(ellipse at 78% 45%, rgb(0 141 255 / 10%), transparent 55%), var(--color-card);
 }
 
 .about-page-placeholder img {
@@ -956,8 +953,7 @@ footer {
   min-height: calc(100vh - 12rem);
   padding-block: 5rem;
   background:
-    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem),
-    var(--color-ink);
+    radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem), var(--color-ink);
 }
 
 .privacy-content h1 {
@@ -995,9 +991,7 @@ footer {
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
-  background:
-    radial-gradient(ellipse at 78% 45%, rgb(0 141 255 / 10%), transparent 55%),
-    #01091c;
+  background: radial-gradient(ellipse at 78% 45%, rgb(0 141 255 / 10%), transparent 55%), #01091c;
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease;
@@ -1083,9 +1077,7 @@ footer {
 
 footer {
   padding-top: 2.5rem;
-  background:
-    radial-gradient(ellipse at 14% 12%, rgb(0 141 255 / 12%), transparent 27rem),
-    #020b25;
+  background: radial-gradient(ellipse at 14% 12%, rgb(0 141 255 / 12%), transparent 27rem), #020b25;
 }
 
 .footer-cta {

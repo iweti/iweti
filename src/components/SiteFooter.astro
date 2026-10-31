@@ -1,0 +1,38 @@
+---
+import Brand from './Brand.astro';
+
+interface Props {
+  home?: boolean;
+  contactAnchor?: boolean;
+  currentPage?: 'privacy';
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  home = false,
+  contactAnchor = false,
+  currentPage,
+  ctaLabel = 'Fale com a gente →',
+  ctaHref = '/contact.html',
+} = Astro.props;
+---
+
+<footer id={contactAnchor ? 'contato' : undefined}>
+  <div class="shell footer-cta">
+    <Brand href={home ? '#home' : '/index.html'} />
+    <div>
+      <h2>Vamos tirar o seu projeto do papel?</h2>
+      <p>Fale com nosso time e descubra como a IwetI pode ajudar o seu negócio.</p>
+    </div>
+    <a class="btn btn-primary" href={ctaHref}>
+      {ctaLabel}
+    </a>
+  </div>
+  <div class="shell footer-bottom">
+    <span>© 2026 IWETI. Todos os direitos reservados.</span>
+    <a href="/privacy.html" aria-current={currentPage === 'privacy' ? 'page' : undefined}>
+      Política de Privacidade
+    </a>
+  </div>
+</footer>

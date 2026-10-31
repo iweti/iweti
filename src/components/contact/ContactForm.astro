@@ -1,0 +1,70 @@
+---
+import '../../styles/contact.css';
+
+// This public URL is replaced at build time by Vercel. No API key is needed.
+const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com';
+---
+
+<form class="contact-form reveal" aria-describedby="contact-help" data-api-url={apiUrl}>
+  <label for="contact-name">
+    Nome
+    <input
+      id="contact-name"
+      name="name"
+      type="text"
+      autocomplete="name"
+      placeholder="Seu nome"
+      required
+    />
+  </label>
+  <label for="contact-email">
+    E-mail
+    <input
+      id="contact-email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      maxlength="254"
+      placeholder="voce@exemplo.com"
+      required
+    />
+  </label>
+  <label for="contact-subject">
+    Assunto
+    <input
+      id="contact-subject"
+      name="subject"
+      type="text"
+      placeholder="Assunto da sua mensagem"
+      required
+    />
+  </label>
+  <label for="contact-message">
+    Como podemos ajudar?
+    <textarea
+      id="contact-message"
+      name="message"
+      placeholder="Escreva sua mensagem..."
+      required
+    ></textarea>
+  </label>
+  <label class="contact-newsletter" for="contact-newsletter">
+    <input id="contact-newsletter" name="recebernovidades" type="checkbox" />
+    <span>Quero receber novidades da IWETI por e-mail.</span>
+  </label>
+  <p class="contact-help" id="contact-help">
+    Sua mensagem será encaminhada para a equipe da IWETI.
+  </p>
+  <p class="contact-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+  <button class="btn btn-primary" type="submit">
+    Enviar mensagem →
+  </button>
+</form>
+
+<noscript>
+  <p class="contact-help">Ative o JavaScript para enviar sua mensagem pelo formulário.</p>
+</noscript>
+
+<script>
+  import '../../scripts/contact';
+</script>

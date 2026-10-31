@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ContactForm from '../components/contact/ContactForm.astro';
+---
+
+<BaseLayout
+  title="Contato | IwetI"
+  description="Entre em contato com a IwetI para conversar sobre seu próximo projeto."
+>
+  <SiteHeader currentPage="contact" />
+  <main>
+    <section class="contact-page">
+      <div class="shell contact-layout">
+        <div class="contact-intro reveal">
+          <p class="eyebrow">FALE COM A IWETI</p>
+          <h1>Vamos conversar sobre o seu projeto?</h1>
+          <p>
+            Preencha seus dados e conte um pouco sobre o que você precisa. Nossa equipe terá prazer
+            em conversar com você.
+          </p>
+        </div>
+        <ContactForm />
+      </div>
+    </section>
+  </main>
+  <SiteFooter ctaLabel="contato@iweti.com" ctaHref="mailto:contato@iweti.com" />
+</BaseLayout>
