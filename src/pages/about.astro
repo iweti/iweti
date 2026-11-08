@@ -6,28 +6,91 @@ import SiteFooter from '../components/SiteFooter.astro';
 
 <BaseLayout
   title="Quem somos | IwetI"
-  description="Conheça a IwetI. Em breve, mais informações sobre a empresa."
+  description="Conheça a IwetI, nossa missão e visão e o significado de inovação, pessoas e tecnologia em nosso nome."
 >
   <SiteHeader currentPage="about" />
   <main>
     <section class="about-page">
       <div class="shell about-page-content">
-        <div class="about-page-copy reveal">
+        <header class="about-page-copy reveal">
           <p class="eyebrow">QUEM SOMOS</p>
-          <h1>Conheça a IwetI</h1>
+          <h1>Tecnologia que começa pelas pessoas</h1>
           <p>
-            Esta página será atualizada em breve com a história, os valores e as informações
-            institucionais da IwetI.
+            Desenvolvemos sites, sistemas e soluções digitais, unindo estratégia, criatividade e
+            tecnologia para transformar ideias em experiências que geram resultados.
           </p>
+        </header>
+
+        <div class="about-purpose-grid">
+          <article class="about-purpose reveal">
+            <p class="eyebrow">NOSSO PROPÓSITO</p>
+            <h2>Nossa missão</h2>
+            <p>
+              Desbravar os complexos desafios tecnológicos de hoje com soluções ágeis, inovadoras e
+              profundamente humanas.
+            </p>
+          </article>
+          <article class="about-purpose about-purpose-vision reveal">
+            <p class="eyebrow">ONDE QUEREMOS CHEGAR</p>
+            <h2>Nossa visão</h2>
+            <p>
+              Ser a principal força motriz na transformação dos atuais limites tecnológicos em novas
+              fronteiras de possibilidades globais.
+            </p>
+          </article>
         </div>
-        <div class="about-page-placeholder reveal">
-          <img
-            src="/assets/images/mascot-about.png"
-            alt="Mascote IwetI trabalhando em um notebook"
-            loading="lazy"
-          />
-          <p>Em breve, mais sobre a IwetI.</p>
-        </div>
+
+        <section class="about-identity" aria-labelledby="about-identity-title">
+          <div class="about-identity-heading reveal">
+            <p class="eyebrow">NOSSO NOME, NOSSA ESSÊNCIA</p>
+            <h2 id="about-identity-title">IWETI é a união de três ideias</h2>
+            <p>
+              Mais do que letras, o nome expressa como acreditamos que a tecnologia pode transformar
+              o futuro.
+            </p>
+          </div>
+          <div class="about-pillars">
+            <article class="about-pillar reveal">
+              <div class="about-pillar-heading">
+                <span class="about-pillar-mark" aria-hidden="true">
+                  I
+                </span>
+                <h3>Inovação</h3>
+              </div>
+              <p>
+                A curiosidade nos move a questionar o óbvio, explorar caminhos e nunca parar de
+                evoluir.
+              </p>
+            </article>
+            <article class="about-pillar about-pillar-people reveal">
+              <div class="about-pillar-heading">
+                <span class="about-pillar-mark" aria-hidden="true">
+                  WE
+                </span>
+                <h3>Nós</h3>
+              </div>
+              <p>
+                Pessoas vêm primeiro. A colaboração e relações verdadeiras fazem o trabalho
+                acontecer.
+              </p>
+            </article>
+            <article class="about-pillar reveal">
+              <div class="about-pillar-heading">
+                <span class="about-pillar-mark" aria-hidden="true">
+                  TI
+                </span>
+                <h3>Tecnologia</h3>
+              </div>
+              <p>
+                Usamos tecnologia com propósito, cuidando de cada entrega para criar impacto real.
+              </p>
+            </article>
+          </div>
+          <p class="about-identity-note reveal">
+            <strong>I + WE + TI:</strong> inovação contínua, pessoas no centro e tecnologia para
+            construir o futuro.
+          </p>
+        </section>
       </div>
     </section>
   </main>

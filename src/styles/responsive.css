@@ -14,7 +14,7 @@
   }
 
   .about-page-content {
-    grid-template-columns: 1fr 0.9fr;
+    grid-template-columns: 1fr;
     gap: 3rem;
   }
 
@@ -30,7 +30,7 @@
     grid-column: 1 / -1;
   }
 
-  .projects {
+  .featured-projects {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -101,7 +101,13 @@
   }
 
   .portfolio-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .portfolio-card {
+    flex: 0 1 calc((100% - 1.25rem) / 2);
   }
 }
 
@@ -151,7 +157,7 @@
 
   .hero h1 {
     font-size: clamp(2.75rem, 5vw, 3.5rem);
-    letter-spacing: -0.08em;
+    letter-spacing: -0.045em;
   }
 
   .hero-visual {
@@ -194,7 +200,7 @@
 
   .hero h1 {
     font-size: clamp(2.35rem, 10vw, 2.8rem);
-    letter-spacing: -0.08em;
+    letter-spacing: -0.045em;
   }
 
   .hero-visual {
@@ -247,7 +253,7 @@
 
   .about-mascot {
     top: 0.5rem;
-    height: 14rem;
+    height: 11rem;
   }
 
   .about dl {
@@ -256,18 +262,6 @@
 
   .about dl > div {
     padding: 0.75rem 0.45rem;
-  }
-
-  .about dt {
-    font-size: 1.5rem;
-  }
-
-  .about dd {
-    font-size: 0.7rem;
-  }
-
-  .projects article {
-    padding: 1.75rem;
   }
 }
 
@@ -282,6 +276,20 @@
 
   .about dl {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .about dl {
+    grid-template-columns: 1fr;
+  }
+
+  .about dt {
+    font-size: 2rem;
+  }
+
+  .about dd {
+    font-size: 1.05rem;
   }
 }
 
@@ -301,6 +309,10 @@
     transition: none;
   }
 
+  .featured-project-preview img,
+  .service-card,
+  .quote,
+  .btn,
   .portfolio-card,
   .portfolio-card-gallery img,
   .portfolio-gallery-controls,

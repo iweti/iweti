@@ -22,7 +22,6 @@ const { home = false, currentPage } = Astro.props;
       <span class="sr-only">Abrir menu</span>
     </button>
     <div class="nav-links" id="menu">
-      <a href={home ? '#solucoes' : '/index.html#solucoes'}>Soluções</a>
       <a href="/portifolios.html" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
         Portfólio
       </a>

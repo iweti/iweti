@@ -1,5 +1,5 @@
 .shell {
-  width: min(1600px, calc(100% - 3rem));
+  width: min(1280px, calc(100% - 3rem));
   margin-inline: auto;
 }
 
@@ -47,15 +47,13 @@
   align-items: center;
   gap: 1.5rem;
   color: #e2e8f0;
-  font-size: 0.72rem;
+  font-size: 0.875rem;
   font-weight: 500;
 }
 
 .nav-links a {
   position: relative;
-  transition:
-    color 180ms ease,
-    text-shadow 180ms ease;
+  transition: color 180ms ease;
 }
 
 .nav-links a::after {
@@ -67,7 +65,6 @@
   height: 2px;
   border-radius: 2px;
   background: var(--color-blue);
-  box-shadow: 0 0 10px rgb(0 141 255 / 70%);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 200ms ease;
@@ -76,7 +73,6 @@
 .nav-links a:hover,
 .nav-links a:focus-visible {
   color: #fff;
-  text-shadow: 0 0 12px rgb(112 190 255 / 62%);
 }
 
 .nav-links a:hover::after,
@@ -123,9 +119,9 @@
 .eyebrow {
   margin-bottom: 1rem;
   color: var(--color-cyan);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.2em;
 }
 
 .section-heading {
@@ -141,8 +137,8 @@
 .footer-cta h2 {
   font-size: 2.25rem;
   font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
 }
 
 .section-heading > a {
@@ -153,7 +149,8 @@
 .section-heading > p {
   max-width: 20rem;
   color: var(--color-muted);
-  font-size: 0.875rem;
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 .actions {
@@ -167,9 +164,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.25rem;
+  min-height: 2.875rem;
+  padding: 0.8rem 1.4rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.875rem;
   font-weight: 700;
   transition:
     transform 180ms ease,
