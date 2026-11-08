@@ -342,18 +342,68 @@ if (!prefersReducedMotion && maxPortfolioSlides > 1) {
 const contactForm = document.querySelector(".contact-form");
 
 if (contactForm) {
-  contactForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+  const contactFields = Array.from(contactForm.querySelectorAll("input, textarea"));
+  const sendButtons = Array.from(contactForm.querySelectorAll("[data-contact-send]"));
 
+  const getContactData = () => {
     const formData = new FormData(contactForm);
     const name = String(formData.get("name")).trim();
     const email = String(formData.get("email")).trim();
     const message = String(formData.get("message")).trim();
-    const emailContent = new URLSearchParams({
-      subject: `Contato pelo site - ${name}`,
-      body: `Nome: ${name}\nE-mail: ${email}\n\nMensagem:\n${message}`,
-    });
+    const body = `Olá, meu nome é ${name}.\n${message}.\nEmail: ${email}.`;
 
-    window.location.href = `mailto:contato@iweti.com.br?${emailContent.toString()}`;
+    return { name, email, message, body };
+  };
+
+  const isContactFormComplete = () => {
+    const { name, email, message } = getContactData();
+
+    return Boolean(name && email && message) && contactForm.checkValidity();
+  };
+
+  const updateSendButtons = () => {
+    const isComplete = isContactFormComplete();
+    sendButtons.forEach((button) => {
+      button.setAttribute("aria-disabled", String(!isComplete));
+    });
+  };
+
+  contactFields.forEach((field) => field.addEventListener("input", updateSendButtons));
+  updateSendButtons();
+
+  contactForm.addEventListener("submit", (event) => event.preventDefault());
+  sendButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const { name, email, message, body } = getContactData();
+
+      if (!name || !email || !message) {
+        window.alert("Todos os campos devem estar preenchidos");
+        return;
+      }
+
+      if (!contactForm.checkValidity()) {
+        contactForm.reportValidity();
+        return;
+      }
+
+      const channel = button.dataset.contactSend;
+
+      if (channel === "email") {
+        const emailContent = new URLSearchParams({
+          subject: `Contato pelo site - ${name}`,
+          body,
+        });
+        window.location.href = `mailto:contato@iweti.com.br?${emailContent.toString()}`;
+        return;
+      }
+
+      if (channel === "whatsapp") {
+        window.open(
+          `https://wa.me/5511978538445?text=${encodeURIComponent(body)}`,
+          "_blank",
+          "noopener,noreferrer",
+        );
+      }
+    });
   });
 }

@@ -41,7 +41,7 @@ Não há framework JavaScript, bibliotecas de componentes ou backend. O site é 
 
 A página `portifolios.html` traz cartões-modelo. Substitua as imagens, nomes, categorias, descrições e endereços de exemplo pelos dados dos projetos publicados.
 
-A página `contact.html` prepara a mensagem em um aplicativo de e-mail para envio a `contato@iweti.com.br`. Como o site é estático e não possui backend, o formulário não envia mensagens diretamente pelo navegador.
+A página `contact.html` permite preparar a mensagem para envio por e-mail a `contato@iweti.com.br` ou por WhatsApp a `+55 11 97853-8445`. Os campos precisam estar preenchidos antes do envio. Como o site é estático e não possui backend, o formulário abre o aplicativo correspondente com a mensagem pronta, sem enviá-la diretamente pelo navegador.
 
 A página `about.html` está preparada para receber o conteúdo institucional da IwetI.
 A página `privacy.html` é o local destinado à política de privacidade. Substitua o texto

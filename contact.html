@@ -82,9 +82,29 @@
               ></textarea>
             </label>
             <p class="contact-help" id="contact-help">
-              Ao enviar, seu aplicativo de e-mail será aberto com a mensagem pronta para envio.
+              Preencha todos os campos para escolher como deseja enviar sua mensagem.
             </p>
-            <button class="btn btn-primary" type="submit">Preparar mensagem →</button>
+            <div class="contact-actions">
+              <button
+                class="btn btn-primary"
+                type="button"
+                data-contact-send="email"
+                aria-disabled="true"
+              >
+                <img src="./assets/images/email-icon.svg" alt="" aria-hidden="true" />
+                Enviar por e-mail
+              </button>
+              <span class="contact-actions-separator" aria-label="ou">ou</span>
+              <button
+                class="btn btn-ghost"
+                type="button"
+                data-contact-send="whatsapp"
+                aria-disabled="true"
+              >
+                <img src="./assets/images/whatsapp-icon.svg" alt="" aria-hidden="true" />
+                Enviar por WhatsApp
+              </button>
+            </div>
           </form>
         </div>
       </section>
