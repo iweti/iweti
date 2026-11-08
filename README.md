@@ -61,7 +61,9 @@ Copie `.env.example` para `.env.local` se precisar alterar a configuração loca
 PUBLIC_API_URL=https://api.iweti.com
 ```
 
-O formulário chama diretamente `POST <PUBLIC_API_URL>/contato`, com JSON e sem `X-API-Key`. A variável é **pública**, inserida no build; seu valor pode ser visto no navegador. O padrão é `https://api.iweti.com`. Não coloque chaves ou outros segredos nessa variável.
+O botão **Enviar por e-mail** chama diretamente `POST <PUBLIC_API_URL>/contato`, com JSON e sem `X-API-Key`. A variável é **pública**, inserida no build; seu valor pode ser visto no navegador. O padrão é `https://api.iweti.com`. Não coloque chaves ou outros segredos nessa variável.
+
+O botão **Enviar por WhatsApp** abre uma nova aba para o número `+55 11 97853-8445`, com nome, assunto, mensagem e e-mail preenchidos. O visitante confirma o envio no WhatsApp. Essa opção não chama a API nem inscreve em novidades; a inscrição opcional vale apenas para o envio por e-mail. Ambos os canais exigem os campos válidos e ficam bloqueados durante o envio pela API ou após uma confirmação parcial, para evitar duplicação.
 
 O destinatário e o remetente são configurados no servidor da API. O e-mail do visitante deve ser usado como `Reply-To`. As rotas administrativas não são chamadas pelo site e não precisam de credenciais neste projeto.
 

@@ -50,15 +50,24 @@ const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com'
   </label>
   <label class="contact-newsletter" for="contact-newsletter">
     <input id="contact-newsletter" name="recebernovidades" type="checkbox" />
-    <span>Quero receber novidades da IWETI por e-mail.</span>
+    <span>Quero receber novidades da IWETI ao enviar por e-mail.</span>
   </label>
   <p class="contact-help" id="contact-help">
-    Sua mensagem será encaminhada para a equipe da IWETI.
+    Preencha todos os campos e escolha como enviar sua mensagem. A inscrição em novidades está
+    disponível no envio por e-mail.
   </p>
   <p class="contact-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
-  <button class="btn btn-primary" type="submit">
-    Enviar mensagem →
-  </button>
+  <div class="contact-actions">
+    <button class="btn btn-primary" type="submit" data-contact-send="email" aria-disabled="true">
+      <img src="/assets/images/email-icon.svg" alt="" aria-hidden="true" />
+      <span data-contact-label>Enviar por e-mail</span>
+    </button>
+    <span class="contact-actions-separator">ou</span>
+    <button class="btn btn-ghost" type="button" data-contact-send="whatsapp" aria-disabled="true">
+      <img src="/assets/images/whatsapp-icon.svg" alt="" aria-hidden="true" />
+      Enviar por WhatsApp
+    </button>
+  </div>
 </form>
 
 <noscript>

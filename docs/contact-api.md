@@ -2,6 +2,8 @@
 
 Fonte: contrato proposto fornecido pelo responsável pelo projeto, referente à issue #2. `/contato` e suas respostas ainda precisam ser confirmadas na implementação externa. As demais rotas existentes permanecem na API e não são consumidas por este formulário.
 
+O envio por e-mail usa a API descrita abaixo. Como na `main`, o formulário também oferece WhatsApp: abre `https://wa.me/5511978538445` com os dados preenchidos, sem chamar a API ou processar a inscrição em novidades. O envio precisa ser confirmado pelo visitante no WhatsApp. Os dois botões validam todos os campos; ambos ficam bloqueados enquanto a API responde e após uma confirmação parcial de encaminhamento.
+
 ## Requisição
 
 `POST https://api.iweti.com/contato`, público, sem `X-API-Key`.

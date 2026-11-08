@@ -9,9 +9,21 @@ if (form) {
   const message = form.querySelector<HTMLTextAreaElement>('[name="message"]');
   const newsletter = form.querySelector<HTMLInputElement>('[name="recebernovidades"]');
   const button = form.querySelector<HTMLButtonElement>('[type="submit"]');
+  const whatsapp = form.querySelector<HTMLButtonElement>('[data-contact-send="whatsapp"]');
+  const buttonLabel = button?.querySelector<HTMLElement>('[data-contact-label]');
   const feedback = form.querySelector<HTMLElement>('.contact-feedback');
 
-  if (name && email && subject && message && newsletter && button && feedback) {
+  if (
+    name &&
+    email &&
+    subject &&
+    message &&
+    newsletter &&
+    button &&
+    buttonLabel &&
+    whatsapp &&
+    feedback
+  ) {
     let sending = false;
     let forwarded = false;
 
@@ -21,15 +33,18 @@ if (form) {
       feedback.hidden = false;
     };
 
-    for (const field of [name, email, subject, message]) {
-      field.addEventListener('input', () => field.setCustomValidity(''));
-    }
+    const fields = [name, email, subject, message];
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (sending || forwarded) return;
+    const updateButtons = () => {
+      const complete = fields.every((field) => field.value.trim() && field.validity.valid);
+      for (const action of [button, whatsapp]) {
+        action.disabled = sending || forwarded;
+        action.setAttribute('aria-disabled', String(!complete || sending || forwarded));
+      }
+    };
 
-      for (const field of [name, email, subject, message]) {
+    const validate = () => {
+      for (const field of fields) {
         field.setCustomValidity(field.value.trim() ? '' : 'Preencha este campo.');
       }
 
@@ -38,7 +53,32 @@ if (form) {
         subject.setCustomValidity('O assunto não pode conter quebras de linha.');
       }
 
-      if (!form.reportValidity()) return;
+      updateButtons();
+      return form.reportValidity();
+    };
+
+    for (const field of fields) {
+      field.addEventListener('input', () => {
+        field.setCustomValidity('');
+        updateButtons();
+      });
+    }
+    updateButtons();
+
+    whatsapp.addEventListener('click', () => {
+      if (sending || forwarded || !validate()) return;
+
+      const body = `Olá, meu nome é ${name.value.trim()}.\nAssunto: ${subject.value.trim()}\n${message.value.trim()}\nEmail: ${email.value.trim()}`;
+      window.open(
+        `https://wa.me/5511978538445?text=${encodeURIComponent(body)}`,
+        '_blank',
+        'noopener,noreferrer',
+      );
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (sending || forwarded || !validate()) return;
 
       const payload: ContactPayload = {
         nome: name.value.trim(),
@@ -49,8 +89,8 @@ if (form) {
       };
 
       sending = true;
-      button.disabled = true;
-      button.textContent = 'Enviando…';
+      updateButtons();
+      buttonLabel.textContent = 'Enviando…';
       form.setAttribute('aria-busy', 'true');
       feedback.hidden = false;
       feedback.textContent = 'Enviando sua mensagem…';
@@ -81,8 +121,8 @@ if (form) {
 
       sending = false;
       form.removeAttribute('aria-busy');
-      button.disabled = forwarded;
-      button.textContent = forwarded ? 'Mensagem encaminhada' : 'Enviar mensagem →';
+      updateButtons();
+      buttonLabel.textContent = forwarded ? 'Mensagem encaminhada' : 'Enviar por e-mail';
     });
   }
 }
