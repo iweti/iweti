@@ -5,91 +5,45 @@ const lightboxBackground = lightbox?.querySelector<HTMLImageElement>(
 );
 let changeLightboxView: ((direction: number) => void) | undefined;
 
-document.querySelectorAll<HTMLElement>('.project-showcase').forEach((showcase) => {
-  const slides = Array.from(showcase.querySelectorAll<HTMLElement>('.project-slide'));
-  const projectButtons = Array.from(showcase.querySelectorAll<HTMLButtonElement>('[data-project]'));
-  const viewButtons = Array.from(showcase.querySelectorAll<HTMLButtonElement>('[data-view]'));
-  let projectIndex = 0;
+document.querySelectorAll<HTMLElement>('.project-entry').forEach((project) => {
+  const viewButtons = Array.from(project.querySelectorAll<HTMLButtonElement>('[data-view]'));
+  const images = Array.from(project.querySelectorAll<HTMLImageElement>('img[data-original]'));
   let viewIndex = 0;
-  const activeImages = () =>
-    Array.from(slides[projectIndex].querySelectorAll<HTMLImageElement>('img[data-original]'));
 
   const updateLightbox = () => {
-    const slide = slides[projectIndex];
-    const image = activeImages()[viewIndex];
-    if (!lightbox || !lightboxImage) return;
+    const image = images[viewIndex];
+    if (!lightbox || !lightboxImage || !image) return;
     lightboxImage.src = image.src;
     lightboxImage.alt = image.alt;
     if (lightboxBackground) lightboxBackground.src = image.src;
     const values = {
       '.portfolio-lightbox-category': 'Site institucional',
-      '.portfolio-lightbox-title': slide.dataset.projectName ?? '',
+      '.portfolio-lightbox-title': project.dataset.projectName ?? '',
       '.portfolio-lightbox-description':
-        slide.querySelector('.project-description p')?.textContent ?? '',
+        project.querySelector('.project-description p')?.textContent ?? '',
     };
     Object.entries(values).forEach(([selector, text]) => {
       const element = lightbox.querySelector(selector);
       if (element) element.textContent = text;
     });
     const link = lightbox.querySelector<HTMLAnchorElement>('.portfolio-lightbox-link');
-    const source = slide.querySelector<HTMLAnchorElement>('.project-link');
+    const source = project.querySelector<HTMLAnchorElement>('.project-link');
     if (link && source) link.href = source.href;
   };
 
   const showView = (index: number) => {
-    const images = activeImages();
     viewIndex = (index + images.length) % images.length;
-    slides[projectIndex]
-      .querySelectorAll<HTMLElement>('[data-view-image]')
-      .forEach((view, index) => {
-        view.hidden = index !== viewIndex;
-      });
+    project.querySelectorAll<HTMLElement>('[data-view-image]').forEach((view, index) => {
+      view.hidden = index !== viewIndex;
+    });
     viewButtons.forEach((button, index) =>
       button.setAttribute('aria-pressed', String(index === viewIndex)),
     );
     if (lightbox?.open) updateLightbox();
   };
 
-  const showProject = (index: number) => {
-    projectIndex = (index + slides.length) % slides.length;
-    slides.forEach((slide, index) => {
-      slide.hidden = index !== projectIndex;
-    });
-    projectButtons.forEach((button, index) =>
-      button.setAttribute('aria-pressed', String(index === projectIndex)),
-    );
-    showView(0);
-    const counter = showcase.querySelector('.project-count');
-    if (counter)
-      counter.textContent = `${String(projectIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-    const announcement = showcase.querySelector('.project-announcement');
-    if (announcement)
-      announcement.textContent = `Projeto ${projectIndex + 1} de ${slides.length}: ${slides[projectIndex].dataset.projectName}`;
-  };
-
-  const selectProjectFromHash = () => {
-    const slug = window.location.hash.slice(1).toLowerCase();
-    const index = slides.findIndex((slide) => slide.dataset.projectName?.toLowerCase() === slug);
-    showProject(index >= 0 ? index : 0);
-  };
-  selectProjectFromHash();
-  window.addEventListener('hashchange', selectProjectFromHash);
-
-  projectButtons.forEach((button, index) =>
-    button.addEventListener('click', () => showProject(index)),
-  );
   viewButtons.forEach((button, index) => button.addEventListener('click', () => showView(index)));
-  showcase.querySelectorAll<HTMLButtonElement>('[data-direction]').forEach((button) => {
-    button.addEventListener('click', () =>
-      showProject(projectIndex + Number(button.dataset.direction)),
-    );
-  });
-  showcase.addEventListener('keydown', (event) => {
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-    event.preventDefault();
-    showProject(projectIndex + (event.key === 'ArrowRight' ? 1 : -1));
-  });
-  showcase.querySelector('.project-expand')?.addEventListener('click', () => {
+  project.querySelector('.project-expand')?.addEventListener('click', () => {
     updateLightbox();
     changeLightboxView = (direction) => showView(viewIndex + direction);
     lightbox?.showModal();

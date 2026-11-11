@@ -50,84 +50,85 @@ test('service details open and close', async ({ page }) => {
   await expect(dialog).not.toBeVisible();
 });
 
-for (const path of ['/portifolios.html']) {
-  test(`fullscreen portfolio switches projects and images on ${path}`, async ({ page }) => {
-    await page.goto(path);
-    const showcase = page.locator('.project-showcase');
-    await showcase.scrollIntoViewIfNeeded();
-    const activeSlide = showcase.locator('.project-slide:visible');
-    await expect(activeSlide).toHaveAttribute('data-project-name', 'Frattellianos');
-    await showcase.getByRole('button', { name: 'Próximo projeto' }).click();
-    await expect(activeSlide).toHaveAttribute('data-project-name', 'Debinatos');
-    await expect(activeSlide.locator('.project-device-set:visible .project-device')).toHaveCount(3);
-    await expect(
-      activeSlide.locator('.project-device-set:visible .project-phone img'),
-    ).toHaveAttribute('src', /Debinatos-main-mobile/);
-    await expect(showcase.locator('[data-project="1"]')).toHaveAttribute('aria-pressed', 'true');
-    await showcase.locator('[data-view="1"]').click();
-    await expect(activeSlide.locator('img[data-original]:visible')).toHaveAttribute(
-      'src',
-      /Debinatos-hist/,
-    );
-    await showcase.getByRole('button', { name: 'Ampliar imagens do projeto' }).click();
-    const lightbox = page.locator('.portfolio-lightbox');
-    await expect(lightbox).toBeVisible();
-    await expect(lightbox.locator('.portfolio-lightbox-title')).toHaveText('Debinatos');
-    await page.keyboard.press('Escape');
-    await expect(lightbox).not.toBeVisible();
-    await showcase.getByRole('button', { name: 'Próximo projeto' }).click();
-    await expect(activeSlide).toHaveAttribute('data-project-name', 'Frattellianos');
-    await activeSlide.getByRole('link', { name: 'Acessar site' }).click();
-    const confirmation = page.locator('.external-site-confirmation');
-    await expect(confirmation).toBeVisible();
-    await expect(confirmation.locator('.external-site-url')).toHaveText('frattellianos.com');
-    await confirmation.getByRole('button', { name: 'Não', exact: true }).click();
-    await expect(confirmation).not.toBeVisible();
-  });
-}
-
-test('portfolio works on mobile and with the keyboard without horizontal overflow', async ({
+test('projects remain visible with independent image controls and a shared lightbox', async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/portifolios.html');
-  const showcase = page.locator('.project-showcase');
-  await showcase.getByRole('button', { name: 'Próximo projeto' }).click();
-  await expect(showcase.locator('.project-slide:visible')).toHaveAttribute(
-    'data-project-name',
-    'Debinatos',
+  const first = page.locator('#frattellianos');
+  const second = page.locator('#debinatos');
+  await expect(first).toBeVisible();
+  await expect(second).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Próximo projeto' })).toHaveCount(0);
+  await second.getByRole('button', { name: 'Sobre a marca' }).click();
+  await expect(second.locator('img[data-original]:visible')).toHaveAttribute(
+    'src',
+    /Debinatos-hist/,
   );
-  await showcase.focus();
-  await page.keyboard.press('ArrowLeft');
-  await expect(showcase.locator('.project-slide:visible')).toHaveAttribute(
-    'data-project-name',
-    'Frattellianos',
+  await expect(first.locator('img[data-original]:visible')).toHaveAttribute(
+    'src',
+    /Frattellianos-main/,
   );
-  await expect(showcase).toHaveJSProperty('clientWidth', 390);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
-  await showcase.getByRole('button', { name: 'Ampliar imagens do projeto' }).click();
-  await expect(page.locator('.portfolio-lightbox')).toBeVisible();
+  await second.getByRole('button', { name: 'Ampliar imagens do projeto' }).click();
+  const lightbox = page.locator('.portfolio-lightbox');
+  await expect(lightbox.locator('.portfolio-lightbox-title')).toHaveText('Debinatos');
+  await expect(lightbox.locator('.portfolio-lightbox-link')).toHaveAttribute(
+    'href',
+    'https://debinatos.com/',
+  );
+  await page.keyboard.press('ArrowRight');
+  await expect(lightbox.locator('.portfolio-lightbox-image')).toHaveAttribute(
+    'src',
+    /Debinatos-main/,
+  );
+  await page.keyboard.press('Escape');
+  await expect(lightbox).not.toBeVisible();
+  await first.getByRole('button', { name: 'Ampliar imagens do projeto' }).click();
+  await expect(lightbox.locator('.portfolio-lightbox-title')).toHaveText('Frattellianos');
   await page.getByRole('button', { name: 'Próxima foto', exact: true }).click();
-  await expect(page.locator('.portfolio-lightbox-image')).toHaveAttribute(
+  await expect(lightbox.locator('.portfolio-lightbox-image')).toHaveAttribute(
     'src',
     /Frattellianos-hist/,
   );
-  await page.getByRole('button', { name: 'Fechar galeria' }).click();
-  await expect(page.locator('.portfolio-lightbox')).not.toBeVisible();
+  await page.keyboard.press('Escape');
+  await first.getByRole('link', { name: 'Acessar site' }).click();
+  await expect(page.locator('.external-site-url')).toHaveText('frattellianos.com');
+  await page.getByRole('button', { name: 'Não', exact: true }).click();
 });
 
-test('home project cards open the selected project and handle unknown links', async ({ page }) => {
+test('both projects work on mobile without horizontal overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/portifolios.html');
+  for (const id of ['frattellianos', 'debinatos']) {
+    const project = page.locator(`#${id}`);
+    await project.scrollIntoViewIfNeeded();
+    await expect(project).toBeVisible();
+    await expect(project.locator('.project-device-set:visible .project-device')).toHaveCount(2);
+    const view = project.getByRole('button', { name: 'Sobre a marca' });
+    await view.focus();
+    await page.keyboard.press('Enter');
+    await expect(view).toHaveAttribute('aria-pressed', 'true');
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+});
+
+test('home project links scroll to the matching project', async ({ page }) => {
   for (const name of ['Frattellianos', 'Debinatos']) {
     await page.goto('/');
     const card = page.locator('.home-project-card').filter({ hasText: name });
-    await expect(card.getByRole('img')).toBeVisible();
     await card.getByRole('link', { name: `Conhecer o projeto ${name}` }).click();
     await expect(page).toHaveURL(new RegExp(`#${name.toLowerCase()}$`));
-    await expect(page.locator('.project-slide:visible')).toHaveAttribute('data-project-name', name);
+    await expect(page.locator(`#${name.toLowerCase()}`)).toBeInViewport();
+    await expect(page.locator('.project-entry:visible')).toHaveCount(2);
   }
   await page.goto('/portifolios.html#desconhecido');
-  await expect(page.locator('.project-slide:visible')).toHaveAttribute(
-    'data-project-name',
-    'Frattellianos',
-  );
+  await expect(page.locator('.project-entry:visible')).toHaveCount(2);
+});
+
+test('both projects are available without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('http://127.0.0.1:4321/portifolios.html#debinatos');
+  await expect(page.locator('.project-entry:visible')).toHaveCount(2);
+  await expect(page.locator('#debinatos')).toBeInViewport();
+  await context.close();
 });
