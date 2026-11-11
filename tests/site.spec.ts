@@ -115,3 +115,19 @@ test('portfolio works on mobile and with the keyboard without horizontal overflo
   await page.getByRole('button', { name: 'Fechar galeria' }).click();
   await expect(page.locator('.portfolio-lightbox')).not.toBeVisible();
 });
+
+test('home project cards open the selected project and handle unknown links', async ({ page }) => {
+  for (const name of ['Frattellianos', 'Debinatos']) {
+    await page.goto('/');
+    const card = page.locator('.home-project-card').filter({ hasText: name });
+    await expect(card.getByRole('img')).toBeVisible();
+    await card.getByRole('link', { name: `Conhecer o projeto ${name}` }).click();
+    await expect(page).toHaveURL(new RegExp(`#${name.toLowerCase()}$`));
+    await expect(page.locator('.project-slide:visible')).toHaveAttribute('data-project-name', name);
+  }
+  await page.goto('/portifolios.html#desconhecido');
+  await expect(page.locator('.project-slide:visible')).toHaveAttribute(
+    'data-project-name',
+    'Frattellianos',
+  );
+});

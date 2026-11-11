@@ -67,6 +67,14 @@ document.querySelectorAll<HTMLElement>('.project-showcase').forEach((showcase) =
       announcement.textContent = `Projeto ${projectIndex + 1} de ${slides.length}: ${slides[projectIndex].dataset.projectName}`;
   };
 
+  const selectProjectFromHash = () => {
+    const slug = window.location.hash.slice(1).toLowerCase();
+    const index = slides.findIndex((slide) => slide.dataset.projectName?.toLowerCase() === slug);
+    showProject(index >= 0 ? index : 0);
+  };
+  selectProjectFromHash();
+  window.addEventListener('hashchange', selectProjectFromHash);
+
   projectButtons.forEach((button, index) =>
     button.addEventListener('click', () => showProject(index)),
   );
