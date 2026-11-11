@@ -23,12 +23,11 @@ const { home = false, currentPage } = Astro.props;
     </button>
     <div class="nav-links" id="menu">
       <a href="/portifolios.html" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
-        Portfólio
+        Projetos
       </a>
       <a href="/about.html" aria-current={currentPage === 'about' ? 'page' : undefined}>
         Quem somos
       </a>
-      <a href={home ? '#depoimentos' : '/index.html#depoimentos'}>Depoimentos</a>
       <a
         class="nav-cta"
         href="/contact.html"

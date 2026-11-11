@@ -1,229 +1,132 @@
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const portfolioLightbox = document.querySelector<HTMLDialogElement>('.portfolio-lightbox');
-const lightboxImage = portfolioLightbox?.querySelector<HTMLImageElement>(
-  '.portfolio-lightbox-image',
-);
-const lightboxImageBackground = portfolioLightbox?.querySelector<HTMLImageElement>(
+const lightbox = document.querySelector<HTMLDialogElement>('.portfolio-lightbox');
+const lightboxImage = lightbox?.querySelector<HTMLImageElement>('.portfolio-lightbox-image');
+const lightboxBackground = lightbox?.querySelector<HTMLImageElement>(
   '.portfolio-lightbox-image-background',
 );
-const lightboxCategory = portfolioLightbox?.querySelector('.portfolio-lightbox-category');
-const lightboxTitle = portfolioLightbox?.querySelector('.portfolio-lightbox-title');
-const lightboxDescription = portfolioLightbox?.querySelector('.portfolio-lightbox-description');
-const lightboxLink = portfolioLightbox?.querySelector<HTMLAnchorElement>(
-  '.portfolio-lightbox-link',
-);
-const portfolioLightboxClose = portfolioLightbox?.querySelector('.portfolio-lightbox-close');
-const portfolioLightboxPrev = portfolioLightbox?.querySelector('.portfolio-lightbox-prev');
-const portfolioLightboxNext = portfolioLightbox?.querySelector('.portfolio-lightbox-next');
-let sharedSlideIndex = 0;
-interface PortfolioGallery {
-  card: HTMLElement;
-  gallery: HTMLElement;
-  showSlide: (index: number) => void;
-  slides: HTMLImageElement[];
-  readonly activeIndex: number;
-}
+let changeLightboxView: ((direction: number) => void) | undefined;
 
-let lightboxGallery: PortfolioGallery | undefined;
-let lightboxSlideIndex = 0;
-let lightboxTransitionTimeout: number | undefined;
+document.querySelectorAll<HTMLElement>('.project-showcase').forEach((showcase) => {
+  const slides = Array.from(showcase.querySelectorAll<HTMLElement>('.project-slide'));
+  const projectButtons = Array.from(showcase.querySelectorAll<HTMLButtonElement>('[data-project]'));
+  const viewButtons = Array.from(showcase.querySelectorAll<HTMLButtonElement>('[data-view]'));
+  let projectIndex = 0;
+  let viewIndex = 0;
+  const activeImages = () =>
+    Array.from(slides[projectIndex].querySelectorAll<HTMLImageElement>('img[data-original]'));
 
-const portfolioGalleries = Array.from(
-  document.querySelectorAll<HTMLElement>('.portfolio-card-gallery'),
-).map((gallery) => {
-  const slides = Array.from(gallery.querySelectorAll('img'));
-  const card = gallery.closest<HTMLElement>('.portfolio-card');
-
-  if (slides.length === 0 || !card) return null;
-
-  let activeIndex = Math.max(
-    slides.findIndex((slide) => slide.classList.contains('is-active')),
-    0,
-  );
-
-  const showSlide = (index: number) => {
-    slides[activeIndex].classList.remove('is-active');
-    slides[activeIndex].setAttribute('aria-hidden', 'true');
-    activeIndex = (index + slides.length) % slides.length;
-    slides[activeIndex].classList.add('is-active');
-    slides[activeIndex].setAttribute('aria-hidden', 'false');
-  };
-
-  slides.forEach((slide, index) => {
-    slide.classList.toggle('is-active', index === activeIndex);
-    slide.setAttribute('aria-hidden', String(index !== activeIndex));
-  });
-
-  const syncToSharedSlide = () => {
-    if (card.matches(':hover')) return;
-    showSlide(sharedSlideIndex);
-  };
-
-  gallery.querySelector('.portfolio-gallery-prev')?.addEventListener('click', (event) => {
-    showSlide(activeIndex - 1);
-    if (
-      event instanceof MouseEvent &&
-      event.detail > 0 &&
-      event.currentTarget instanceof HTMLElement
-    )
-      event.currentTarget.blur();
-  });
-  gallery.querySelector('.portfolio-gallery-next')?.addEventListener('click', (event) => {
-    showSlide(activeIndex + 1);
-    if (
-      event instanceof MouseEvent &&
-      event.detail > 0 &&
-      event.currentTarget instanceof HTMLElement
-    )
-      event.currentTarget.blur();
-  });
-  card.addEventListener('mouseleave', syncToSharedSlide);
-  card.addEventListener('focusout', (event) => {
-    if (!(event.relatedTarget instanceof Node) || !card.contains(event.relatedTarget))
-      syncToSharedSlide();
-  });
-
-  const portfolioGallery = {
-    card,
-    gallery,
-    showSlide,
-    slides,
-    get activeIndex() {
-      return activeIndex;
-    },
-  };
-
-  if (portfolioLightbox && lightboxImage) {
-    card.addEventListener('click', (event) => {
-      const isTouchInteraction =
-        (event instanceof PointerEvent && event.pointerType === 'touch') ||
-        window.matchMedia('(hover: none)').matches;
-      const clickedControl = event.target instanceof Element && event.target.closest('a, button');
-
-      if (!isTouchInteraction || clickedControl || portfolioLightbox.open) return;
-
-      lightboxGallery = portfolioGallery;
-      lightboxSlideIndex = activeIndex;
-      updateLightboxImage();
-      portfolioLightbox.showModal();
+  const updateLightbox = () => {
+    const slide = slides[projectIndex];
+    const image = activeImages()[viewIndex];
+    if (!lightbox || !lightboxImage) return;
+    lightboxImage.src = image.src;
+    lightboxImage.alt = image.alt;
+    if (lightboxBackground) lightboxBackground.src = image.src;
+    const values = {
+      '.portfolio-lightbox-category': 'Site institucional',
+      '.portfolio-lightbox-title': slide.dataset.projectName ?? '',
+      '.portfolio-lightbox-description':
+        slide.querySelector('.project-description p')?.textContent ?? '',
+    };
+    Object.entries(values).forEach(([selector, text]) => {
+      const element = lightbox.querySelector(selector);
+      if (element) element.textContent = text;
     });
-  }
+    const link = lightbox.querySelector<HTMLAnchorElement>('.portfolio-lightbox-link');
+    const source = slide.querySelector<HTMLAnchorElement>('.project-link');
+    if (link && source) link.href = source.href;
+  };
 
-  return portfolioGallery;
+  const showView = (index: number) => {
+    const images = activeImages();
+    viewIndex = (index + images.length) % images.length;
+    slides[projectIndex]
+      .querySelectorAll<HTMLElement>('[data-view-image]')
+      .forEach((view, index) => {
+        view.hidden = index !== viewIndex;
+      });
+    viewButtons.forEach((button, index) =>
+      button.setAttribute('aria-pressed', String(index === viewIndex)),
+    );
+    if (lightbox?.open) updateLightbox();
+  };
+
+  const showProject = (index: number) => {
+    projectIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, index) => {
+      slide.hidden = index !== projectIndex;
+    });
+    projectButtons.forEach((button, index) =>
+      button.setAttribute('aria-pressed', String(index === projectIndex)),
+    );
+    showView(0);
+    const counter = showcase.querySelector('.project-count');
+    if (counter)
+      counter.textContent = `${String(projectIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    const announcement = showcase.querySelector('.project-announcement');
+    if (announcement)
+      announcement.textContent = `Projeto ${projectIndex + 1} de ${slides.length}: ${slides[projectIndex].dataset.projectName}`;
+  };
+
+  projectButtons.forEach((button, index) =>
+    button.addEventListener('click', () => showProject(index)),
+  );
+  viewButtons.forEach((button, index) => button.addEventListener('click', () => showView(index)));
+  showcase.querySelectorAll<HTMLButtonElement>('[data-direction]').forEach((button) => {
+    button.addEventListener('click', () =>
+      showProject(projectIndex + Number(button.dataset.direction)),
+    );
+  });
+  showcase.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    showProject(projectIndex + (event.key === 'ArrowRight' ? 1 : -1));
+  });
+  showcase.querySelector('.project-expand')?.addEventListener('click', () => {
+    updateLightbox();
+    changeLightboxView = (direction) => showView(viewIndex + direction);
+    lightbox?.showModal();
+  });
 });
 
-const activePortfolioGalleries = portfolioGalleries.filter(
-  (gallery): gallery is PortfolioGallery => gallery !== null,
-);
-const maxPortfolioSlides = Math.max(
-  0,
-  ...activePortfolioGalleries.map(({ slides }) => slides.length),
-);
-
-function updateLightboxImage() {
-  if (!lightboxGallery || !lightboxImage) return;
-
-  const slide = lightboxGallery.slides[lightboxSlideIndex];
-  const imageSource = slide.currentSrc || slide.src;
-  lightboxImage.src = imageSource;
-  lightboxImage.alt = slide.alt;
-  if (lightboxImageBackground) lightboxImageBackground.src = imageSource;
-
-  const cardContent = lightboxGallery.card.querySelector('.portfolio-card-content');
-  if (!cardContent) return;
-
-  if (lightboxCategory) {
-    lightboxCategory.textContent = cardContent.querySelector('span')?.textContent?.trim() ?? '';
-  }
-  if (lightboxTitle) {
-    lightboxTitle.textContent = cardContent.querySelector('h2')?.textContent?.trim() ?? '';
-  }
-  if (lightboxDescription) {
-    lightboxDescription.textContent = cardContent.querySelector('p')?.textContent?.trim() ?? '';
-  }
-  if (lightboxLink) {
-    const projectLink = cardContent.querySelector('a');
-    lightboxLink.href = projectLink?.href ?? '#';
-    lightboxLink.textContent = projectLink?.textContent?.trim() ?? 'Acessar projeto →';
-    lightboxLink.hidden = !projectLink;
-  }
-}
-
-const changeLightboxSlide = (direction: number) => {
-  if (!lightboxGallery) return;
-
-  lightboxSlideIndex =
-    (lightboxSlideIndex + direction + lightboxGallery.slides.length) %
-    lightboxGallery.slides.length;
-
-  if (prefersReducedMotion || !lightboxImage) {
-    updateLightboxImage();
-    return;
-  }
-
-  window.clearTimeout(lightboxTransitionTimeout);
-  lightboxImage.classList.add('is-changing');
-  lightboxTransitionTimeout = window.setTimeout(() => {
-    updateLightboxImage();
-    window.setTimeout(() => lightboxImage.classList.remove('is-changing'), 20);
-  }, 180);
-};
-
-portfolioLightboxPrev?.addEventListener('click', () => changeLightboxSlide(-1));
-portfolioLightboxNext?.addEventListener('click', () => changeLightboxSlide(1));
-portfolioLightboxClose?.addEventListener('click', () => portfolioLightbox?.close());
-portfolioLightbox?.addEventListener('click', (event) => {
-  if (event.target === portfolioLightbox) portfolioLightbox.close();
+lightbox
+  ?.querySelector('.portfolio-lightbox-close')
+  ?.addEventListener('click', () => lightbox.close());
+lightbox
+  ?.querySelector('.portfolio-lightbox-prev')
+  ?.addEventListener('click', () => changeLightboxView?.(-1));
+lightbox
+  ?.querySelector('.portfolio-lightbox-next')
+  ?.addEventListener('click', () => changeLightboxView?.(1));
+lightbox?.addEventListener('click', (event) => {
+  if (event.target === lightbox) lightbox.close();
 });
-portfolioLightbox?.addEventListener('close', () => {
-  if (!lightboxGallery) return;
-
-  sharedSlideIndex = lightboxSlideIndex;
-  activePortfolioGalleries.forEach(({ showSlide }) => showSlide(sharedSlideIndex));
-  lightboxGallery = undefined;
+lightbox?.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowLeft') changeLightboxView?.(-1);
+  if (event.key === 'ArrowRight') changeLightboxView?.(1);
 });
 
-const externalSiteConfirmation = document.querySelector<HTMLDialogElement>(
-  '.external-site-confirmation',
-);
-const externalSiteUrl = externalSiteConfirmation?.querySelector('.external-site-url');
-const externalSiteConfirm =
-  externalSiteConfirmation?.querySelector<HTMLAnchorElement>('.external-site-confirm');
-const externalSiteCancel = externalSiteConfirmation?.querySelector('.external-site-cancel');
-
-if (
-  externalSiteConfirmation instanceof HTMLDialogElement &&
-  externalSiteUrl instanceof HTMLElement &&
-  externalSiteConfirm instanceof HTMLAnchorElement
-) {
+const confirmation = document.querySelector<HTMLDialogElement>('.external-site-confirmation');
+const externalUrl = confirmation?.querySelector('.external-site-url');
+const externalConfirm = confirmation?.querySelector<HTMLAnchorElement>('.external-site-confirm');
+if (confirmation && externalUrl && externalConfirm) {
   document
-    .querySelectorAll<HTMLAnchorElement>('.portfolio-card-content a, .portfolio-lightbox-link')
+    .querySelectorAll<HTMLAnchorElement>('.project-link, .portfolio-lightbox-link')
     .forEach((link) => {
       link.addEventListener('click', (event) => {
         event.preventDefault();
-        const destination = new URL(link.href, window.location.href);
-        externalSiteUrl.textContent = destination.hostname;
-        externalSiteConfirm.href = destination.href;
-        externalSiteConfirmation.showModal();
+        const destination = new URL(link.href);
+        externalUrl.textContent = destination.hostname;
+        externalConfirm.href = destination.href;
+        confirmation.showModal();
       });
     });
-
-  externalSiteCancel?.addEventListener('click', () => externalSiteConfirmation.close());
-  externalSiteConfirmation.addEventListener('click', (event) => {
-    if (event.target === externalSiteConfirmation) externalSiteConfirmation.close();
+  confirmation
+    .querySelector('.external-site-cancel')
+    ?.addEventListener('click', () => confirmation.close());
+  confirmation.addEventListener('click', (event) => {
+    if (event.target === confirmation) confirmation.close();
   });
-  externalSiteConfirm.addEventListener('click', () => externalSiteConfirmation.close());
-}
-
-if (!prefersReducedMotion && maxPortfolioSlides > 1) {
-  window.setInterval(() => {
-    if (portfolioLightbox?.open) return;
-
-    sharedSlideIndex = (sharedSlideIndex + 1) % maxPortfolioSlides;
-    activePortfolioGalleries.forEach(({ card, showSlide }) => {
-      if (!card.matches(':hover, :focus-within')) showSlide(sharedSlideIndex);
-    });
-  }, 4000);
+  externalConfirm.addEventListener('click', () => confirmation.close());
 }
 
 export {};

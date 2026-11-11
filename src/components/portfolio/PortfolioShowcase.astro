@@ -1,0 +1,146 @@
+---
+interface Props {
+  standalone?: boolean;
+}
+const { standalone = false } = Astro.props;
+const projects = [
+  {
+    name: 'Frattellianos',
+    description: 'Uma presença digital com a essência, a história e a identidade da marca.',
+    url: 'https://frattellianos.com',
+  },
+  {
+    name: 'Debinatos',
+    description:
+      'Identidade e conteúdo em uma experiência digital feita para apresentar o negócio.',
+    url: 'https://debinatos.com',
+  },
+];
+const Heading = 'h2';
+---
+
+<section
+  class:list={['project-showcase', { 'project-showcase-page': standalone }]}
+  id="portfolio"
+  aria-label="Nosso portfólio"
+  aria-roledescription="carrossel"
+  tabindex="0"
+>
+  {standalone && <h1 class="sr-only">Projetos que falam por nós</h1>}
+  <div class="project-slides">
+    {projects.map((project, index) => (
+      <article
+        class="project-slide"
+        hidden={index !== 0}
+        data-project-name={project.name}
+        aria-label={`${index + 1} de ${projects.length}: ${project.name}`}
+        aria-roledescription="slide"
+      >
+        <div
+          class="project-devices"
+          aria-label={`Interface do projeto ${project.name} em três dispositivos`}
+        >
+          {['main', 'hist'].map((view, imageIndex) => (
+            <div class="project-device-set" hidden={imageIndex !== 0} data-view-image={imageIndex}>
+              <div class="project-device project-monitor">
+                <div class="device-screen">
+                  <img
+                    data-original
+                    src={`/assets/images/portimages/${project.name}/${project.name}-${view}.png`}
+                    alt={`${imageIndex === 0 ? 'Página principal' : 'Página de história'} do site ${project.name} em um computador`}
+                    loading={standalone && index === 0 && imageIndex === 0 ? 'eager' : 'lazy'}
+                  />
+                </div>
+                <div class="monitor-chin">
+                  <span></span>
+                </div>
+                <div class="monitor-stand"></div>
+                <div class="monitor-base"></div>
+              </div>
+              <div class="project-device project-laptop" aria-hidden="true">
+                <div class="laptop-lid">
+                  <div class="device-screen">
+                    <img
+                      src={`/assets/images/portimages/${project.name}/${project.name}-${view}.png`}
+                      alt=""
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+                <div class="laptop-base"></div>
+              </div>
+              <div class="project-device project-phone" aria-hidden="true">
+                <div class="device-screen">
+                  <img
+                    src={`/assets/images/portimages/${project.name}/${project.name}-${view}-mobile.png`}
+                    alt=""
+                    loading="lazy"
+                  />
+                </div>
+                <div class="phone-camera"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="project-caption">
+          <p class="project-category">DESIGN & DESENVOLVIMENTO · SITE INSTITUCIONAL</p>
+          <Heading>{project.name}</Heading>
+          <div class="project-description">
+            <p>{project.description}</p>
+            <a class="project-link" href={project.url} target="_blank" rel="noopener noreferrer">
+              Acessar site <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <div class="project-topline">
+    <p>
+      NOSSO PORTFÓLIO <span> / PROJETOS SELECIONADOS</span>
+    </p>
+    <span class="project-count" aria-hidden="true">
+      01 / 02
+    </span>
+  </div>
+
+  <div class="project-view-controls" aria-label="Imagens do projeto">
+    <button type="button" data-view="0" aria-pressed="true">
+      01 <span>Início</span>
+    </button>
+    <button type="button" data-view="1" aria-pressed="false">
+      02 <span>História</span>
+    </button>
+    <button type="button" class="project-expand" aria-label="Ampliar imagens do projeto">
+      ↗
+    </button>
+  </div>
+
+  <div class="project-bottomline">
+    <div class="project-picker" role="group" aria-label="Escolher projeto">
+      {projects.map((project, index) => (
+        <button type="button" data-project={index} aria-pressed={index === 0}>
+          <span class="project-picker-number">0{index + 1}</span>
+          {project.name}
+          <span class="project-picker-arrow" aria-hidden="true">
+            ↗
+          </span>
+        </button>
+      ))}
+    </div>
+    <div class="project-arrows">
+      <button type="button" data-direction="-1" aria-label="Projeto anterior">
+        ←
+      </button>
+      <button type="button" data-direction="1" aria-label="Próximo projeto">
+        →
+      </button>
+    </div>
+  </div>
+  <p class="sr-only project-announcement" role="status" aria-live="polite" aria-atomic="true"></p>
+</section>
+
+<script>
+  import '../../scripts/portfolio';
+</script>
