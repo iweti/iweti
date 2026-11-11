@@ -1,12 +1,18 @@
 ---
 import '../styles/styles.css';
+import type { ComponentProps } from 'astro/types';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title: string;
   description: string;
+  home?: boolean;
+  currentPage?: ComponentProps<typeof SiteHeader>['currentPage'];
+  footer?: Omit<ComponentProps<typeof SiteFooter>, 'home' | 'currentPage'>;
 }
 
-const { title, description } = Astro.props;
+const { title, description, home = false, currentPage, footer = {} } = Astro.props;
 ---
 
 <!doctype html>
@@ -25,7 +31,15 @@ const { title, description } = Astro.props;
     />
   </head>
   <body>
+    <SiteHeader home={home} currentPage={currentPage}>
+      <slot name="hero" />
+    </SiteHeader>
     <slot />
+    <SiteFooter
+      {...footer}
+      home={home}
+      currentPage={currentPage === 'privacy' ? 'privacy' : undefined}
+    />
     <script>
       import '../scripts/navigation';
       import '../scripts/reveal';

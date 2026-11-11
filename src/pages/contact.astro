@@ -1,15 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import SiteFooter from '../components/SiteFooter.astro';
 import ContactForm from '../components/contact/ContactForm.astro';
 ---
 
 <BaseLayout
+  currentPage="contact"
+  footer={{ ctaLabel: 'contato@iweti.com', ctaHref: 'mailto:contato@iweti.com' }}
   title="Contato | IwetI"
   description="Entre em contato com a IwetI para conversar sobre seu próximo projeto."
 >
-  <SiteHeader currentPage="contact" />
   <main>
     <section class="contact-page">
       <div class="shell contact-layout">
@@ -25,5 +24,4 @@ import ContactForm from '../components/contact/ContactForm.astro';
       </div>
     </section>
   </main>
-  <SiteFooter ctaLabel="contato@iweti.com" ctaHref="mailto:contato@iweti.com" />
 </BaseLayout>

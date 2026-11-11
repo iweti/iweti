@@ -1,7 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import SiteFooter from '../components/SiteFooter.astro';
 import Hero from '../components/home/Hero.astro';
 import Services from '../components/home/Services.astro';
 import AboutSection from '../components/home/AboutSection.astro';
@@ -10,17 +8,16 @@ import TestimonialsSection from '../components/home/TestimonialsSection.astro';
 ---
 
 <BaseLayout
+  home
+  footer={{ contactAnchor: true, ctaLabel: 'Quero conversar agora →' }}
   title="IwetI | Tecnologia sem limites"
   description="IwetI - tecnologia, ideias e resultados sem limites."
 >
-  <SiteHeader home>
-    <Hero />
-  </SiteHeader>
+  <Hero slot="hero" />
   <main>
     <PortfolioSection />
     <Services />
     <AboutSection />
     <TestimonialsSection />
   </main>
-  <SiteFooter home contactAnchor ctaLabel="Quero conversar agora →" />
 </BaseLayout>

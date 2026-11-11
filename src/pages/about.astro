@@ -1,14 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import SiteFooter from '../components/SiteFooter.astro';
 ---
 
 <BaseLayout
+  currentPage="about"
   title="Quem somos | IwetI"
   description="Conheça a IwetI, nossa missão e visão e o significado de inovação, pessoas e tecnologia em nosso nome."
 >
-  <SiteHeader currentPage="about" />
   <main>
     <section class="about-page">
       <div class="shell about-page-content">
@@ -94,5 +92,4 @@ import SiteFooter from '../components/SiteFooter.astro';
       </div>
     </section>
   </main>
-  <SiteFooter />
 </BaseLayout>

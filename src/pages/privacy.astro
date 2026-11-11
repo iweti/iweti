@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import SiteFooter from '../components/SiteFooter.astro';
 ---
 
-<BaseLayout title="Política de Privacidade | IwetI" description="Política de privacidade da IwetI.">
-  <SiteHeader currentPage="privacy" />
+<BaseLayout
+  currentPage="privacy"
+  title="Política de Privacidade | IwetI"
+  description="Política de privacidade da IwetI."
+>
   <main>
     <section class="privacy-page">
       <article class="shell privacy-content">
@@ -185,5 +186,4 @@ import SiteFooter from '../components/SiteFooter.astro';
       </article>
     </section>
   </main>
-  <SiteFooter currentPage="privacy" />
 </BaseLayout>
