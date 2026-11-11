@@ -7,7 +7,7 @@ async function setScenario(request: APIRequestContext, scenario: string) {
 }
 
 async function fillContact(page: Page) {
-  await page.goto('/contact.html');
+  await page.goto('/contact');
   await page.getByLabel('Nome', { exact: true }).fill('  Maria Silva  ');
   await page.getByLabel('E-mail', { exact: true }).fill('maria@exemplo.com');
   await page.getByLabel('Assunto', { exact: true }).fill('Orçamento de um site');
@@ -122,7 +122,7 @@ test('prevents concurrent submissions while the request is pending', async ({ pa
 });
 
 test('marks both channels unavailable until all fields are valid', async ({ page }) => {
-  await page.goto('/contact.html');
+  await page.goto('/contact');
   const actions = page.locator('[data-contact-send]');
   for (const action of await actions.all()) {
     await expect(action).toHaveAttribute('aria-disabled', 'true');

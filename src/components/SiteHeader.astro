@@ -14,7 +14,7 @@ const { home = false, currentPage } = Astro.props;
   id={home ? 'home' : undefined}
 >
   <nav class="shell nav" aria-label="Navegação principal">
-    <Brand href={home ? '#home' : '/index.html'} />
+    <Brand href={home ? '#home' : '/'} />
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu">
       <span></span>
       <span></span>
@@ -22,15 +22,15 @@ const { home = false, currentPage } = Astro.props;
       <span class="sr-only">Abrir menu</span>
     </button>
     <div class="nav-links" id="menu">
-      <a href="/portifolios.html" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
+      <a href="/portifolios" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
         Projetos
       </a>
-      <a href="/about.html" aria-current={currentPage === 'about' ? 'page' : undefined}>
+      <a href="/about" aria-current={currentPage === 'about' ? 'page' : undefined}>
         Quem somos
       </a>
       <a
         class="nav-cta"
-        href="/contact.html"
+        href="/contact"
         aria-current={currentPage === 'contact' ? 'page' : undefined}
       >
         Fale com a gente →

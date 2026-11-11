@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
 
 for (const path of [
-  '/index.html',
-  '/about.html',
-  '/contact.html',
-  '/portifolios.html',
-  '/privacy.html',
+  '/',
+  '/about',
+  '/contact',
+  '/portifolios',
+  '/privacy',
 ]) {
   test(`preserves ${path}, local assets and the shared navigation`, async ({ page, request }) => {
     const errors: string[] = [];
@@ -53,7 +53,7 @@ test('service details open and close', async ({ page }) => {
 test('projects remain visible with independent image controls and a shared lightbox', async ({
   page,
 }) => {
-  await page.goto('/portifolios.html');
+  await page.goto('/portifolios');
   const first = page.locator('#frattellianos');
   const second = page.locator('#debinatos');
   await expect(first).toBeVisible();
@@ -97,7 +97,7 @@ test('projects remain visible with independent image controls and a shared light
 
 test('both projects work on mobile without horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/portifolios.html');
+  await page.goto('/portifolios');
   for (const id of ['frattellianos', 'debinatos']) {
     const project = page.locator(`#${id}`);
     await project.scrollIntoViewIfNeeded();
@@ -120,14 +120,14 @@ test('home project links scroll to the matching project', async ({ page }) => {
     await expect(page.locator(`#${name.toLowerCase()}`)).toBeInViewport();
     await expect(page.locator('.project-entry:visible')).toHaveCount(2);
   }
-  await page.goto('/portifolios.html#desconhecido');
+  await page.goto('/portifolios#desconhecido');
   await expect(page.locator('.project-entry:visible')).toHaveCount(2);
 });
 
 test('both projects are available without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4321/portifolios.html#debinatos');
+  await page.goto('http://127.0.0.1:4321/portifolios#debinatos');
   await expect(page.locator('.project-entry:visible')).toHaveCount(2);
   await expect(page.locator('#debinatos')).toBeInViewport();
   await context.close();

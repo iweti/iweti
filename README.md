@@ -49,7 +49,7 @@ O TypeScript permanece na versão 6, compatível com `@astrojs/check`. As versõ
 └── tsconfig.json
 ```
 
-As páginas são `/`, `/index.html`, `/about.html`, `/contact.html`, `/portifolios.html` e `/privacy.html`. `build.format: 'file'` mantém os arquivos `.html`; `/` serve a página inicial.
+As páginas são `/`, `/about`, `/contact`, `/portifolios` e `/privacy`. `build.format: 'directory'` gera um `index.html` por página para servir as rotas sem extensão; `/` serve a página inicial.
 
 O CSS global mantém a ordem original: base, componentes, seções e responsividade. As imagens estão em `public/` para preservar os arquivos e seus endereços, sem alterar sua aparência. Documentos de manutenção ficam em `docs/`; somente os PDFs públicos ficam em `public/docs/`.
 
