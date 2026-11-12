@@ -871,12 +871,19 @@ footer {
   letter-spacing: -0.055em;
 }
 
-.contact-intro > p:last-child {
+.contact-description {
   max-width: 30rem;
   margin-top: 1rem;
   color: var(--color-muted);
   font-size: 0.95rem;
   line-height: 1.7;
+}
+
+.contact-mascot {
+  display: block;
+  width: min(100%, 320px);
+  height: auto;
+  margin: 24px auto 0;
 }
 
 .contact-form {
