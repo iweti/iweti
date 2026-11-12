@@ -203,6 +203,12 @@
   text-wrap: balance;
 }
 
+.home-projects-description {
+  margin-top: 1.25rem;
+  color: var(--color-muted);
+  line-height: 1.75;
+}
+
 .home-projects-visual {
   grid-column: 2;
   grid-row: 1 / 3;
