@@ -61,6 +61,24 @@ footer {
   color: var(--color-heading-accent);
 }
 
+.hero strong.hero-wave {
+  /* Duração da onda inteira, pausa entre ondas e espera inicial. */
+  --wave-duration: 2.5s;
+  --wave-pause: 3s;
+  --wave-start-delay: 2s;
+  color: #00d8ff;
+  text-shadow: 0 0 24px rgb(0 216 255 / 24%);
+}
+
+.hero-wave-word {
+  display: inline-block;
+  white-space: pre;
+}
+
+.hero-wave-letter {
+  display: inline-block;
+}
+
 .about strong {
   display: block;
   color: var(--color-text-primary);
