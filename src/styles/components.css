@@ -33,6 +33,24 @@
   white-space: nowrap;
 }
 
+.site-nav {
+  position: fixed;
+  z-index: 100;
+  inset: 0 0 auto;
+  transition:
+    transform 240ms ease,
+    background-color 240ms ease;
+}
+
+.site-nav.is-scrolled {
+  background-color: rgb(1 9 31 / 96%);
+}
+
+.site-nav.is-hidden {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
 .nav {
   position: relative;
   z-index: 30;

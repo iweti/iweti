@@ -298,6 +298,7 @@
     scroll-behavior: auto;
   }
 
+  .site-nav,
   .service-dialog {
     transition: none;
   }
