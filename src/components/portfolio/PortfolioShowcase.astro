@@ -9,7 +9,7 @@ const projects = [
     description: 'Uma presença digital com a essência, a história e a identidade da marca.',
     url: 'https://frattellianos.com',
     category: 'Site institucional',
-    status: '',
+    status: 'Site publicado',
   },
   {
     name: 'Debinatos',
@@ -17,7 +17,7 @@ const projects = [
       'Identidade e conteúdo em uma experiência digital feita para apresentar o negócio.',
     url: 'https://debinatos.com',
     category: 'Site institucional',
-    status: '',
+    status: 'Site publicado',
   },
   {
     name: 'LivesRun',
@@ -57,62 +57,20 @@ const Heading = standalone ? 'h1' : 'h2';
     <p>Conheça nossos sites, aplicativos e plataformas digitais.</p>
   </header>
   <div class="project-list">
-    {projects.map((project, index) => (
+    {projects.map((project) => (
       <article
         class="project-entry"
         id={project.name.toLowerCase().replace(/\s+/g, '-')}
         data-project-name={project.name}
         aria-labelledby={`${project.name.toLowerCase().replace(/\s+/g, '-')}-title`}
       >
-        {project.url ? (
-          <div
-            class="project-devices"
-            aria-label={`Interface do projeto ${project.name} em notebook e celular`}
-          >
-            {['main', 'hist'].map((view, imageIndex) => (
-              <div
-                class="project-device-set"
-                hidden={imageIndex !== 0}
-                data-view-image={imageIndex}
-              >
-                <div class="project-device project-laptop">
-                  <div class="laptop-lid">
-                    <div class="device-screen">
-                      <img
-                        data-original
-                        src={`/assets/images/portimages/${project.name}/${project.name}-${view}.png`}
-                        alt={`${imageIndex === 0 ? 'Página principal' : 'Página de história'} do site ${project.name} em um notebook`}
-                        loading={standalone && index === 0 && imageIndex === 0 ? 'eager' : 'lazy'}
-                      />
-                    </div>
-                  </div>
-                  <div class="laptop-base" aria-hidden="true"></div>
-                </div>
-                <div class="project-device project-phone" aria-hidden="true">
-                  <div class="device-screen">
-                    <img
-                      src={`/assets/images/portimages/${project.name}/${project.name}-${view}-mobile.png`}
-                      alt=""
-                      loading="lazy"
-                    />
-                  </div>
-                  <div class="phone-camera"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div
-            class="project-preview"
-            data-project={project.name.toLowerCase().replace(/\s+/g, '-')}
-          >
-            <span class="project-status">{project.status}</span>
-            <span class="project-preview-name" aria-hidden="true">
-              {project.name}
-            </span>
-            <span class="project-preview-category">{project.category}</span>
-          </div>
-        )}
+        <div class="project-preview" data-project={project.name.toLowerCase().replace(/\s+/g, '-')}>
+          <span class="project-status">{project.status}</span>
+          <span class="project-preview-name" aria-hidden="true">
+            {project.name}
+          </span>
+          <span class="project-preview-category">{project.category}</span>
+        </div>
         <div class="project-caption">
           <p class="project-category">{project.category}</p>
           <h2 id={`${project.name.toLowerCase().replace(/\s+/g, '-')}-title`}>{project.name}</h2>

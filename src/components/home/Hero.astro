@@ -7,13 +7,18 @@ const headlineWords = ['experiências', 'digitais'];
     <p class="eyebrow">DESENVOLVIMENTO SOB MEDIDA</p>
 
     <h1>
-      Transformamos<br />
-      ideias em<br />
+      Transformamos
+      <br />
+      ideias em
+      <br />
       <strong class="hero-wave" aria-label="experiências digitais">
         {headlineWords.map((word, wordIndex) => (
           <span class="hero-wave-word" aria-hidden="true">
             {Array.from(word).map((letter, letterIndex) => (
-              <span class="hero-wave-letter" data-wave-index={letterIndex + (wordIndex === 0 ? 0 : headlineWords[0].length + 1)}>
+              <span
+                class="hero-wave-letter"
+                data-wave-index={letterIndex + (wordIndex === 0 ? 0 : headlineWords[0].length + 1)}
+              >
                 {letter}
               </span>
             ))}
@@ -23,7 +28,8 @@ const headlineWords = ['experiências', 'digitais'];
       </strong>
     </h1>
     <p class="lead">
-      Desenvolvimento de sites, sistemas e soluções digitais para transformar seus objetivos em possibilidades.
+      Desenvolvimento de sites, sistemas e soluções digitais para transformar seus objetivos em
+      possibilidades.
     </p>
     <div class="actions">
       <a class="btn btn-primary" href="/contact">
@@ -66,20 +72,32 @@ const headlineWords = ['experiências', 'digitais'];
       const letters = phrase.querySelectorAll<HTMLElement>('.hero-wave-letter');
       const letterDuration = waveDuration * (3 / 7);
       const travelDuration = waveDuration - letterDuration;
-      const lastIndex = Math.max(1, ...Array.from(letters, (letter) => Number(letter.dataset.waveIndex)));
+      const lastIndex = Math.max(
+        1,
+        ...Array.from(letters, (letter) => Number(letter.dataset.waveIndex)),
+      );
 
       letters.forEach((letter) => {
-        animations.push(letter.animate([
-          { transform: 'translateY(0)', offset: 0, easing: 'ease-in-out' },
-          { transform: 'translateY(-0.12em)', offset: letterDuration / cycle / 2, easing: 'ease-in-out' },
-          { transform: 'translateY(0)', offset: letterDuration / cycle },
-          { transform: 'translateY(0)', offset: 1 },
-        ], {
-          duration: cycle,
-          delay: startDelay + (Number(letter.dataset.waveIndex) / lastIndex) * travelDuration,
-          iterations: Infinity,
-          easing: 'linear',
-        }));
+        animations.push(
+          letter.animate(
+            [
+              { transform: 'translateY(0)', offset: 0, easing: 'ease-in-out' },
+              {
+                transform: 'translateY(-0.12em)',
+                offset: letterDuration / cycle / 2,
+                easing: 'ease-in-out',
+              },
+              { transform: 'translateY(0)', offset: letterDuration / cycle },
+              { transform: 'translateY(0)', offset: 1 },
+            ],
+            {
+              duration: cycle,
+              delay: startDelay + (Number(letter.dataset.waveIndex) / lastIndex) * travelDuration,
+              iterations: Infinity,
+              easing: 'linear',
+            },
+          ),
+        );
       });
     });
   }

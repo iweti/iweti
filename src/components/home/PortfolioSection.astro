@@ -1,50 +1,57 @@
----
-const projects = [
-  {
-    name: 'Frattellianos',
-    slug: 'frattellianos',
-    description: 'Site institucional para apresentar a marca e sua história.',
-  },
-  {
-    name: 'Debinatos',
-    slug: 'debinatos',
-    description: 'Site institucional que reúne identidade e conteúdo para apresentar o negócio.',
-  },
-];
----
-
 <section
   class="section portfolio home-projects"
   id="portfolio"
   aria-labelledby="home-projects-title"
 >
-  <div class="shell">
+  <div class="shell home-projects-layout">
     <div class="home-projects-heading">
       <p class="eyebrow">NOSSO PORTFÓLIO</p>
-      <h2 id="home-projects-title">Conheça alguns dos nossos projetos</h2>
+      <h2 id="home-projects-title">Alguns de nossos projetos</h2>
     </div>
-    <div class="home-project-grid">
-      {projects.map((project) => (
-        <article class="home-project-card">
-          <img
-            class="home-project-preview"
-            src={`/assets/images/portimages/${project.name}/${project.name}-main.png`}
-            alt={`Página inicial do site ${project.name}`}
-            loading="lazy"
-          />
-          <div class="home-project-copy">
-            <h3>{project.name}</h3>
-            <p>{project.description}</p>
-            <a href={`/portifolios#${project.slug}`}>
-              Conhecer o projeto <span class="sr-only">{project.name}</span>
-              <span aria-hidden="true">→</span>
-            </a>
+    <div class="home-projects-visual" aria-hidden="true">
+      <div class="showcase-devices">
+        <div class="showcase-device showcase-monitor">
+          <div class="showcase-device-screen">
+            <img
+              src="/assets/images/portimages/Frattellianos/Frattellianos-main.png"
+              alt=""
+              loading="lazy"
+            />
           </div>
-        </article>
-      ))}
+          <div class="showcase-monitor-stand"></div>
+        </div>
+        <div class="showcase-device showcase-notebook">
+          <div class="showcase-device-screen">
+            <img
+              src="/assets/images/portimages/Debinatos/Debinatos-main.png"
+              alt=""
+              loading="lazy"
+            />
+          </div>
+          <div class="showcase-notebook-base"></div>
+        </div>
+        <div class="showcase-device showcase-phone showcase-phone-first">
+          <div class="showcase-device-screen">
+            <img
+              src="/assets/images/portimages/Frattellianos/Frattellianos-main-mobile.png"
+              alt=""
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <div class="showcase-device showcase-phone showcase-phone-second">
+          <div class="showcase-device-screen">
+            <img
+              src="/assets/images/portimages/Debinatos/Debinatos-main-mobile.png"
+              alt=""
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
     </div>
-    <a class="btn btn-ghost" href="/portifolios">
-      Ver portfólio completo →
+    <a class="btn btn-primary home-projects-link" href="/portifolios">
+      Ver projetos →
     </a>
   </div>
 </section>
