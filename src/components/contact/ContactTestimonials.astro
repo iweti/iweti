@@ -1,0 +1,117 @@
+---
+const testimonials = [
+  {
+    name: 'Mariana Costa',
+    role: 'Loja de decoração',
+    initials: 'MC',
+    quote:
+      'Nosso site ficou com a nossa cara. O cuidado com cada detalhe fez toda a diferença na apresentação da marca.',
+  },
+  {
+    name: 'Rafael Lima',
+    role: 'Consultoria empresarial',
+    initials: 'RL',
+    quote:
+      'Conseguimos transformar uma ideia em uma experiência simples de usar. A comunicação foi clara em todas as etapas.',
+  },
+  {
+    name: 'Beatriz Santos',
+    role: 'Estúdio criativo',
+    initials: 'BS',
+    quote:
+      'O resultado trouxe mais personalidade para a nossa presença digital. Ficamos muito felizes com a organização e o atendimento.',
+  },
+  {
+    name: 'Lucas Ferreira',
+    role: 'Academia e bem-estar',
+    initials: 'LF',
+    quote:
+      'Precisávamos de uma solução prática para o dia a dia. O projeto ficou intuitivo e facilitou a rotina da nossa equipe.',
+  },
+  {
+    name: 'Camila Rocha',
+    role: 'Gastronomia artesanal',
+    initials: 'CR',
+    quote:
+      'Do primeiro contato à entrega, sentimos atenção de verdade. Hoje temos um espaço digital que apresenta melhor o nosso trabalho.',
+  },
+  {
+    name: 'Pedro Almeida',
+    role: 'Serviços profissionais',
+    initials: 'PA',
+    quote:
+      'Gostamos da forma como nossas necessidades foram ouvidas. O projeto uniu um visual bonito com uma navegação muito fácil.',
+  },
+];
+---
+
+<section
+  class="contact-testimonials group/carousel py-[clamp(2.5rem,5vw,4rem)]"
+  aria-labelledby="contact-testimonials-title"
+  data-testimonial-carousel
+>
+  <div class="contact-testimonials-heading shell mb-[clamp(3rem,6vw,5rem)] text-center">
+    <div>
+      <p class="eyebrow">DEPOIMENTOS</p>
+      <h2 id="contact-testimonials-title">Boas ideias viram <span>boas histórias.</span></h2>
+    </div>
+  </div>
+  <div class="contact-testimonials-viewport overflow-hidden motion-reduce:overflow-x-auto">
+    <div class="contact-testimonials-track flex" id="contact-testimonials-track">
+      {[false, true].map((duplicate) => (
+        <div
+          class="contact-testimonials-set flex shrink-0 gap-(--testimonial-gap) pr-(--testimonial-gap) [--testimonial-gap:clamp(2rem,4vw,3.5rem)]"
+          aria-hidden={duplicate ? 'true' : undefined}
+        >
+          {testimonials.map((testimonial) => (
+            <figure class="contact-testimonial flex w-[clamp(17rem,28vw,23rem)] shrink-0 cursor-grab select-none flex-col rounded-2xl border border-border p-6 group-data-[paused=true]/carousel:cursor-grabbing">
+              <span
+                class="contact-testimonial-quote h-10 text-[3.5rem] leading-none text-heading-accent"
+                aria-hidden="true"
+              >
+                “
+              </span>
+              <blockquote>{testimonial.quote}</blockquote>
+              <figcaption>
+                <span
+                  class="contact-testimonial-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[rgb(139_197_255/25%)] text-[0.7rem] text-heading-accent"
+                  aria-hidden="true"
+                >
+                  {testimonial.initials}
+                </span>
+                <span>
+                  <b>{testimonial.name}</b>
+                  <span class="contact-testimonial-role mt-[0.3rem] block text-[0.7rem] text-muted">
+                    {testimonial.role}
+                  </span>
+                </span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach((carousel) => {
+    carousel.querySelectorAll<HTMLElement>('.contact-testimonial').forEach((card) => {
+      const resume = () => {
+        carousel.dataset.paused = 'false';
+      };
+
+      card.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0) return;
+        carousel.dataset.paused = 'true';
+        card.setPointerCapture(event.pointerId);
+      });
+      card.addEventListener('pointerup', resume);
+      card.addEventListener('pointercancel', resume);
+      card.addEventListener('lostpointercapture', resume);
+    });
+    window.addEventListener('blur', () => {
+      carousel.dataset.paused = 'false';
+    });
+  });
+</script>

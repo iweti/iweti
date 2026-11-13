@@ -10,19 +10,33 @@ const { home = false, currentPage } = Astro.props;
 ---
 
 <header
-  class:list={['site-header', { 'site-header-compact': !home }]}
+  class:list={[
+    'site-header relative overflow-hidden pt-20 max-[961px]:z-100 max-[961px]:overflow-visible max-md:min-h-0 md:max-[901px]:min-h-0',
+    { 'min-h-170': home, 'site-header-compact': !home },
+  ]}
   id={home ? 'home' : undefined}
 >
-  <div class="site-nav">
-    <nav class="shell nav" aria-label="Navegação principal">
+  <div class="site-nav fixed z-100">
+    <nav
+      class="nav relative z-30 shell flex min-h-20 items-center justify-between"
+      aria-label="Navegação principal"
+    >
       <Brand href={home ? '#home' : '/'} />
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu">
+      <button
+        class="menu-toggle hidden max-[961px]:flex max-[961px]:shrink-0 max-[961px]:flex-col max-[961px]:gap-1.5 max-[961px]:p-2"
+        type="button"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
         <span></span>
         <span></span>
         <span></span>
         <span class="sr-only">Abrir menu</span>
       </button>
-      <div class="nav-links" id="menu">
+      <div
+        class="nav-links flex items-center gap-6 text-[0.875rem] font-medium text-[#e2e8f0] max-[961px]:absolute max-[961px]:top-[calc(100%-0.5rem)] max-[961px]:left-0 max-[961px]:z-1 max-[961px]:hidden max-[961px]:w-full max-[961px]:flex-col max-[961px]:items-stretch max-[961px]:rounded-xl max-[961px]:border max-[961px]:border-[rgb(0_141_255/30%)] max-[961px]:p-5 max-[961px]:text-center"
+        id="menu"
+      >
         <a href="/portifolios" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
           Projetos
         </a>

@@ -8,9 +8,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Conheça a IwetI, nossa missão e visão e o significado de inovação, pessoas e tecnologia em nosso nome."
 >
   <main>
-    <section class="about-page">
-      <div class="shell about-page-content">
-        <header class="about-page-copy reveal">
+    <section class="about-page min-h-[calc(100vh-12rem)] py-20">
+      <div class="about-page-content shell grid gap-16 md:grid-cols-[1fr] md:gap-12">
+        <header class="about-page-copy max-w-216 reveal">
           <p class="eyebrow">QUEM SOMOS</p>
           <h1>Tecnologia que começa pelas pessoas</h1>
           <p>
@@ -19,8 +19,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </p>
         </header>
 
-        <div class="about-purpose-grid">
-          <article class="about-purpose reveal">
+        <div class="about-purpose-grid grid grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),1fr))] gap-4">
+          <article class="about-purpose reveal rounded-2xl border border-border p-[clamp(1.5rem,3vw,2.25rem)]">
             <p class="eyebrow">NOSSO PROPÓSITO</p>
             <h2>Nossa missão</h2>
             <p>
@@ -28,7 +28,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               profundamente humanas.
             </p>
           </article>
-          <article class="about-purpose about-purpose-vision reveal">
+          <article class="about-purpose about-purpose-vision reveal rounded-2xl border border-border p-[clamp(1.5rem,3vw,2.25rem)]">
             <p class="eyebrow">ONDE QUEREMOS CHEGAR</p>
             <h2>Nossa visão</h2>
             <p>
@@ -38,8 +38,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </article>
         </div>
 
-        <section class="about-identity" aria-labelledby="about-identity-title">
-          <div class="about-identity-heading reveal">
+        <section class="about-identity pt-2" aria-labelledby="about-identity-title">
+          <div class="about-identity-heading mb-8 max-w-3xl reveal">
             <p class="eyebrow">NOSSO NOME, NOSSA ESSÊNCIA</p>
             <h2 id="about-identity-title">IWETI é a união de três ideias</h2>
             <p>
@@ -47,10 +47,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               o futuro.
             </p>
           </div>
-          <div class="about-pillars">
-            <article class="about-pillar reveal">
-              <div class="about-pillar-heading">
-                <span class="about-pillar-mark" aria-hidden="true">
+          <div class="about-pillars grid grid-cols-[repeat(auto-fit,minmax(min(100%,15rem),1fr))] gap-4">
+            <article class="about-pillar reveal rounded-2xl border border-border p-6">
+              <div class="about-pillar-heading flex min-h-16 items-center gap-4">
+                <span
+                  class="about-pillar-mark grid h-16 w-16 shrink-0 place-items-center rounded-2xl border border-border text-[1.4rem] font-extrabold tracking-[-0.06em] text-heading-accent"
+                  aria-hidden="true"
+                >
                   I
                 </span>
                 <h3>Inovação</h3>
@@ -60,9 +63,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 evoluir.
               </p>
             </article>
-            <article class="about-pillar about-pillar-people reveal">
-              <div class="about-pillar-heading">
-                <span class="about-pillar-mark" aria-hidden="true">
+            <article class="about-pillar about-pillar-people reveal rounded-2xl border border-[rgb(0_216_255/42%)] p-6">
+              <div class="about-pillar-heading flex min-h-16 items-center gap-4">
+                <span
+                  class="about-pillar-mark grid h-16 w-16 shrink-0 place-items-center rounded-2xl border border-border text-[1.4rem] font-extrabold tracking-[-0.06em] text-heading-accent"
+                  aria-hidden="true"
+                >
                   WE
                 </span>
                 <h3>Nós</h3>
@@ -72,9 +78,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 acontecer.
               </p>
             </article>
-            <article class="about-pillar reveal">
-              <div class="about-pillar-heading">
-                <span class="about-pillar-mark" aria-hidden="true">
+            <article class="about-pillar reveal rounded-2xl border border-border p-6">
+              <div class="about-pillar-heading flex min-h-16 items-center gap-4">
+                <span
+                  class="about-pillar-mark grid h-16 w-16 shrink-0 place-items-center rounded-2xl border border-border text-[1.4rem] font-extrabold tracking-[-0.06em] text-heading-accent"
+                  aria-hidden="true"
+                >
                   TI
                 </span>
                 <h3>Tecnologia</h3>
@@ -84,7 +93,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               </p>
             </article>
           </div>
-          <p class="about-identity-note reveal">
+          <p class="about-identity-note mt-6 reveal text-[0.9rem] leading-[1.7] text-muted">
             <strong>I + WE + TI:</strong> inovação contínua, pessoas no centro e tecnologia para
             construir o futuro.
           </p>

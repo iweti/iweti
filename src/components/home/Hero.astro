@@ -2,8 +2,8 @@
 const headlineWords = ['experiências', 'digitais'];
 ---
 
-<section class="hero shell">
-  <div class="hero-copy reveal">
+<section class="hero relative z-1 shell flex min-h-160 items-center pt-8 max-md:grid max-md:min-h-0 max-md:gap-8 md:max-[901px]:grid md:max-[901px]:min-h-0 md:max-[901px]:gap-8">
+  <div class="hero-copy relative z-20 max-w-[56%] reveal pt-8 pb-16 max-md:max-w-none max-md:p-0 min-[901px]:max-[1025px]:w-[55%] md:max-[1025px]:max-w-[55%] md:max-[901px]:max-w-152 md:max-[901px]:p-0">
     <p class="eyebrow">DESENVOLVIMENTO SOB MEDIDA</p>
 
     <h1>
@@ -13,10 +13,10 @@ const headlineWords = ['experiências', 'digitais'];
       <br />
       <strong class="hero-wave" aria-label="experiências digitais">
         {headlineWords.map((word, wordIndex) => (
-          <span class="hero-wave-word" aria-hidden="true">
+          <span class="hero-wave-word inline-block whitespace-pre" aria-hidden="true">
             {Array.from(word).map((letter, letterIndex) => (
               <span
-                class="hero-wave-letter"
+                class="hero-wave-letter inline-block"
                 data-wave-index={letterIndex + (wordIndex === 0 ? 0 : headlineWords[0].length + 1)}
               >
                 {letter}
@@ -27,11 +27,11 @@ const headlineWords = ['experiências', 'digitais'];
         ))}
       </strong>
     </h1>
-    <p class="lead">
+    <p class="lead mt-7 max-w-100 text-[1.05rem] leading-relaxed text-[#d9e6f5]">
       Desenvolvimento de sites, sistemas e soluções digitais para transformar seus objetivos em
       possibilidades.
     </p>
-    <div class="actions">
+    <div class="actions mt-6 flex flex-wrap gap-3">
       <a class="btn btn-primary" href="/contact">
         Conversar sobre meu projeto →
       </a>
@@ -40,9 +40,12 @@ const headlineWords = ['experiências', 'digitais'];
       </a>
     </div>
   </div>
-  <div class="hero-visual" aria-hidden="true">
+  <div
+    class="hero-visual pointer-events-none absolute top-8 right-0 bottom-0 flex h-[calc(100%-2rem)] w-[44%] items-end justify-center overflow-visible max-md:relative max-md:top-auto max-md:right-auto max-md:bottom-auto max-md:h-[clamp(15rem,72vw,20rem)] max-md:w-full md:max-[901px]:relative md:max-[901px]:top-auto md:max-[901px]:right-auto md:max-[901px]:bottom-auto md:max-[901px]:h-[clamp(18rem,48vw,28rem)] md:max-[901px]:w-full"
+    aria-hidden="true"
+  >
     <img
-      class="mascot hero-mascot"
+      class="mascot hero-mascot relative z-10 h-full max-h-full w-auto max-w-full object-contain max-md:mx-auto max-md:h-full max-md:w-full max-md:max-w-full md:max-[1025px]:right-0 md:max-[1025px]:h-92.5 md:max-[901px]:mx-auto md:max-[901px]:h-full md:max-[901px]:w-[min(100%,30rem)] md:max-[901px]:max-w-full"
       src="/assets/images/mascot-hero.png"
       alt="Mascote IwetI celebrando"
     />

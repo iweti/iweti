@@ -1,5 +1,4 @@
 ---
-import '../../styles/contact.css';
 import { whatsappLink, whatsappNumber } from '../../lib/whatsapp';
 
 // This public URL is replaced at build time by Vercel. No API key is needed.
@@ -8,7 +7,7 @@ const hasWhatsapp = Boolean(whatsappLink(whatsappNumber, ''));
 ---
 
 <form
-  class="contact-form reveal"
+  class="contact-form grid reveal gap-[1.15rem] rounded-xl border border-border p-6 md:p-8"
   aria-describedby="contact-help"
   data-api-url={apiUrl}
   data-whatsapp-number={hasWhatsapp ? whatsappNumber : undefined}
@@ -62,19 +61,27 @@ const hasWhatsapp = Boolean(whatsappLink(whatsappNumber, ''));
     <input id="contact-newsletter" name="recebernovidades" type="checkbox" />
     <span>Quero receber novidades da IWETI ao enviar por e-mail.</span>
   </label>
-  <p class="contact-help" id="contact-help">
+  <p class="contact-help text-[0.72rem] leading-normal text-muted" id="contact-help">
     Preencha todos os campos para enviar sua mensagem. A inscrição em novidades está disponível no
     envio por e-mail.
   </p>
-  <p class="contact-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
-  <div class="contact-actions">
+  <p
+    class="contact-feedback text-[0.8rem] leading-[1.6] text-muted"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    hidden
+  ></p>
+  <div class="contact-actions grid justify-items-center gap-3">
     <button class="btn btn-primary" type="submit" data-contact-send="email" aria-disabled="true">
       <img src="/assets/images/email-icon.svg" alt="" aria-hidden="true" />
       <span data-contact-label>Enviar por e-mail</span>
     </button>
     {hasWhatsapp && (
       <>
-        <span class="contact-actions-separator">ou</span>
+        <span class="contact-actions-separator flex w-[min(100%,22rem)] items-center justify-center gap-3 text-[0.85rem] font-bold text-muted uppercase">
+          ou
+        </span>
         <button
           class="btn btn-ghost"
           type="button"
@@ -90,7 +97,9 @@ const hasWhatsapp = Boolean(whatsappLink(whatsappNumber, ''));
 </form>
 
 <noscript>
-  <p class="contact-help">Ative o JavaScript para enviar sua mensagem pelo formulário.</p>
+  <p class="contact-help text-[0.72rem] leading-normal text-muted">
+    Ative o JavaScript para enviar sua mensagem pelo formulário.
+  </p>
 </noscript>
 
 <script>

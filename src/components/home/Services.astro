@@ -1,24 +1,27 @@
 <section class="services section" id="solucoes">
   <div class="shell">
     <p class="eyebrow reveal">O QUE FAZEMOS</p>
-    <div class="section-heading reveal">
+    <div class="section-heading mb-9 flex reveal items-end justify-between gap-8 max-md:flex-col max-md:items-start">
       <h2>
         Soluções completas
         <br />
         para o mundo digital.
       </h2>
     </div>
-    <div class="service-grid">
-      <article class="service-card reveal">
-        <div class="service-card-heading">
-          <span class="service-icon" aria-hidden="true">
+    <div class="service-grid grid gap-4 md:grid-cols-[repeat(2,1fr)] xl:grid-cols-[repeat(4,1fr)]">
+      <article class="service-card flex min-h-68 reveal flex-col items-start rounded-xl border border-border p-6">
+        <div class="service-card-heading flex min-h-32 flex-col items-start gap-4">
+          <span
+            class="service-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-[0.8rem] border border-border"
+            aria-hidden="true"
+          >
             <img src="/assets/images/servicesimages/monitor.png" alt="" />
           </span>
           <h3>Desenvolvimento de Sites</h3>
         </div>
         <p>Sites que impulsionam sua presença digital.</p>
         <button
-          class="service-more"
+          class="service-more mt-auto inline-block min-h-11 p-0 text-left text-[0.875rem] font-bold text-cyan"
           type="button"
           aria-haspopup="dialog"
           aria-controls="service-dialog-sites"
@@ -26,16 +29,19 @@
           Saiba mais →
         </button>
       </article>
-      <article class="service-card reveal">
-        <div class="service-card-heading">
-          <span class="service-icon" aria-hidden="true">
+      <article class="service-card flex min-h-68 reveal flex-col items-start rounded-xl border border-border p-6">
+        <div class="service-card-heading flex min-h-32 flex-col items-start gap-4">
+          <span
+            class="service-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-[0.8rem] border border-border"
+            aria-hidden="true"
+          >
             <img src="/assets/images/servicesimages/codigo.png" alt="" />
           </span>
           <h3>Sistemas Personalizados</h3>
         </div>
         <p>Soluções criadas para o seu negócio.</p>
         <button
-          class="service-more"
+          class="service-more mt-auto inline-block min-h-11 p-0 text-left text-[0.875rem] font-bold text-cyan"
           type="button"
           aria-haspopup="dialog"
           aria-controls="service-dialog-sistemas"
@@ -43,16 +49,19 @@
           Saiba mais →
         </button>
       </article>
-      <article class="service-card reveal">
-        <div class="service-card-heading">
-          <span class="service-icon" aria-hidden="true">
+      <article class="service-card flex min-h-68 reveal flex-col items-start rounded-xl border border-border p-6">
+        <div class="service-card-heading flex min-h-32 flex-col items-start gap-4">
+          <span
+            class="service-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-[0.8rem] border border-border"
+            aria-hidden="true"
+          >
             <img src="/assets/images/servicesimages/smartphone.png" alt="" />
           </span>
           <h3>Aplicações Web e Mobile</h3>
         </div>
         <p>Tecnologia que conecta você ao futuro.</p>
         <button
-          class="service-more"
+          class="service-more mt-auto inline-block min-h-11 p-0 text-left text-[0.875rem] font-bold text-cyan"
           type="button"
           aria-haspopup="dialog"
           aria-controls="service-dialog-aplicacoes"
@@ -60,16 +69,19 @@
           Saiba mais →
         </button>
       </article>
-      <article class="service-card reveal">
-        <div class="service-card-heading">
-          <span class="service-icon" aria-hidden="true">
+      <article class="service-card flex min-h-68 reveal flex-col items-start rounded-xl border border-border p-6">
+        <div class="service-card-heading flex min-h-32 flex-col items-start gap-4">
+          <span
+            class="service-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-[0.8rem] border border-border"
+            aria-hidden="true"
+          >
             <img src="/assets/images/servicesimages/nuvem.png" alt="" />
           </span>
           <h3>Consultoria de Tecnologia</h3>
         </div>
         <p>Estratégia para crescer com segurança.</p>
         <button
-          class="service-more"
+          class="service-more mt-auto inline-block min-h-11 p-0 text-left text-[0.875rem] font-bold text-cyan"
           type="button"
           aria-haspopup="dialog"
           aria-controls="service-dialog-consultoria"
@@ -80,14 +92,22 @@
     </div>
   </div>
 </section>
-<dialog class="service-dialog" id="service-dialog-sites" aria-labelledby="service-title-sites">
-  <div class="service-dialog-content">
-    <button class="service-dialog-close" type="button" aria-label="Fechar">
+<dialog
+  class="service-dialog max-h-[min(80vh,42rem)] w-[min(34rem,calc(100%-2rem))] origin-center overflow-auto rounded-2xl border border-[rgb(0_141_255/45%)] p-0 text-white opacity-100"
+  id="service-dialog-sites"
+  aria-labelledby="service-title-sites"
+>
+  <div class="service-dialog-content relative p-[clamp(1.5rem,5vw,2.5rem)]">
+    <button
+      class="service-dialog-close absolute top-4 right-4 grid h-10 w-10 place-items-center rounded-full border border-border text-[1.5rem] leading-none text-white"
+      type="button"
+      aria-label="Fechar"
+    >
       ×
     </button>
     <p class="eyebrow">SAIBA MAIS</p>
     <h2 id="service-title-sites">Sites que geram resultados reais</h2>
-    <div class="service-dialog-body">
+    <div class="service-dialog-body mt-5 grid gap-4 text-[0.9rem] leading-[1.7] wrap-anywhere text-muted">
       <p>Criamos sites modernos, rápidos e otimizados para converter visitantes em clientes.</p>
       <p>Não fazemos apenas um site “bonito” — fazemos um site estratégico.</p>
       <h3>O que entregamos:</h3>
@@ -106,17 +126,21 @@
   </div>
 </dialog>
 <dialog
-  class="service-dialog"
+  class="service-dialog max-h-[min(80vh,42rem)] w-[min(34rem,calc(100%-2rem))] origin-center overflow-auto rounded-2xl border border-[rgb(0_141_255/45%)] p-0 text-white opacity-100"
   id="service-dialog-sistemas"
   aria-labelledby="service-title-sistemas"
 >
-  <div class="service-dialog-content">
-    <button class="service-dialog-close" type="button" aria-label="Fechar">
+  <div class="service-dialog-content relative p-[clamp(1.5rem,5vw,2.5rem)]">
+    <button
+      class="service-dialog-close absolute top-4 right-4 grid h-10 w-10 place-items-center rounded-full border border-border text-[1.5rem] leading-none text-white"
+      type="button"
+      aria-label="Fechar"
+    >
       ×
     </button>
     <p class="eyebrow">SAIBA MAIS</p>
     <h2 id="service-title-sistemas">Sistemas feitos sob medida para o seu negócio</h2>
-    <div class="service-dialog-body">
+    <div class="service-dialog-body mt-5 grid gap-4 text-[0.9rem] leading-[1.7] wrap-anywhere text-muted">
       <p>Desenvolvemos sistemas exclusivos que resolvem problemas reais da sua empresa.</p>
       <p>Nada de soluções genéricas que não se encaixam na sua rotina.</p>
       <h3>Como funciona:</h3>
@@ -129,17 +153,21 @@
   </div>
 </dialog>
 <dialog
-  class="service-dialog"
+  class="service-dialog max-h-[min(80vh,42rem)] w-[min(34rem,calc(100%-2rem))] origin-center overflow-auto rounded-2xl border border-[rgb(0_141_255/45%)] p-0 text-white opacity-100"
   id="service-dialog-aplicacoes"
   aria-labelledby="service-title-aplicacoes"
 >
-  <div class="service-dialog-content">
-    <button class="service-dialog-close" type="button" aria-label="Fechar">
+  <div class="service-dialog-content relative p-[clamp(1.5rem,5vw,2.5rem)]">
+    <button
+      class="service-dialog-close absolute top-4 right-4 grid h-10 w-10 place-items-center rounded-full border border-border text-[1.5rem] leading-none text-white"
+      type="button"
+      aria-label="Fechar"
+    >
       ×
     </button>
     <p class="eyebrow">SAIBA MAIS</p>
     <h2 id="service-title-aplicacoes">Aplicativos que conectam você ao futuro</h2>
-    <div class="service-dialog-body">
+    <div class="service-dialog-body mt-5 grid gap-4 text-[0.9rem] leading-[1.7] wrap-anywhere text-muted">
       <p>Criamos aplicativos web e mobile modernos, seguros e fáceis de usar.</p>
       <p>Seja para seus clientes ou para uso interno da empresa.</p>
       <h3>O que desenvolvemos:</h3>
@@ -159,17 +187,21 @@
   </div>
 </dialog>
 <dialog
-  class="service-dialog"
+  class="service-dialog max-h-[min(80vh,42rem)] w-[min(34rem,calc(100%-2rem))] origin-center overflow-auto rounded-2xl border border-[rgb(0_141_255/45%)] p-0 text-white opacity-100"
   id="service-dialog-consultoria"
   aria-labelledby="service-title-consultoria"
 >
-  <div class="service-dialog-content">
-    <button class="service-dialog-close" type="button" aria-label="Fechar">
+  <div class="service-dialog-content relative p-[clamp(1.5rem,5vw,2.5rem)]">
+    <button
+      class="service-dialog-close absolute top-4 right-4 grid h-10 w-10 place-items-center rounded-full border border-border text-[1.5rem] leading-none text-white"
+      type="button"
+      aria-label="Fechar"
+    >
       ×
     </button>
     <p class="eyebrow">SAIBA MAIS</p>
     <h2 id="service-title-consultoria">Estratégia tecnológica para crescer com segurança</h2>
-    <div class="service-dialog-body">
+    <div class="service-dialog-body mt-5 grid gap-4 text-[0.9rem] leading-[1.7] wrap-anywhere text-muted">
       <p>
         Ajudamos empresas a tomar decisões certas em tecnologia, evitando desperdício de tempo e
         dinheiro.

@@ -21,8 +21,10 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@playwright/test": "^1.64.1",
+    "@tailwindcss/vite": "^4.3.5",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",
+    "tailwindcss": "^4.3.5",
     "typescript": "^6.0.3"
   }
 }

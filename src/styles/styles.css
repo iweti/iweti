@@ -1,5 +1,145 @@
-@import url('./base.css');
-@import url('./components.css');
-@import url('./sections.css');
-@import url('./responsive.css');
-@import url('./portfolio.css');
+@import 'tailwindcss' source('../');
+@import './components.css';
+
+@theme {
+  --color-ink: #01091f;
+  --color-blue: #008dff;
+  --color-action: #0874c2;
+  --color-action-hover: #0868ad;
+  --color-cyan: #00d8ff;
+  --color-heading-accent: #8bc5ff;
+  --color-text-primary: #f3f6fc;
+  --color-muted: #9db4d1;
+  --color-surface: #020d24;
+  --color-card: #061229;
+  --color-border: rgb(157 180 209 / 16%);
+  --font-sans:
+    'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth motion-reduce:scroll-auto;
+    line-height: normal;
+  }
+
+  body {
+    @apply min-w-0 bg-ink font-sans text-white antialiased;
+  }
+
+  /* Preserve the typography, native lists and dialogs used by the original site. */
+  h1 {
+    font-size: 2em;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  h3 {
+    font-size: 1.17em;
+    font-weight: bold;
+  }
+
+  ul,
+  ol {
+    margin-block: 1em;
+    padding-inline-start: 40px;
+  }
+  ul {
+    list-style-type: disc;
+  }
+  ol {
+    list-style-type: decimal;
+  }
+
+  button {
+    @apply cursor-pointer;
+    padding: 1px 6px;
+    line-height: normal;
+  }
+
+  dialog {
+    margin: auto;
+  }
+
+  section[id],
+  footer[id] {
+    @apply scroll-mt-4;
+  }
+
+  :where(a, button):focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 4px;
+  }
+}
+
+/* Shared primitives are real Tailwind utilities and support responsive variants. */
+@utility shell {
+  @apply mx-auto w-[min(1280px,calc(100%-3rem))];
+  @media (max-width: 767px) {
+    @apply w-[min(1120px,calc(100%-2rem))];
+  }
+}
+
+@utility section {
+  @apply py-20;
+  @media (max-width: 767px) {
+    @apply py-14;
+  }
+}
+
+@utility eyebrow {
+  @apply mb-4 text-[0.75rem] font-bold tracking-[0.2em] text-muted;
+  @media (max-width: 380px) {
+    @apply tracking-[0.18em];
+  }
+}
+
+@utility btn {
+  @apply inline-flex min-h-11.5 items-center justify-center rounded-full px-[1.4rem] py-[0.8rem] text-[0.875rem] font-bold;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+  &:hover {
+    transform: translateY(-2px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+@utility btn-primary {
+  @apply bg-action text-white;
+  &:hover {
+    @apply bg-action-hover;
+  }
+}
+
+@utility btn-ghost {
+  @apply border border-[#64748b] text-white;
+  &:hover {
+    @apply border-cyan;
+  }
+}
+
+@utility reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease;
+  &.visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    &.visible {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+}

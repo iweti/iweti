@@ -1,18 +1,19 @@
 <dialog
-  class="external-site-confirmation"
+  class="external-site-confirmation m-auto w-[min(28rem,calc(100%-2rem))] rounded-2xl border border-border p-8 text-white"
   aria-labelledby="external-site-title"
   aria-describedby="external-site-message"
 >
   <h2 id="external-site-title">Você está saindo do site da IwetI</h2>
   <p id="external-site-message">
-    Você será direcionado para <strong class="external-site-url"></strong>. Deseja prosseguir?
+    Você será direcionado para <strong class="external-site-url text-white"></strong>. Deseja
+    prosseguir?
   </p>
-  <div class="external-site-actions">
+  <div class="external-site-actions mt-6 flex justify-end gap-3">
     <button class="external-site-cancel" type="button">
       Não
     </button>
     <a
-      class="external-site-confirm btn btn-primary"
+      class="external-site-confirm m-0 btn border-transparent btn-primary"
       href="#"
       target="_blank"
       rel="noopener noreferrer"

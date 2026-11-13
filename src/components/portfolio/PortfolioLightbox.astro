@@ -1,20 +1,46 @@
-<dialog class="portfolio-lightbox" aria-label="Galeria de imagens do portfólio">
-  <div class="portfolio-lightbox-content">
-    <button class="portfolio-lightbox-close" type="button" aria-label="Fechar galeria">
+<dialog
+  class="portfolio-lightbox fixed inset-0 m-auto max-h-[90vh] w-[min(72rem,calc(100%-2rem))] overflow-auto rounded-[1.25rem] border border-border p-[clamp(1rem,3vw,2rem)] text-white max-[760px]:max-h-[92vh] max-[760px]:p-4"
+  aria-label="Galeria de imagens do portfólio"
+>
+  <div class="portfolio-lightbox-content relative pt-6 max-[760px]:pt-8">
+    <button
+      class="portfolio-lightbox-close absolute top-2 right-2 z-1 grid h-10 w-10 place-items-center rounded-full border border-[rgb(255_255_255/28%)] text-[1.5rem] leading-none text-white"
+      type="button"
+      aria-label="Fechar galeria"
+    >
       ×
     </button>
-    <div class="portfolio-lightbox-layout">
-      <div class="portfolio-lightbox-viewer">
-        <button class="portfolio-lightbox-prev" type="button" aria-label="Foto anterior"></button>
-        <img class="portfolio-lightbox-image-background" alt="" aria-hidden="true" />
-        <img class="portfolio-lightbox-image" alt="" />
-        <button class="portfolio-lightbox-next" type="button" aria-label="Próxima foto"></button>
+    <div class="portfolio-lightbox-layout grid items-center gap-[clamp(1.5rem,4vw,3rem)] min-[760px]:grid-cols-[minmax(0,1.55fr)_minmax(15rem,0.85fr)]">
+      <div class="portfolio-lightbox-viewer relative isolate grid place-items-center overflow-hidden rounded-2xl border border-border">
+        <button
+          class="portfolio-lightbox-prev absolute top-[50%] left-2 z-1 grid h-11 w-11 transform-[translateY(-50%)] place-items-center rounded-full border border-[rgb(255_255_255/28%)] text-white"
+          type="button"
+          aria-label="Foto anterior"
+        ></button>
+        <img
+          class="portfolio-lightbox-image-background absolute -inset-4 -z-1 h-[calc(100%+2rem)] w-[calc(100%+2rem)] object-cover opacity-65"
+          alt=""
+          aria-hidden="true"
+        />
+        <img
+          class="portfolio-lightbox-image pointer-events-none relative z-0 block h-[min(62vh,40rem)] w-full transform-[scale(1)] object-contain opacity-100 max-[760px]:h-[min(48vh,28rem)]"
+          alt=""
+        />
+        <button
+          class="portfolio-lightbox-next absolute top-[50%] right-2 z-1 grid h-11 w-11 transform-[translateY(-50%)] place-items-center rounded-full border border-[rgb(255_255_255/28%)] text-white"
+          type="button"
+          aria-label="Próxima foto"
+        ></button>
       </div>
-      <div class="portfolio-lightbox-details">
-        <span class="portfolio-lightbox-category"></span>
-        <h2 class="portfolio-lightbox-title"></h2>
-        <p class="portfolio-lightbox-description"></p>
-        <a class="portfolio-lightbox-link" target="_blank" rel="noopener noreferrer">
+      <div class="portfolio-lightbox-details grid justify-items-start gap-4 p-2 max-[760px]:gap-3 max-[760px]:p-1">
+        <span class="portfolio-lightbox-category text-[0.75rem] font-bold tracking-[0.16em] text-cyan uppercase"></span>
+        <h2 class="portfolio-lightbox-title text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] wrap-anywhere"></h2>
+        <p class="portfolio-lightbox-description text-[clamp(1rem,1.5vw,1.2rem)] leading-[1.7] text-muted"></p>
+        <a
+          class="portfolio-lightbox-link mt-2 inline-block rounded-lg text-[0.95rem] font-bold text-white"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Acessar projeto →
         </a>
       </div>

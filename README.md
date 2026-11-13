@@ -1,6 +1,6 @@
 # IWETI
 
-Site institucional da IWETI, migrado para **Astro estático**, TypeScript e CSS puro. A estrutura compartilha layouts e componentes e preserva o visual e as URLs anteriores.
+Site institucional da IWETI com **Astro estático**, TypeScript e **Tailwind CSS 4**. A estrutura compartilha layouts e componentes e preserva o visual e as URLs anteriores.
 
 ## Requisitos e comandos
 
@@ -37,7 +37,7 @@ O TypeScript permanece na versão 6, compatível com `@astrojs/check`. As versõ
 │   ├── lib/contact.ts            # Contrato e cliente HTTP da API
 │   ├── pages/                    # Páginas e rotas do Astro
 │   ├── scripts/                  # Menu, animações, modais, portfólio e contato
-│   ├── styles/                   # CSS global e estilos do novo formulário
+│   ├── styles/                   # Tema Tailwind, utilitários compartilhados e efeitos
 │   └── env.d.ts                  # Tipos da configuração pública
 ├── docs/contact-api.md           # Contrato proposto e limites da integração
 ├── tests/                        # Verificação de navegador e API local simulada
@@ -51,7 +51,11 @@ O TypeScript permanece na versão 6, compatível com `@astrojs/check`. As versõ
 
 As páginas são `/`, `/about`, `/contact`, `/portifolios` e `/privacy`. `build.format: 'directory'` gera um `index.html` por página para servir as rotas sem extensão; `/` serve a página inicial.
 
-O CSS global mantém a ordem original: base, componentes, seções e responsividade. As imagens estão em `public/` para preservar os arquivos e seus endereços, sem alterar sua aparência. Documentos de manutenção ficam em `docs/`; somente os PDFs públicos ficam em `public/docs/`.
+O Tailwind é compilado pelo plugin `@tailwindcss/vite`, conforme a [integração oficial com Astro](https://tailwindcss.com/docs/installation/framework-guides/astro). O layout compartilhado importa `src/styles/styles.css`, que define as cores e a fonte em `@theme`, os ajustes de base e os utilitários reutilizáveis `shell`, `section`, `eyebrow`, `btn`, `btn-primary`, `btn-ghost` e `reveal`.
+
+Layout, espaçamento, tipografia e responsividade ficam nas classes dos componentes Astro. `src/styles/components.css` reúne efeitos decorativos e seletores contextuais com `@apply`; eles compartilham a camada `utilities` para preservar a precedência dos estados sobre as classes de base. As classes semânticas usadas pelos scripts de navegação, animação e diálogos continuam disponíveis.
+
+As imagens estão em `public/` para preservar os arquivos e seus endereços. Documentos de manutenção ficam em `docs/`; somente os PDFs públicos ficam em `public/docs/`.
 
 ## Contato e variáveis de ambiente
 
