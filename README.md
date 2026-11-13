@@ -57,6 +57,13 @@ Layout, espaçamento, tipografia e responsividade ficam nas classes dos componen
 
 As imagens estão em `public/` para preservar os arquivos e seus endereços. Documentos de manutenção ficam em `docs/`; somente os PDFs públicos ficam em `public/docs/`.
 
+## Pessoas em “Quem somos”
+
+Os perfis da seção **Construímos juntos**, em `/about#pessoas`, são definidos em `src/data/participants.ts`.
+Cada pessoa tem `name` (nome), `contribution` (contribuição), `photo` (foto opcional) e `description` (descrição opcional).
+Coloque as fotos em `public/assets/images/` e informe o caminho público, como `/assets/images/pessoa.jpg`.
+Enquanto a lista estiver vazia, a seção mostra três espaços reservados. Ao adicionar os perfis, os cartões passam a exibir os dados reais; sem foto, mostram as iniciais do nome.
+
 ## Contato e variáveis de ambiente
 
 Copie `.env.example` para `.env.local` se precisar alterar a configuração local:

@@ -1,0 +1,75 @@
+---
+import { participants } from '../../data/participants';
+
+const profiles = participants.length > 0 ? participants : [null, null, null];
+---
+
+<section id="pessoas" aria-labelledby="participants-title">
+  <div class="about-identity-heading mb-8 max-w-3xl reveal">
+    <p class="eyebrow">QUEM FAZ PARTE DESSA HISTÓRIA</p>
+    <h2 id="participants-title">Construímos juntos</h2>
+    <p>
+      Cada ideia, colaboração e entrega carrega a contribuição de pessoas que ajudam a construir a
+      IWETI.
+    </p>
+  </div>
+
+  <ul class="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-6 p-0">
+    {profiles.map((person) => (
+      <li class="reveal min-w-0 overflow-hidden rounded-2xl border border-border bg-card">
+        <article class="h-full">
+          <div
+            class="flex aspect-[4/3] items-center justify-center border-b border-border bg-linear-to-br from-blue/15 to-card"
+            aria-hidden="true"
+          >
+            {person?.photo ? (
+              <img
+                src={person.photo}
+                alt=""
+                width="640"
+                height="480"
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover"
+              />
+            ) : person ? (
+              <span class="text-6xl font-bold tracking-[-0.04em] text-heading-accent">
+                {person.name
+                  .trim()
+                  .split(/\s+/)
+                  .map((name) => name[0])
+                  .slice(0, 2)
+                  .join('')}
+              </span>
+            ) : (
+              <svg
+                class="h-24 w-24 text-heading-accent/40"
+                viewBox="0 0 96 96"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="48" cy="32" r="16" />
+                <path d="M16 84v-8a32 24 0 0 1 64 0v8" />
+              </svg>
+            )}
+          </div>
+          <div class="p-6">
+            {!person && (
+              <p class="mb-3 text-xs font-bold tracking-[0.15em] text-heading-accent">
+                ESPAÇO RESERVADO
+              </p>
+            )}
+            <h3 class="text-xl font-bold text-text-primary">{person?.name ?? 'Nome da pessoa'}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">
+              {person?.contribution ?? 'Contribuição no projeto'}
+            </p>
+            {person?.description && (
+              <p class="mt-4 text-sm leading-relaxed text-muted">{person.description}</p>
+            )}
+          </div>
+        </article>
+      </li>
+    ))}
+  </ul>
+</section>
