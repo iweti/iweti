@@ -169,6 +169,16 @@ footer {
     var(--color-surface);
 }
 
+.services > .shell > .eyebrow,
+.services .section-heading {
+  text-align: center;
+}
+
+.services .section-heading {
+  align-items: center;
+  justify-content: center;
+}
+
 .service-grid {
   display: grid;
   gap: 1rem;

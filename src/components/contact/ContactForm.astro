@@ -1,11 +1,18 @@
 ---
 import '../../styles/contact.css';
+import { whatsappLink, whatsappNumber } from '../../lib/whatsapp';
 
 // This public URL is replaced at build time by Vercel. No API key is needed.
 const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com';
+const hasWhatsapp = Boolean(whatsappLink(whatsappNumber, ''));
 ---
 
-<form class="contact-form reveal" aria-describedby="contact-help" data-api-url={apiUrl}>
+<form
+  class="contact-form reveal"
+  aria-describedby="contact-help"
+  data-api-url={apiUrl}
+  data-whatsapp-number={hasWhatsapp ? whatsappNumber : undefined}
+>
   <label for="contact-name">
     Nome
     <input
@@ -14,6 +21,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com'
       type="text"
       autocomplete="name"
       placeholder="Seu nome"
+      maxlength="120"
       required
     />
   </label>
@@ -36,6 +44,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com'
       name="subject"
       type="text"
       placeholder="Assunto da sua mensagem"
+      maxlength="200"
       required
     />
   </label>
@@ -45,6 +54,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com'
       id="contact-message"
       name="message"
       placeholder="Escreva sua mensagem..."
+      maxlength="10000"
       required
     ></textarea>
   </label>
@@ -53,8 +63,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com'
     <span>Quero receber novidades da IWETI ao enviar por e-mail.</span>
   </label>
   <p class="contact-help" id="contact-help">
-    Preencha todos os campos e escolha como enviar sua mensagem. A inscrição em novidades está
-    disponível no envio por e-mail.
+    Preencha todos os campos para enviar sua mensagem. A inscrição em novidades está disponível no
+    envio por e-mail.
   </p>
   <p class="contact-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
   <div class="contact-actions">
@@ -62,11 +72,20 @@ const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com'
       <img src="/assets/images/email-icon.svg" alt="" aria-hidden="true" />
       <span data-contact-label>Enviar por e-mail</span>
     </button>
-    <span class="contact-actions-separator">ou</span>
-    <button class="btn btn-ghost" type="button" data-contact-send="whatsapp" aria-disabled="true">
-      <img src="/assets/images/whatsapp-icon.svg" alt="" aria-hidden="true" />
-      Enviar por WhatsApp
-    </button>
+    {hasWhatsapp && (
+      <>
+        <span class="contact-actions-separator">ou</span>
+        <button
+          class="btn btn-ghost"
+          type="button"
+          data-contact-send="whatsapp"
+          aria-disabled="true"
+        >
+          <img src="/assets/images/whatsapp-icon.svg" alt="" aria-hidden="true" />
+          Enviar por WhatsApp
+        </button>
+      </>
+    )}
   </div>
 </form>
 

@@ -1,4 +1,5 @@
 import { sendContact, type ContactPayload } from '../lib/contact';
+import { whatsappLink } from '../lib/whatsapp';
 
 const form = document.querySelector<HTMLFormElement>('.contact-form');
 
@@ -13,17 +14,7 @@ if (form) {
   const buttonLabel = button?.querySelector<HTMLElement>('[data-contact-label]');
   const feedback = form.querySelector<HTMLElement>('.contact-feedback');
 
-  if (
-    name &&
-    email &&
-    subject &&
-    message &&
-    newsletter &&
-    button &&
-    buttonLabel &&
-    whatsapp &&
-    feedback
-  ) {
+  if (name && email && subject && message && newsletter && button && buttonLabel && feedback) {
     let sending = false;
     let forwarded = false;
 
@@ -38,6 +29,7 @@ if (form) {
     const updateButtons = () => {
       const complete = fields.every((field) => field.value.trim() && field.validity.valid);
       for (const action of [button, whatsapp]) {
+        if (!action) continue;
         action.disabled = sending || forwarded;
         action.setAttribute('aria-disabled', String(!complete || sending || forwarded));
       }
@@ -65,15 +57,12 @@ if (form) {
     }
     updateButtons();
 
-    whatsapp.addEventListener('click', () => {
+    whatsapp?.addEventListener('click', () => {
       if (sending || forwarded || !validate()) return;
 
       const body = `Olá, meu nome é ${name.value.trim()}.\nAssunto: ${subject.value.trim()}\n${message.value.trim()}\nEmail: ${email.value.trim()}`;
-      window.open(
-        `https://wa.me/5511978538445?text=${encodeURIComponent(body)}`,
-        '_blank',
-        'noopener,noreferrer',
-      );
+      const url = whatsappLink(form.dataset.whatsappNumber, body);
+      if (url) window.open(url, '_blank', 'noopener,noreferrer');
     });
 
     form.addEventListener('submit', async (event) => {

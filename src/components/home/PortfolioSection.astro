@@ -1,3 +1,12 @@
+---
+import { projects } from '../../data/projects';
+
+const covers: Record<string, string> = {
+  Frattellianos: '/assets/images/portimages/Frattellianos/Frattellianos-main.png',
+  Debinatos: '/assets/images/portimages/Debinatos/Debinatos-main.png',
+};
+---
+
 <section
   class="section portfolio home-projects"
   id="portfolio"
@@ -13,46 +22,65 @@
         aproximar sua marca das pessoas.
       </p>
     </div>
-    <div class="home-projects-visual" aria-hidden="true">
-      <div class="showcase-devices">
-        <div class="showcase-device showcase-monitor">
-          <div class="showcase-device-screen">
-            <img
-              src="/assets/images/portimages/Frattellianos/Frattellianos-main.png"
-              alt=""
-              loading="lazy"
-            />
-          </div>
-          <div class="showcase-monitor-stand"></div>
-        </div>
-        <div class="showcase-device showcase-notebook">
-          <div class="showcase-device-screen">
-            <img
-              src="/assets/images/portimages/Debinatos/Debinatos-main.png"
-              alt=""
-              loading="lazy"
-            />
-          </div>
-          <div class="showcase-notebook-base"></div>
-        </div>
-        <div class="showcase-device showcase-phone showcase-phone-first">
-          <div class="showcase-device-screen">
-            <img
-              src="/assets/images/portimages/Frattellianos/Frattellianos-main-mobile.png"
-              alt=""
-              loading="lazy"
-            />
-          </div>
-        </div>
-        <div class="showcase-device showcase-phone showcase-phone-second">
-          <div class="showcase-device-screen">
-            <img
-              src="/assets/images/portimages/Debinatos/Debinatos-main-mobile.png"
-              alt=""
-              loading="lazy"
-            />
-          </div>
-        </div>
+    <div class="home-projects-visual">
+      <div class="project-pillars" data-project-pillars>
+        {projects.map((project, index) => {
+          const slug = project.name.toLowerCase().replace(/\s+/g, '-');
+          const expanded = index === 0;
+          return (
+            <article
+              class:list={['project-pillar', { 'is-active': expanded }]}
+              data-pillar
+              data-project={slug}
+              aria-labelledby={`pillar-${slug}-trigger`}
+            >
+              {covers[project.name] ? (
+                <img
+                  class="project-pillar-cover"
+                  src={covers[project.name]}
+                  alt=""
+                  loading="lazy"
+                />
+              ) : (
+                <span class="project-pillar-mark" aria-hidden="true">
+                  {project.name === 'LivesRun' ? 'LR' : project.name === 'NSS Gym' ? 'NG' : 'JJ'}
+                </span>
+              )}
+              <h3 class="project-pillar-heading">
+                <button
+                  class="project-pillar-trigger"
+                  id={`pillar-${slug}-trigger`}
+                  type="button"
+                  aria-expanded={expanded}
+                  aria-controls={`pillar-${slug}-details`}
+                >
+                  <span class="project-pillar-number" aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span class="project-pillar-name">{project.name}</span>
+                  <span class="project-pillar-toggle" aria-hidden="true"></span>
+                </button>
+              </h3>
+              <div
+                class="project-pillar-details"
+                id={`pillar-${slug}-details`}
+                aria-hidden={!expanded}
+                inert={!expanded}
+              >
+                <div class="project-pillar-details-inner">
+                  <div class="project-pillar-content">
+                    <p class="project-pillar-category">{project.category}</p>
+                    <span class="project-pillar-status">{project.status}</span>
+                    <p class="project-pillar-description">{project.description}</p>
+                    <a class="project-pillar-link" href={`/portifolios#${slug}`}>
+                      Ver projeto <span aria-hidden="true">↗</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
     <a class="btn btn-primary home-projects-link" href="/portifolios">
@@ -60,3 +88,7 @@
     </a>
   </div>
 </section>
+
+<script>
+  import '../../scripts/project-pillars';
+</script>
