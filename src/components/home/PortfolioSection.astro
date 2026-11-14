@@ -24,7 +24,7 @@ const covers: Record<string, string> = {
     </div>
     <div class="home-projects-visual col-2 row-[1/3] min-w-0 max-md:col-1 max-md:row-2 max-md:w-full max-md:justify-self-center">
       <div
-        class="project-pillars flex h-[clamp(28rem,36vw,32rem)] gap-2.5 max-md:h-auto max-md:flex-col"
+        class="project-pillars reveal flex h-[clamp(28rem,36vw,32rem)] gap-2.5 max-md:h-auto max-md:flex-col"
         data-project-pillars
       >
         {projects.map((project, index) => {
@@ -37,6 +37,7 @@ const covers: Record<string, string> = {
                 { 'is-active': expanded },
               ]}
               data-pillar
+              style={`--pillar-index: ${index}`}
               data-project={slug}
               aria-labelledby={`pillar-${slug}-trigger`}
             >

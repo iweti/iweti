@@ -780,8 +780,24 @@
   .project-pillar {
     background: linear-gradient(155deg, #263d53, #07152b 75%);
     transition:
-      grow 350ms ease,
+      flex-grow 600ms cubic-bezier(0.22, 1, 0.36, 1),
       border-color 350ms ease;
+  }
+
+  .project-pillars.visible .project-pillar {
+    animation: pillar-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--pillar-index, 0) * 110ms);
+  }
+
+  @keyframes pillar-enter {
+    from {
+      opacity: 0;
+      transform: translateY(2rem) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   .project-pillar[data-project='frattellianos'] {
@@ -816,10 +832,14 @@
   }
 
   .project-pillar-cover {
-    transition: opacity 350ms ease;
+    transform: scale(1.06);
+    transition:
+      opacity 350ms ease,
+      transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .project-pillar.is-active .project-pillar-cover {
+    transform: scale(1);
     @apply opacity-85;
   }
 
@@ -929,6 +949,7 @@
     .project-pillars *,
     .project-pillars *::before,
     .project-pillars *::after {
+      animation: none !important;
       transition: none;
     }
   }
