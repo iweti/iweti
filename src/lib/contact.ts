@@ -16,6 +16,8 @@ export type ContactResult =
 const unknownOutcome =
   'Não foi possível confirmar o resultado do envio. Seus dados foram mantidos. A mensagem pode ter sido encaminhada; evite reenviá-la sem confirmar com a IWETI.';
 
+export const CONTACT_TIMEOUT_MS = 60_000;
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
@@ -26,16 +28,17 @@ function isNewsletterStatus(value: unknown): value is NewsletterStatus {
 
 export async function sendContact(apiUrl: string, payload: ContactPayload): Promise<ContactResult> {
   try {
-    const response = await fetch(`${apiUrl.replace(/\/+$/, '')}/contato`, {
+    const response = await fetch(`${apiUrl.trim().replace(/\/+$/, '')}/contato`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       credentials: 'omit',
       body: JSON.stringify(payload),
       // This is a client wait limit, not a guarantee that the API stopped sending.
-      signal: AbortSignal.timeout(30_000),
+      signal: AbortSignal.timeout(CONTACT_TIMEOUT_MS),
     });
 
-    const body: unknown = await response.json();
+    // Proxies can return HTML or an empty body, including on 400 and 429.
+    const body: unknown = await response.json().catch(() => null);
 
     // A 502 can represent a contact that was already forwarded. Check this
     // before the HTTP status so the visitor does not resend the message.
@@ -65,10 +68,30 @@ export async function sendContact(apiUrl: string, payload: ContactPayload): Prom
       };
     }
 
+    if ([401, 403, 405].includes(response.status)) {
+      return {
+        kind: 'error',
+        message:
+          'O serviço de contato não autorizou o envio. Seus dados foram mantidos. Entre em contato com a IWETI pelo WhatsApp.',
+      };
+    }
+
+    if (response.status === 503) {
+      return {
+        kind: 'error',
+        message:
+          'O serviço de contato está indisponível. Seus dados foram mantidos. Tente novamente mais tarde.',
+      };
+    }
+
     return { kind: 'error', message: unknownOutcome };
-  } catch {
+  } catch (error) {
     // A timeout, CORS failure or lost response does not prove the message
     // was not sent. There are deliberately no automatic retries.
-    return { kind: 'error', message: unknownOutcome };
+    const timedOut = error instanceof Error && error.name === 'TimeoutError';
+    return {
+      kind: 'error',
+      message: timedOut ? `O serviço demorou para responder. ${unknownOutcome}` : unknownOutcome,
+    };
   }
 }
