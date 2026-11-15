@@ -125,18 +125,16 @@
 }
 
 @utility reveal {
-  opacity: 0;
-  transform: translateY(1.25rem);
   transition:
     opacity 700ms ease,
     transform 700ms ease;
-  &.visible {
-    opacity: 1;
-    transform: none;
+  &.reveal-pending {
+    opacity: 0;
+    transform: translateY(1.25rem);
   }
   @media (prefers-reduced-motion: reduce) {
     &,
-    &.visible {
+    &.reveal-pending {
       opacity: 1;
       transform: none;
       transition: none;

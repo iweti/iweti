@@ -6,16 +6,17 @@ if ('IntersectionObserver' in window) {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
 
-        entry.target.classList.add('visible');
+        entry.target.classList.remove('reveal-pending');
         observer.unobserve(entry.target);
       });
     },
     { threshold: 0.12 },
   );
 
-  revealElements.forEach((element) => observer.observe(element));
-} else {
-  revealElements.forEach((element) => element.classList.add('visible'));
+  revealElements.forEach((element) => {
+    observer.observe(element);
+    element.classList.add('reveal-pending');
+  });
 }
 
 export {};
