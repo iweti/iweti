@@ -32,17 +32,17 @@ const services = [
 <section class="services section" id="solucoes">
   <div class="shell">
     <p class="eyebrow reveal">O QUE FAZEMOS</p>
-    <div class="section-heading mb-9 flex reveal items-end justify-between gap-8 max-md:flex-col max-md:items-start">
+    <div class="section-heading mb-18 flex reveal items-end justify-between gap-8 max-md:flex-col max-md:items-start">
       <h2>
-        Soluções completas
+        <span class="text-cyan">Soluções completas</span>
         <br />
         para o mundo digital.
       </h2>
     </div>
-    <div class="service-grid grid gap-4 md:grid-cols-[repeat(2,1fr)] xl:grid-cols-[repeat(4,1fr)]">
+    <div class="service-grid grid gap-8 mb-11 md:grid-cols-[repeat(2,1fr)] xl:grid-cols-[repeat(4,1fr)]">
       {services.map((service) => (
-        <article class="service-card flex min-h-68 reveal flex-col items-start rounded-xl border border-border p-6">
-          <div class="service-card-heading flex min-h-32 flex-col items-start gap-4">
+        <article class="service-card flex min-h-60 reveal flex-col items-center rounded-xl border border-border p-5 text-center">
+          <div class="service-card-heading flex min-h-28 flex-col items-center gap-3">
             <span
               class="service-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-[0.8rem] border border-border"
               aria-hidden="true"
@@ -53,7 +53,7 @@ const services = [
           </div>
           <p>{service.description}</p>
           <button
-            class="service-more mt-auto inline-block min-h-11 p-0 text-left text-[0.875rem] font-bold text-cyan"
+            class="service-more mt-auto inline-block min-h-11 p-0 text-center text-[0.875rem] font-bold text-cyan"
             type="button"
             aria-haspopup="dialog"
             aria-controls={`service-dialog-${service.id}`}
