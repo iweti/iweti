@@ -100,7 +100,7 @@ if (form) {
             nao_solicitada: '',
           };
           showFeedback(
-            `Sua mensagem foi encaminhada à equipe da IWETI.${newsletterMessages[result.newsletter]}`,
+            `Sua mensagem foi enviada com sucesso à equipe da IWETI.${result.newsletter ? newsletterMessages[result.newsletter] : ''}`,
             'success',
           );
           form.reset();

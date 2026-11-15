@@ -9,7 +9,7 @@ export interface ContactPayload {
 type NewsletterStatus = 'inscrito' | 'ja_inscrito' | 'nao_solicitada';
 
 export type ContactResult =
-  | { kind: 'success'; newsletter: NewsletterStatus }
+  | { kind: 'success'; newsletter?: NewsletterStatus }
   | { kind: 'partial' }
   | { kind: 'error'; message: string };
 
@@ -40,14 +40,26 @@ export async function sendContact(apiUrl: string, payload: ContactPayload): Prom
     // Proxies can return HTML or an empty body, including on 400 and 429.
     const body: unknown = await response.json().catch(() => null);
 
-    // A 502 can represent a contact that was already forwarded. Check this
-    // before the HTTP status so the visitor does not resend the message.
-    if (isRecord(body) && body.contato === 'encaminhado') {
-      if (response.ok && body.sucesso === true && isNewsletterStatus(body.newsletter)) {
-        return { kind: 'success', newsletter: body.newsletter };
+    // A newsletter failure can happen after the contact was forwarded.
+    if (
+      isRecord(body) &&
+      body.contato === 'encaminhado' &&
+      (!response.ok || body.sucesso === false || body.newsletter === 'erro')
+    ) {
+      return { kind: 'partial' };
+    }
+
+    if (response.ok) {
+      if (isRecord(body) && (body.sucesso === false || body.erro)) {
+        return {
+          kind: 'error',
+          message: typeof body.erro === 'string' ? body.erro : unknownOutcome,
+        };
       }
 
-      return { kind: 'partial' };
+      return isRecord(body) && isNewsletterStatus(body.newsletter)
+        ? { kind: 'success', newsletter: body.newsletter }
+        : { kind: 'success' };
     }
 
     if (response.status === 429) {
