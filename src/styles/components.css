@@ -702,6 +702,10 @@
     @apply pointer-events-none;
   }
 
+  .project-pillar:has(.project-pillar-cover)::after {
+    background: linear-gradient(180deg, rgb(2 9 24 / 25%), transparent 25%, transparent 48%, #041023 80%);
+  }
+
   .project-pillar.is-active {
     flex-grow: 4;
     @apply border-[rgb(139_197_255/65%)];
@@ -716,7 +720,7 @@
 
   .project-pillar.is-active .project-pillar-cover {
     transform: scale(1);
-    @apply opacity-85;
+    @apply opacity-100;
   }
 
   .project-pillar-mark {
@@ -735,12 +739,8 @@
     @apply bottom-auto h-24;
   }
 
-  .project-pillar.is-active .project-pillar-number {
-    @apply left-5 transform-none;
-  }
-
   .project-pillar.is-active .project-pillar-name {
-    @apply top-12 bottom-auto left-5 max-w-[calc(100%-2.5rem)] transform-none text-[clamp(1.15rem,1.7vw,1.65rem)] wrap-anywhere whitespace-normal [writing-mode:horizontal-tb];
+    @apply top-6 bottom-auto left-5 max-w-[calc(100%-2.5rem)] transform-none text-[clamp(1.15rem,1.7vw,1.65rem)] wrap-anywhere whitespace-normal [writing-mode:horizontal-tb];
   }
 
   .project-pillar-details {
@@ -752,10 +752,6 @@
 
   .project-pillar.is-active .project-pillar-details {
     @apply visible transform-none opacity-100;
-  }
-
-  .project-pillar-status {
-    padding: 0.35rem 0.6rem;
   }
 
   .project-pillar-link:hover {
@@ -772,15 +768,17 @@
       background: linear-gradient(180deg, rgb(2 9 24 / 65%), #041023 4.75rem);
     }
 
+    .project-pillar:has(.project-pillar-cover)::after {
+      background: linear-gradient(180deg, rgb(2 9 24 / 40%), transparent 35%, #041023 85%);
+    }
+
     .project-pillar-trigger,
     .project-pillar.is-active .project-pillar-trigger {
-      @apply relative inset-auto grid h-auto min-h-19 grid-cols-[2rem_minmax(0,1fr)_1rem] items-center gap-3;
+      @apply relative inset-auto grid h-auto min-h-19 grid-cols-[minmax(0,1fr)_1rem] items-center gap-3;
       padding: 1rem 1.25rem;
     }
 
-    .project-pillar-number,
     .project-pillar-name,
-    .project-pillar.is-active .project-pillar-number,
     .project-pillar.is-active .project-pillar-name {
       @apply static max-w-none transform-none [writing-mode:horizontal-tb];
     }
