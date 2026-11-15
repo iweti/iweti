@@ -1,0 +1,14 @@
+Tool: built-in image_gen
+Transparent background: true
+Output: public/assets/images/mascot-contact-listening.png
+
+Use case: stylized-concept
+Asset type: transparent PNG for the IWETI website contact section.
+Primary request: Render Iweti in the exact listening / hand-cupped-behind-ear pose demonstrated by the uploaded football player photograph.
+Input images: the football player photo is POSE REFERENCE ONLY. The white furry Iweti image is CHARACTER IDENTITY AND 3D STYLE REFERENCE.
+Pose: match the player pose: torso turned slightly three-quarter toward the viewer's left, head turned toward the viewer, elbow bent with the hand on the viewer's right raised closely behind the ear, palm cupped forward and fingers pointing upwards as if saying 'I'm listening'. The hand must stay close beside the head, NOT wave and NOT extend outwards. Opposite arm hangs naturally beside the body. Relaxed friendly smile, slight attentive head tilt.
+Character: preserve the same round fluffy white yeti mascot, spiky white hair, blue skin on hands and toes, dark navy wraparound visor with blue trim and two luminous cyan happy crescent eyes, smiling mouth and small white fang. Remove the customer-service headset and microphone so the cupped-ear gesture reads clearly; keep the visor.
+Style: same polished detailed 3D render and soft fur as the Iweti reference, gentle cool blue edge lighting, clean silhouette.
+Composition: full body including feet, centered with comfortable transparent margins around head, hands and feet. Compact pose suitable for a 420px wide website illustration.
+Background: actual transparent alpha, isolated mascot without scenery.
+Constraints: use the human photo only for body pose. No human features, no football uniform, no clothing, no football field, no text or captions, no logos, no watermark, no extra objects, no headset. Preserve Iweti's identity and proportions.

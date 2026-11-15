@@ -1,0 +1,14 @@
+Tool: built-in image_gen
+Transparent background: true
+Output: public/assets/images/mascot-contact.png
+
+Use case: stylized-concept
+Asset type: transparent PNG mascot illustration for the IWETI website contact section.
+Primary request: Create a new illustration of the exact Iweti mascot from the two reference images in a welcoming customer-contact pose.
+Input images: Image 1 mascot-hero.png: character identity, full-body proportions, blue hands and feet, fur, visor and rendering reference. Image 2 mascot-about.png: same character face and friendly expression reference, not a composition to copy.
+Scene/backdrop: genuinely transparent alpha background, isolated character, no backdrop or glow cloud.
+Subject: the same friendly round white furry yeti, fluffy pointed white hair, large dark navy wraparound tech visor with electric-blue trim and two glowing cyan upturned crescent eyes, wide gentle smile and one small white fang. Blue skin on hands and toes. Add a small tasteful dark-blue customer-service headset with a short microphone beside the cheek, positioned around the existing visor without obscuring the eyes. One hand raised in an open-palm welcoming wave, the other arm relaxed.
+Style/medium: polished high-quality 3D character render matching the references, detailed soft white fur with subtle cool-blue shading, friendly and professional.
+Composition/framing: one single full-body mascot centered, complete head, fingers and feet visible with breathing room on every edge. Compact balanced pose, clear silhouette readable at 320 CSS pixels wide.
+Lighting/mood: soft studio lighting, cheerful welcoming expression, restrained blue edge light.
+Constraints: preserve the referenced character identity and proportions. Transparent background with clean fur edges and real alpha. No laptop, no desk, no phone, no speech bubbles, no text, no logo, no watermark, no extra characters, no scenery, no ground plane.
