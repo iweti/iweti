@@ -174,7 +174,7 @@
   }
 
   .service-icon img {
-    @apply h-[2.3rem] w-[2.3rem] object-contain;
+    @apply h-16 w-16 object-contain;
   }
 
   .service-card h3 {
@@ -451,15 +451,19 @@
   }
 
   .quote blockquote {
-    @apply text-[1rem] leading-[1.7] text-[#e2e8f0];
+    @apply text-[0.875rem] leading-[1.6] text-[#e2e8f0];
   }
 
   .quote figcaption {
-    @apply mt-6 flex flex-col text-[0.82rem];
+    @apply mb-3 flex flex-col text-[0.875rem];
+  }
+
+  .quote figcaption b {
+    color: var(--color-blue);
   }
 
   .quote figcaption span {
-    @apply mt-1 text-[0.875rem] text-muted;
+    @apply mt-1 text-[0.75rem] text-muted;
   }
 
   footer {

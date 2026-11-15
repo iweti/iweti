@@ -1,41 +1,34 @@
+---
+import TestimonialCard from './TestimonialCard.astro';
+
+const testimonials = [
+  {
+    name: 'Mariana Silva',
+    quote: 'A IwetI entregou exatamente o que precisávamos. Profissionais competentes e um atendimento incrível!',
+  },
+  {
+    name: 'Ricardo Almeida',
+    quote: 'Nosso sistema foi desenvolvido sob medida e hoje facilita todas as operações. Recomendo de olhos fechados!',
+  },
+  {
+    name: 'Carla Mendes',
+    quote: 'Excelente parceria! Tecnologia, agilidade e resultado de verdade.',
+  },
+];
+---
+
 <section class="testimonials section" id="depoimentos">
   <div class="shell">
-    <p class="eyebrow reveal">DEPOIMENTOS</p>
-    <div class="section-heading mb-9 flex reveal items-end justify-between gap-8 max-md:flex-col max-md:items-start">
+    <div class="section-heading mb-18 flex reveal items-center justify-center gap-8 text-center">
       <h2>
-        Quem confia,
+        <span class="text-cyan text-[1.2em]">IWETI</span>
         <br />
+        Quem conhece,
         recomenda.
       </h2>
     </div>
     <div class="quote-grid grid gap-4 md:grid-cols-[repeat(3,1fr)]">
-      <figure class="quote reveal rounded-xl border border-border p-6">
-        <blockquote>
-          “A IwetI entregou exatamente o que precisávamos. Profissionais competentes e um
-          atendimento incrível!”
-        </blockquote>
-        <figcaption>
-          <b>Mariana Silva</b>
-          <span>Cliente IwetI</span>
-        </figcaption>
-      </figure>
-      <figure class="quote reveal rounded-xl border border-border p-6">
-        <blockquote>
-          “Nosso sistema foi desenvolvido sob medida e hoje facilita todas as operações. Recomendo
-          de olhos fechados!”
-        </blockquote>
-        <figcaption>
-          <b>Ricardo Almeida</b>
-          <span>Cliente IwetI</span>
-        </figcaption>
-      </figure>
-      <figure class="quote reveal rounded-xl border border-border p-6">
-        <blockquote>“Excelente parceria! Tecnologia, agilidade e resultado de verdade.”</blockquote>
-        <figcaption>
-          <b>Carla Mendes</b>
-          <span>Cliente IwetI</span>
-        </figcaption>
-      </figure>
+      {testimonials.map((testimonial) => <TestimonialCard {...testimonial} />)}
     </div>
   </div>
 </section>
