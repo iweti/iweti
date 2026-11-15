@@ -22,8 +22,17 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
 ---
 
 <footer id={contactAnchor ? 'contato' : undefined} class="site-footer md:pt-14">
-  <div class="shell grid grid-cols-2 gap-x-6 gap-y-8 pb-9 md:grid-cols-[1.5fr_.9fr_1fr_1fr] md:gap-8 md:pb-12">
-    <div class="col-span-2 md:col-span-1">
+  <div class="footer-cta shell mb-9 flex flex-col items-start gap-6 pb-9 md:mb-12 md:flex-row md:items-center md:justify-between md:pb-12">
+    <div>
+      <h2>Vamos tirar o seu projeto do papel?</h2>
+      <p>Fale com nosso time e descubra como a IwetI pode ajudar o seu negócio.</p>
+    </div>
+    <a class="btn btn-primary shrink-0" href="https://iweti.com/contact">
+      Quero conversar agora →
+    </a>
+  </div>
+  <div class="shell grid grid-cols-2 gap-x-6 gap-y-8 pb-9 md:grid-cols-4 md:gap-8 md:pb-12">
+    <div class="col-span-2">
       <Brand href={home ? '#home' : '/'} />
       <p class="mt-5 mb-4 max-w-72 text-xs leading-[1.9] text-muted">
         Sites, sistemas e aplicações sob medida.
@@ -38,14 +47,7 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
       <a href="/portifolios">Nossos projetos</a>
       <a href="/about">Quem somos</a>
     </nav>
-    <nav aria-label="Serviços da IWETI">
-      <h3>Nossas soluções</h3>
-      <a href="/#solucoes">Desenvolvimento de sites</a>
-      <a href="/#solucoes">Sistemas personalizados</a>
-      <a href="/#solucoes">Aplicações web e mobile</a>
-      <a href="/#solucoes">Consultoria de tecnologia</a>
-    </nav>
-    <div class="col-span-2 md:col-span-1">
+    <div>
       <h3>Vamos conversar</h3>
       <a class="footer-link" href="/contact">
         Fale conosco
@@ -58,12 +60,6 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
           WhatsApp<span class="sr-only"> (abre em nova aba)</span>
         </a>
       )}
-      <a
-        class="mt-4 inline-block text-xs font-semibold text-cyan hover:underline underline-offset-4"
-        href={ctaHref}
-      >
-        {ctaLabel}
-      </a>
     </div>
   </div>
   <div class="footer-bottom shell flex flex-col gap-3 border-t border-border py-5 text-[0.65rem] text-muted md:flex-row md:justify-between">
