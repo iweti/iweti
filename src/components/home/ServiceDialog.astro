@@ -1,0 +1,29 @@
+---
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<dialog
+  class="service-dialog max-h-[min(80vh,42rem)] w-[min(34rem,calc(100%-2rem))] origin-center overflow-auto rounded-2xl border border-[rgb(0_141_255/45%)] p-0 text-white opacity-100"
+  id={`service-dialog-${id}`}
+  aria-labelledby={`service-title-${id}`}
+>
+  <div class="service-dialog-content relative p-[clamp(1.5rem,5vw,2.5rem)]">
+    <button
+      class="service-dialog-close absolute top-4 right-4 grid h-10 w-10 place-items-center rounded-full border border-border text-[1.5rem] leading-none text-white"
+      type="button"
+      aria-label="Fechar"
+    >
+      ×
+    </button>
+    <p class="eyebrow">SAIBA MAIS</p>
+    <h2 id={`service-title-${id}`}>{title}</h2>
+    <div class="service-dialog-body mt-5 grid gap-4 text-[0.9rem] leading-[1.7] wrap-anywhere text-muted">
+      <slot />
+    </div>
+  </div>
+</dialog>

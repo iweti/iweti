@@ -107,7 +107,6 @@
   }
 
   .hero strong.hero-wave {
-    /* Duração da onda inteira, pausa entre ondas e espera inicial. */
     --wave-duration: 2.5s;
     --wave-pause: 3s;
     --wave-start-delay: 2s;
@@ -257,102 +256,6 @@
       radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 8%), transparent 26rem), var(--color-ink);
   }
 
-  .portfolio-lightbox-prev::before,
-  .portfolio-lightbox-next::before {
-    @apply h-[0.65rem] w-[0.65rem];
-    border-top: 2px solid currentColor;
-    border-right: 2px solid currentColor;
-    @apply [content:''];
-  }
-
-  .portfolio-lightbox-prev::before {
-    @apply transform-[translateX(0.125rem)_rotate(-135deg)];
-  }
-
-  .portfolio-lightbox-next::before {
-    @apply transform-[translateX(-0.125rem)_rotate(45deg)];
-  }
-
-  .portfolio-lightbox {
-    background:
-      radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 12%), transparent 26rem),
-      var(--color-card);
-    box-shadow: 0 24px 80px rgb(0 0 0 / 65%);
-  }
-
-  .portfolio-lightbox::backdrop {
-    background: rgb(1 8 22 / 78%);
-    backdrop-filter: blur(5px);
-  }
-
-  .portfolio-lightbox-close {
-    background: rgb(1 9 28 / 78%);
-  }
-
-  .portfolio-lightbox-viewer {
-    background: var(--color-surface);
-  }
-
-  .portfolio-lightbox-image-background {
-    filter: blur(1rem);
-  }
-
-  .portfolio-lightbox-viewer::after {
-    @apply absolute inset-0 -z-1;
-    background: rgb(1 9 28 / 35%);
-    @apply [content:''];
-  }
-
-  .portfolio-lightbox-image {
-    transition:
-      opacity 180ms ease,
-      transform 180ms ease;
-  }
-
-  .portfolio-lightbox-image.is-changing {
-    @apply transform-[scale(0.985)] opacity-0;
-  }
-
-  .portfolio-lightbox-link {
-    padding: 0.9rem 1.2rem;
-    background: var(--color-action);
-    transition: background-color 180ms ease;
-  }
-
-  .portfolio-lightbox-link:hover,
-  .portfolio-lightbox-link:focus-visible {
-    background: var(--color-action-hover);
-    outline: 2px solid var(--color-cyan);
-    @apply outline-offset-[3px];
-  }
-
-  .portfolio-lightbox-prev,
-  .portfolio-lightbox-next {
-    background: rgb(1 9 28 / 78%);
-    transition:
-      border-color 140ms ease,
-      background-color 140ms ease;
-  }
-
-  .portfolio-lightbox-close:hover,
-  .portfolio-lightbox-close:focus-visible {
-    @apply border-cyan;
-    background: var(--color-action);
-    outline: none;
-  }
-
-  .portfolio-lightbox-prev:active,
-  .portfolio-lightbox-next:active {
-    @apply border-cyan;
-    background: var(--color-action);
-  }
-
-  .portfolio-lightbox-prev:focus-visible,
-  .portfolio-lightbox-next:focus-visible {
-    outline: 2px solid var(--color-cyan);
-    @apply outline-offset-[3px];
-  }
-
   .external-site-confirmation {
     background:
       radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 12%), transparent 18rem),
@@ -397,12 +300,16 @@
     @apply outline-offset-2;
   }
 
-  .contact-page {
+  .contact-page,
+  .about-page,
+  .privacy-page {
     background:
       radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem), var(--color-ink);
   }
 
-  .contact-intro h1 {
+  .contact-intro h1,
+  .about-page-copy h1,
+  .privacy-content h1 {
     @apply text-[clamp(2.25rem,5vw,3.5rem)] leading-none font-bold tracking-[-0.055em];
   }
 
@@ -453,15 +360,6 @@
     @apply justify-self-start border-0;
   }
 
-  .about-page {
-    background:
-      radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem), var(--color-ink);
-  }
-
-  .about-page-copy h1 {
-    @apply text-[clamp(2.25rem,5vw,3.5rem)] leading-none font-bold tracking-[-0.055em];
-  }
-
   .about-page-copy > p:not(.eyebrow) {
     @apply mt-4 max-w-140 text-[0.95rem] leading-[1.7] text-muted;
   }
@@ -508,15 +406,6 @@
     @apply text-text-primary;
   }
 
-  .privacy-page {
-    background:
-      radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem), var(--color-ink);
-  }
-
-  .privacy-content h1 {
-    @apply text-[clamp(2.25rem,5vw,3.5rem)] leading-none font-bold tracking-[-0.055em];
-  }
-
   .privacy-document-link a {
     @apply text-cyan underline underline-offset-[0.2em];
   }
@@ -542,8 +431,6 @@
   .privacy-policy a {
     @apply text-cyan underline underline-offset-[0.2em];
   }
-
-  /* Project previews on the home page */
 
   .quote {
     background: var(--color-card);
@@ -652,10 +539,6 @@
     .brand small {
       @apply hidden;
     }
-
-    .about dl {
-      @apply grid-cols-[1fr];
-    }
   }
 
   @media (max-width: 600px) {
@@ -683,10 +566,7 @@
     }
 
     .service-card,
-    .quote,
-    .portfolio-lightbox-image,
-    .portfolio-lightbox-prev,
-    .portfolio-lightbox-next {
+    .quote {
       transition: none;
     }
   }
@@ -751,10 +631,6 @@
 
   .project-showcase-page .project-description p {
     @apply leading-[1.6];
-  }
-
-  .project-showcase-page .project-view-controls {
-    @apply mt-3 gap-3 pt-2;
   }
 
   @media (max-width: 767px) {

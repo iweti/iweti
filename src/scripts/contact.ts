@@ -85,33 +85,46 @@ if (form) {
       feedback.textContent = 'Enviando sua mensagem…';
       delete feedback.dataset.state;
 
-      const result = await sendContact(form.dataset.apiUrl || 'https://api.iweti.com', payload);
+      const waitingNotice = window.setTimeout(() => {
+        feedback.textContent =
+          'Ainda aguardando a confirmação do envio. Mantenha esta página aberta e não reenvie a mensagem.';
+      }, 10_000);
 
-      if (result.kind === 'success') {
-        const newsletterMessages = {
-          inscrito: ' Sua inscrição para receber novidades foi concluída.',
-          ja_inscrito: ' Seu e-mail já estava inscrito para receber novidades.',
-          nao_solicitada: '',
-        };
+      try {
+        const result = await sendContact(form.dataset.apiUrl || 'https://api.iweti.com', payload);
+
+        if (result.kind === 'success') {
+          const newsletterMessages = {
+            inscrito: ' Sua inscrição para receber novidades foi concluída.',
+            ja_inscrito: ' Seu e-mail já estava inscrito para receber novidades.',
+            nao_solicitada: '',
+          };
+          showFeedback(
+            `Sua mensagem foi encaminhada à equipe da IWETI.${newsletterMessages[result.newsletter]}`,
+            'success',
+          );
+          form.reset();
+        } else if (result.kind === 'partial') {
+          forwarded = true;
+          showFeedback(
+            'Sua mensagem já foi encaminhada à IWETI, mas não foi possível confirmar a inscrição nas novidades. Não é necessário reenviar a mensagem.',
+            'partial',
+          );
+        } else {
+          showFeedback(result.message, 'error');
+        }
+      } catch {
         showFeedback(
-          `Sua mensagem foi encaminhada à equipe da IWETI.${newsletterMessages[result.newsletter]}`,
-          'success',
+          'Não foi possível confirmar o envio. Seus dados foram mantidos. A mensagem pode ter sido encaminhada; confirme com a IWETI antes de reenviar.',
+          'error',
         );
-        form.reset();
-      } else if (result.kind === 'partial') {
-        forwarded = true;
-        showFeedback(
-          'Sua mensagem já foi encaminhada à IWETI, mas não foi possível confirmar a inscrição nas novidades. Não é necessário reenviar a mensagem.',
-          'partial',
-        );
-      } else {
-        showFeedback(result.message, 'error');
+      } finally {
+        window.clearTimeout(waitingNotice);
+        sending = false;
+        form.removeAttribute('aria-busy');
+        updateButtons();
+        buttonLabel.textContent = forwarded ? 'Mensagem encaminhada' : 'Enviar por e-mail';
       }
-
-      sending = false;
-      form.removeAttribute('aria-busy');
-      updateButtons();
-      buttonLabel.textContent = forwarded ? 'Mensagem encaminhada' : 'Enviar por e-mail';
     });
   }
 }

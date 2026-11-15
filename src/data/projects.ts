@@ -37,4 +37,7 @@ export const projects = [
     status: 'Protótipo',
     url: null,
   },
-];
+].map((project) => ({
+  ...project,
+  slug: project.name.toLowerCase().replace(/\s+/g, '-'),
+}));

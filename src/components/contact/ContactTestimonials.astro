@@ -98,11 +98,11 @@ const testimonials = [
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach((carousel) => {
-    carousel.querySelectorAll<HTMLElement>('.contact-testimonial').forEach((card) => {
-      const resume = () => {
-        carousel.dataset.paused = 'false';
-      };
+    const resume = () => {
+      carousel.dataset.paused = 'false';
+    };
 
+    carousel.querySelectorAll<HTMLElement>('.contact-testimonial').forEach((card) => {
       card.addEventListener('pointerdown', (event) => {
         if (event.button !== 0) return;
         carousel.dataset.paused = 'true';
@@ -112,8 +112,6 @@ const testimonials = [
       card.addEventListener('pointercancel', resume);
       card.addEventListener('lostpointercapture', resume);
     });
-    window.addEventListener('blur', () => {
-      carousel.dataset.paused = 'false';
-    });
+    window.addEventListener('blur', resume);
   });
 </script>
