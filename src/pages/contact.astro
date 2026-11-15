@@ -6,12 +6,11 @@ import ContactTestimonials from '../components/contact/ContactTestimonials.astro
 
 <BaseLayout
   currentPage="contact"
-  footer={{ ctaLabel: 'contato@iweti.com', ctaHref: 'mailto:contato@iweti.com' }}
+  footer={{ showCta: false, ctaLabel: 'contato@iweti.com', ctaHref: 'mailto:contato@iweti.com' }}
   title="Contato | IwetI"
   description="Entre em contato com a IwetI para conversar sobre seu próximo projeto."
 >
-  <main>
-    <ContactTestimonials />
+  <main class="contact-main">
     <section class="contact-page min-h-[calc(100vh-12rem)] py-20">
       <div class="contact-layout shell grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-start md:gap-12">
         <div class="contact-intro reveal">
@@ -33,5 +32,6 @@ import ContactTestimonials from '../components/contact/ContactTestimonials.astro
         <ContactForm />
       </div>
     </section>
+    <ContactTestimonials />
   </main>
 </BaseLayout>

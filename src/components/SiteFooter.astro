@@ -5,6 +5,7 @@ import { whatsappLink, whatsappNumber } from '../lib/whatsapp';
 interface Props {
   home?: boolean;
   contactAnchor?: boolean;
+  showCta?: boolean;
   currentPage?: 'privacy';
   ctaLabel?: string;
   ctaHref?: string;
@@ -13,6 +14,7 @@ interface Props {
 const {
   home = false,
   contactAnchor = false,
+  showCta = true,
   currentPage,
   ctaLabel = 'Fale com a gente →',
   ctaHref = '/contact',
@@ -22,6 +24,7 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
 ---
 
 <footer id={contactAnchor ? 'contato' : undefined} class="site-footer md:pt-14">
+  {showCta && (
   <div class="footer-cta shell mb-9 flex flex-col items-start gap-6 pb-9 md:mb-12 md:flex-row md:items-center md:justify-between md:pb-12">
     <div>
       <h2>Vamos tirar o seu projeto do papel?</h2>
@@ -31,6 +34,7 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
       Quero conversar agora →
     </a>
   </div>
+  )}
   <div class="shell grid grid-cols-2 gap-x-6 gap-y-8 pb-9 md:grid-cols-4 md:gap-8 md:pb-12">
     <div class="col-span-2">
       <Brand href={home ? '#home' : '/'} />

@@ -67,13 +67,6 @@ const testimonials = [
         >
           {testimonials.map((testimonial) => (
             <figure class="contact-testimonial flex w-[clamp(17rem,28vw,23rem)] shrink-0 cursor-grab select-none flex-col rounded-2xl border border-border p-6 group-data-[paused=true]/carousel:cursor-grabbing">
-              <span
-                class="contact-testimonial-quote h-10 text-[3.5rem] leading-none text-heading-accent"
-                aria-hidden="true"
-              >
-                “
-              </span>
-              <blockquote>{testimonial.quote}</blockquote>
               <figcaption>
                 <span
                   class="contact-testimonial-avatar grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[rgb(139_197_255/25%)] text-[0.7rem] text-heading-accent"
@@ -87,7 +80,14 @@ const testimonials = [
                     {testimonial.role}
                   </span>
                 </span>
+                <span
+                  class="contact-testimonial-quote ml-auto h-10 shrink-0 text-[3.5rem] leading-none text-heading-accent"
+                  aria-hidden="true"
+                >
+                  “
+                </span>
               </figcaption>
+              <blockquote>{testimonial.quote}</blockquote>
             </figure>
           ))}
         </div>

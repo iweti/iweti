@@ -89,7 +89,7 @@
     );
   }
 
-  main > section,
+  main > section:not(.contact-page),
   footer {
     border-top: 1px solid var(--color-border);
   }
@@ -304,7 +304,18 @@
     @apply outline-offset-2;
   }
 
-  .contact-page,
+  .contact-main {
+    background:
+      radial-gradient(ellipse 38rem 32rem at 82% 12%, rgb(0 141 255 / 10%), transparent),
+      radial-gradient(ellipse 48rem 30rem at 65% 78%, rgb(0 141 255 / 8%), transparent),
+      var(--color-ink);
+  }
+
+  .contact-main > .contact-page,
+  .contact-main > .contact-testimonials {
+    background: transparent;
+  }
+
   .about-page,
   .privacy-page {
     background:
@@ -657,6 +668,20 @@
       radial-gradient(ellipse at 75% 50%, rgb(0 126 255 / 8%), transparent 65%), var(--color-ink);
   }
 
+  .home-projects-services {
+    border-top: 1px solid var(--color-border);
+    background:
+      radial-gradient(ellipse 45rem 36rem at 82% 24%, rgb(0 141 255 / 10%), transparent),
+      radial-gradient(ellipse 40rem 32rem at 18% 78%, rgb(0 141 255 / 8%), transparent),
+      var(--color-ink);
+  }
+
+  .home-projects-services > .home-projects,
+  .home-projects-services > .services {
+    background: transparent;
+    border-top: 0;
+  }
+
   .home-projects-heading h2 {
     @apply mt-3 text-[clamp(2rem,4vw,3.25rem)] leading-[1.15] tracking-[-0.035em] text-balance;
   }
@@ -948,6 +973,10 @@
     background: radial-gradient(ellipse at 70% 0, rgb(0 141 255 / 10%), transparent 70%);
   }
 
+  .contact-page + .contact-testimonials {
+    border-top: 0;
+  }
+
   .contact-testimonials-heading > div {
     @apply col-2;
   }
@@ -974,7 +1003,11 @@
   }
 
   .contact-testimonial figcaption {
-    @apply mt-6 flex items-center gap-3 text-[0.8rem];
+    @apply mb-6 flex items-center gap-3 text-[0.8rem];
+  }
+
+  .contact-testimonial figcaption b {
+    color: var(--color-blue);
   }
 
   .contact-testimonial-avatar {
