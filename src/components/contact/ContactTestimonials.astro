@@ -97,21 +97,26 @@ const testimonials = [
 </section>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach((carousel) => {
-    const resume = () => {
-      carousel.dataset.paused = 'false';
-    };
+  import { onPageLoad } from '../../lib/page-lifecycle';
+  onPageLoad((signal) => {
+    document
+      .querySelectorAll<HTMLElement>('[data-testimonial-carousel]:not([data-page-preview] *)')
+      .forEach((carousel) => {
+        const resume = () => {
+          carousel.dataset.paused = 'false';
+        };
 
-    carousel.querySelectorAll<HTMLElement>('.contact-testimonial').forEach((card) => {
-      card.addEventListener('pointerdown', (event) => {
-        if (event.button !== 0) return;
-        carousel.dataset.paused = 'true';
-        card.setPointerCapture(event.pointerId);
+        carousel.querySelectorAll<HTMLElement>('.contact-testimonial').forEach((card) => {
+          card.addEventListener('pointerdown', (event) => {
+            if (event.button !== 0) return;
+            carousel.dataset.paused = 'true';
+            card.setPointerCapture(event.pointerId);
+          });
+          card.addEventListener('pointerup', resume);
+          card.addEventListener('pointercancel', resume);
+          card.addEventListener('lostpointercapture', resume);
+        });
+        window.addEventListener('blur', resume, { signal });
       });
-      card.addEventListener('pointerup', resume);
-      card.addEventListener('pointercancel', resume);
-      card.addEventListener('lostpointercapture', resume);
-    });
-    window.addEventListener('blur', resume);
   });
 </script>

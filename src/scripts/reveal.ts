@@ -1,22 +1,25 @@
-const revealElements = document.querySelectorAll('.reveal');
+import { onPageLoad } from '../lib/page-lifecycle';
 
-if ('IntersectionObserver' in window) {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+onPageLoad(() => {
+  const revealElements = document.querySelectorAll('.reveal:not([data-page-preview] *)');
 
-        entry.target.classList.remove('reveal-pending');
-        observer.unobserve(entry.target);
-      });
-    },
-    { threshold: 0.12 },
-  );
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
 
-  revealElements.forEach((element) => {
-    observer.observe(element);
-    element.classList.add('reveal-pending');
-  });
-}
+          entry.target.classList.remove('reveal-pending');
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12 },
+    );
 
-export {};
+    revealElements.forEach((element) => {
+      observer.observe(element);
+      element.classList.add('reveal-pending');
+    });
+    return () => observer.disconnect();
+  }
+});

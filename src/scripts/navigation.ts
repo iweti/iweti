@@ -1,69 +1,81 @@
-const menuButton = document.querySelector<HTMLButtonElement>('.menu-toggle');
-const menu = document.querySelector<HTMLElement>('.nav-links');
+import { onPageLoad } from '../lib/page-lifecycle';
 
-if (menuButton && menu) {
-  const closeMenu = () => {
-    menu.classList.remove('open');
-    menuButton.setAttribute('aria-expanded', 'false');
-  };
-
-  menuButton.addEventListener('click', () => {
-    const isOpen = menu.classList.toggle('open');
-    menuButton.setAttribute('aria-expanded', String(isOpen));
-  });
-
-  menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeMenu();
-  });
-}
-
-const navigation = document.querySelector<HTMLElement>('.site-nav');
-
-if (navigation) {
-  const scrollThreshold = 8;
-  let previousScrollY = Math.max(0, window.scrollY);
-  let framePending = false;
-
-  const updateNavigation = () => {
-    // Clamp elastic overscroll so bouncing at either edge does not change direction.
-    const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    const scrollY = Math.min(maxScrollY, Math.max(0, window.scrollY));
-    const delta = scrollY - previousScrollY;
-    const nearTop = scrollY <= navigation.offsetHeight;
-    const menuOpen = menuButton?.getAttribute('aria-expanded') === 'true';
-    const keyboardFocus = navigation.querySelector(':focus-visible');
-
-    navigation.classList.toggle('is-scrolled', scrollY > 0);
-
-    if (nearTop || menuOpen || keyboardFocus) {
-      navigation.classList.remove('is-hidden');
-      previousScrollY = scrollY;
-    } else if (Math.abs(delta) >= scrollThreshold) {
-      navigation.classList.toggle('is-hidden', delta > 0);
-      previousScrollY = scrollY;
-    }
-
-    framePending = false;
-  };
-
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!framePending) {
-        framePending = true;
-        window.requestAnimationFrame(updateNavigation);
-      }
-    },
-    { passive: true },
+onPageLoad((signal) => {
+  const menuButton = document.querySelector<HTMLButtonElement>(
+    '.menu-toggle:not([data-page-preview] *)',
   );
+  const menu = document.querySelector<HTMLElement>('.nav-links:not([data-page-preview] *)');
 
-  navigation.addEventListener('focusin', () => {
-    navigation.classList.remove('is-hidden');
-  });
+  if (menuButton && menu) {
+    const closeMenu = () => {
+      menu.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+    };
 
-  updateNavigation();
-}
+    menuButton.addEventListener(
+      'click',
+      () => {
+        const isOpen = menu.classList.toggle('open');
+        menuButton.setAttribute('aria-expanded', String(isOpen));
+      },
+      { signal },
+    );
 
-export {};
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+
+    document.addEventListener(
+      'keydown',
+      (event) => {
+        if (event.key === 'Escape') closeMenu();
+      },
+      { signal },
+    );
+  }
+
+  const navigation = document.querySelector<HTMLElement>('.site-nav:not([data-page-preview] *)');
+
+  if (navigation) {
+    const scrollThreshold = 8;
+    let previousScrollY = Math.max(0, window.scrollY);
+    let framePending = false;
+
+    const updateNavigation = () => {
+      // Clamp elastic overscroll so bouncing at either edge does not change direction.
+      const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const scrollY = Math.min(maxScrollY, Math.max(0, window.scrollY));
+      const delta = scrollY - previousScrollY;
+      const nearTop = scrollY <= navigation.offsetHeight;
+      const menuOpen = menuButton?.getAttribute('aria-expanded') === 'true';
+      const keyboardFocus = navigation.querySelector(':focus-visible');
+
+      navigation.classList.toggle('is-scrolled', scrollY > 0);
+
+      if (nearTop || menuOpen || keyboardFocus) {
+        navigation.classList.remove('is-hidden');
+        previousScrollY = scrollY;
+      } else if (Math.abs(delta) >= scrollThreshold) {
+        navigation.classList.toggle('is-hidden', delta > 0);
+        previousScrollY = scrollY;
+      }
+
+      framePending = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!framePending) {
+          framePending = true;
+          window.requestAnimationFrame(updateNavigation);
+        }
+      },
+      { passive: true, signal },
+    );
+
+    navigation.addEventListener('focusin', () => {
+      navigation.classList.remove('is-hidden');
+    });
+
+    updateNavigation();
+  }
+});
