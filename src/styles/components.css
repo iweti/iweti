@@ -73,13 +73,13 @@
 
   .nav-links .nav-cta {
     padding: 0.5rem 1rem;
-    border: 1px solid var(--color-cyan);
+    border: 1px solid rgb(0 216 255 / 40%);
     border-radius: 0.75rem;
-    background: var(--color-cyan);
-    color: white;
+    background: #061a2e;
+    color: var(--color-cyan);
     box-shadow:
-      0 0 12px rgb(0 216 255 / 35%),
-      0 0 28px rgb(0 216 255 / 18%);
+      0 0 12px rgb(0 216 255 / 12%),
+      0 0 28px rgb(0 216 255 / 6%);
     transition:
       background-color 180ms ease,
       box-shadow 180ms ease;
@@ -87,8 +87,9 @@
 
   .nav-links .nav-cta:hover,
   .nav-links .nav-cta:focus-visible {
-    background: var(--color-cyan);
-    color: white;
+    border-color: var(--color-cyan);
+    background: #0a2942;
+    color: var(--color-cyan);
     box-shadow:
       0 0 16px rgb(0 216 255 / 50%),
       0 0 36px rgb(0 216 255 / 25%);
@@ -108,20 +109,21 @@
     @apply max-w-80 text-[1rem] leading-[1.65] text-muted;
   }
 
-  .site-header {
+  .header-background,
+  .page-journey-overlay::before {
     background:
+      linear-gradient(90deg, rgb(1 7 18 / 34%) 0%, rgb(1 7 18 / 12%) 52%, rgb(1 7 18 / 8%) 100%),
       linear-gradient(180deg, rgb(1 8 22 / 56%) 0%, rgb(1 8 22 / 42%) 35%, rgb(1 8 22 / 72%) 100%),
       url('/assets/images/hero-background.jpg') center bottom/cover no-repeat;
   }
 
-  .site-header::before {
-    @apply absolute inset-0 [content:''];
-    background: linear-gradient(
-      90deg,
-      rgb(1 7 18 / 34%) 0%,
-      rgb(1 7 18 / 12%) 52%,
-      rgb(1 7 18 / 8%) 100%
-    );
+  .header-background {
+    @apply pointer-events-none absolute inset-0;
+    view-transition-name: header-background;
+  }
+
+  .page-journey-overlay::before {
+    @apply pointer-events-none absolute inset-x-0 top-0 h-20 [content:''];
   }
 
   main > section:not(.contact-page),
@@ -953,21 +955,18 @@
   }
 
   .contact-form [data-contact-send='email'] {
-    @apply border-[#4285f4];
-    background: rgb(66 133 244 / 10%);
-    @apply text-[#a9c8ff];
+    @apply border-cyan/40 text-cyan;
+    background: #061a2e;
   }
 
   .contact-form [data-contact-send='email']:hover {
-    @apply border-[#4285f4];
-    background: #4285f4;
-    @apply text-white;
+    @apply border-cyan text-cyan;
+    background: #0a2942;
   }
 
   .contact-form [data-contact-send='email'][aria-disabled='true']:hover {
-    @apply border-[#4285f4];
-    background: rgb(66 133 244 / 10%);
-    @apply text-[#a9c8ff];
+    @apply border-cyan/40 text-cyan;
+    background: #061a2e;
   }
 
   .contact-form [data-contact-send='whatsapp'] {
@@ -1081,6 +1080,7 @@
 }
 
 ::view-transition-group(site-navigation),
+::view-transition-group(header-background),
 ::view-transition-group(page-indicator) {
   z-index: 1;
   animation-duration: 0s;
@@ -1088,6 +1088,8 @@
 
 ::view-transition-old(site-navigation),
 ::view-transition-new(site-navigation),
+::view-transition-old(header-background),
+::view-transition-new(header-background),
 ::view-transition-old(page-indicator),
 ::view-transition-new(page-indicator) {
   animation: none;
@@ -1095,6 +1097,7 @@
 }
 
 ::view-transition-old(site-navigation),
+::view-transition-old(header-background),
 ::view-transition-old(page-indicator) {
   visibility: hidden;
 }

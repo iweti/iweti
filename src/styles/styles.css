@@ -4,8 +4,8 @@
 @theme {
   --color-ink: #01091f;
   --color-blue: #008dff;
-  --color-action: #0874c2;
-  --color-action-hover: #0868ad;
+  --color-action: var(--color-cyan);
+  --color-action-hover: #00bfdf;
   --color-cyan: #00d8ff;
   --color-heading-accent: #8bc5ff;
   --color-text-primary: #f3f6fc;
@@ -111,9 +111,9 @@
 }
 
 @utility btn-primary {
-  @apply bg-action text-white;
+  @apply border border-cyan/40 bg-[#061a2e] text-cyan;
   &:hover {
-    @apply bg-action-hover;
+    @apply border-cyan bg-[#0a2942];
   }
 }
 

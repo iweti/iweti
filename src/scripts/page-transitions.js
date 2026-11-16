@@ -138,7 +138,9 @@ function buildJourney(prepared) {
       if (!child.matches('script, .astro-route-announcer')) contents.append(child.cloneNode(true));
     });
     contents
-      .querySelectorAll('script, .site-nav, .header-page-indicator, [data-page-journey]')
+      .querySelectorAll(
+        'script, .site-nav, .header-background, .header-page-indicator, [data-page-journey]',
+      )
       .forEach((node) => node.remove());
     contents.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
     contents
