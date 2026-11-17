@@ -75,8 +75,7 @@
     box-shadow: 0 0 10px rgb(0 216 255 / 30%);
   }
 
-  .header-page-indicator a[aria-current='page']::before,
-  .header-page-indicator a[href='/contact']::before {
+  .header-page-indicator a[aria-current='page']:not([href='/contact'])::before {
     content: '';
     position: absolute;
     inset: auto 0 2px;
@@ -89,10 +88,6 @@
       rgb(0 216 255 / 5%) 45%,
       transparent 100%
     );
-  }
-
-  .header-page-indicator a[href='/contact'][aria-current='page']::before {
-    opacity: 1;
   }
 
   @media (max-width: 961px) {
@@ -115,6 +110,7 @@
   }
 
   .nav-links .nav-contact {
+    background: #102b40;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -371,7 +367,10 @@
   }
 
   .contact-main {
-    background: #07172b;
+    background:
+      radial-gradient(ellipse 38rem 32rem at 82% 12%, rgb(0 141 255 / 10%), transparent),
+      radial-gradient(ellipse 48rem 30rem at 65% 78%, rgb(0 141 255 / 8%), transparent),
+      var(--color-ink);
   }
 
   .contact-main > .contact-page,
