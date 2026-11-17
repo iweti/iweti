@@ -9,23 +9,14 @@
   .site-nav {
     inset: 0 0 auto;
     view-transition-name: site-navigation;
-    transition:
-      transform 240ms ease,
-      background-color 240ms ease;
+    background: rgb(1 9 31 / 82%);
+    backdrop-filter: blur(14px);
   }
 
   .header-page-indicator {
-    view-transition-name: page-indicator;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.5rem;
-    position: absolute;
-    inset: auto 0 0;
-    z-index: 40;
-  }
-
-  .header-page-indicator-home {
-    z-index: 100;
   }
 
   .header-page-indicator a {
@@ -46,19 +37,6 @@
   .header-page-indicator a:focus-visible span {
     background: var(--color-cyan);
     box-shadow: 0 0 10px rgb(0 216 255 / 30%);
-  }
-
-  .site-nav.is-scrolled {
-    @apply bg-[rgb(1_9_31/96%)];
-  }
-
-  .site-nav.is-hidden {
-    @apply pointer-events-none transform-[translateY(-100%)];
-  }
-
-  html[data-page-leaving] .site-nav {
-    transform: none;
-    pointer-events: auto;
   }
 
   .nav-links a {
@@ -109,21 +87,16 @@
     @apply max-w-80 text-[1rem] leading-[1.65] text-muted;
   }
 
-  .header-background,
-  .page-journey-overlay::before {
+  .page-content:not(.page-content-home),
+  .home-hero {
+    padding-top: var(--site-header-height);
+  }
+
+  .home-hero {
     background:
       linear-gradient(90deg, rgb(1 7 18 / 34%) 0%, rgb(1 7 18 / 12%) 52%, rgb(1 7 18 / 8%) 100%),
       linear-gradient(180deg, rgb(1 8 22 / 56%) 0%, rgb(1 8 22 / 42%) 35%, rgb(1 8 22 / 72%) 100%),
       url('/assets/images/hero-background.jpg') center bottom/cover no-repeat;
-  }
-
-  .header-background {
-    @apply pointer-events-none absolute inset-0;
-    view-transition-name: header-background;
-  }
-
-  .page-journey-overlay::before {
-    @apply pointer-events-none absolute inset-x-0 top-0 h-20 [content:''];
   }
 
   main > section:not(.contact-page),
@@ -615,7 +588,7 @@
       scroll-behavior: auto;
     }
 
-    .site-nav,
+    .header-page-indicator span,
     .service-dialog {
       transition: none;
     }
@@ -1079,26 +1052,18 @@
   }
 }
 
-::view-transition-group(site-navigation),
-::view-transition-group(header-background),
-::view-transition-group(page-indicator) {
+::view-transition-group(site-navigation) {
   z-index: 1;
   animation-duration: 0s;
 }
 
 ::view-transition-old(site-navigation),
-::view-transition-new(site-navigation),
-::view-transition-old(header-background),
-::view-transition-new(header-background),
-::view-transition-old(page-indicator),
-::view-transition-new(page-indicator) {
+::view-transition-new(site-navigation) {
   animation: none;
   mix-blend-mode: normal;
 }
 
-::view-transition-old(site-navigation),
-::view-transition-old(header-background),
-::view-transition-old(page-indicator) {
+::view-transition-old(site-navigation) {
   visibility: hidden;
 }
 
@@ -1144,7 +1109,7 @@ html[data-page-instant] .reveal {
 }
 
 .page-journey-panel {
-  flex-shrink: 0;
+  flex: 0 0 100%;
   height: 100%;
   overflow: hidden;
 }

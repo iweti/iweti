@@ -1,16 +1,12 @@
 ---
 interface Props {
   pages: { label: string; href: string; active: boolean }[];
-  home?: boolean;
 }
 
-const { pages, home = false } = Astro.props;
+const { pages } = Astro.props;
 ---
 
-<nav
-  class:list={['header-page-indicator', { 'header-page-indicator-home': home }]}
-  aria-label="Localização nas páginas do site"
->
+<nav class="header-page-indicator" aria-label="Localização nas páginas do site">
   {pages.map((page) => (
     <a href={page.href} aria-label={page.label} aria-current={page.active ? 'page' : undefined}>
       <span aria-hidden="true"></span>

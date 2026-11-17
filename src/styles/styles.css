@@ -19,7 +19,10 @@
 
 @layer base {
   html {
+    --site-header-height: 6.5rem;
     @apply scroll-smooth motion-reduce:scroll-auto;
+    scroll-padding-top: var(--site-header-height);
+    scrollbar-gutter: stable;
     line-height: normal;
   }
 
