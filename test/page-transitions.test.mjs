@@ -52,15 +52,6 @@ function setup({
     get relList() {
       return { contains: () => false };
     }
-    get offsetHeight() {
-      return this.className.includes('site-nav') ? 80 : 0;
-    }
-    getBoundingClientRect() {
-      return {
-        height: parseFloat(this.style.height) || 680,
-        bottom: this.className === 'site-nav' ? 80 : 680,
-      };
-    }
     setAttribute(key, value) {
       this.attrs.set(key, value);
     }
@@ -168,8 +159,8 @@ function setup({
     const root = new Node('html');
     const body = new Node('body');
     root.append(body);
-    const header = new Node('header', 'site-header');
-    const nav = new Node('div', 'site-nav');
+    const nav = new Node('header', 'site-nav');
+    const content = new Node('div', 'page-content');
     const links = new Node('div', 'nav-links');
     const indicator = new Node('nav', 'header-page-indicator');
     for (const href of ['/', '/portifolios', '/about', '/contact']) {
@@ -182,30 +173,27 @@ function setup({
       }
     }
     nav.append(links);
-    if (new URL(url, 'https://iweti.com').pathname !== '/') nav.append(indicator);
-    header.append(nav);
+    nav.append(indicator);
     const slot = new Node('div', 'page-journey-overlay');
     slot.setAttribute('data-page-journey', '');
     slot.hidden = true;
-    header.append(slot);
     const hero = new Node('section', 'hero');
-    if (new URL(url, 'https://iweti.com').pathname === '/') {
-      header.append(hero);
-      header.append(indicator);
-    }
+    if (new URL(url, 'https://iweti.com').pathname === '/') content.append(hero);
     const main = new Node('main');
     main.page = url;
     const input = new Node('input');
     input.value = 'preserved';
     main.append(input);
     const footer = new Node('footer', 'site-footer');
-    body.append(header);
-    body.append(main);
-    body.append(footer);
+    content.append(main);
+    content.append(footer);
+    body.append(nav);
+    body.append(content);
+    body.append(slot);
     return {
       root,
       body,
-      header,
+      content,
       hero,
       nav,
       main,
@@ -283,7 +271,7 @@ function setup({
     clearTimeout,
     queueMicrotask,
     requestAnimationFrame: (fn) => callbacks.push(fn),
-    window: { innerWidth: 1000, scrollY: 0, matchMedia: () => ({ matches: reduced }) },
+    window: { scrollY: 0, matchMedia: () => ({ matches: reduced }) },
     fetch: async (url) => {
       requests.push(url);
       if (fetchFails) throw new Error('unavailable');
@@ -351,7 +339,8 @@ test('a distant journey ends on the exact live destination elements without relo
   app.finishRunning();
   await click.done;
   assert.equal(app.document.querySelector('main'), destination.main);
-  assert.equal(destination.main.parent, app.document.body);
+  assert.equal(destination.main.parent, destination.content);
+  assert.equal(destination.content.parent, app.document.body);
   assert.equal(destination.input.value, 'initialized');
   assert.equal(initialized, 1);
   assert.equal(overlay.hidden, true);
@@ -359,42 +348,21 @@ test('a distant journey ends on the exact live destination elements without relo
   assert.equal(app.navigations.length, 1);
 });
 
-test('home collapses before the real document swap and intermediate pages share one sweep', async () => {
+test('leaving home carries the hero in the horizontal sweep under the fixed navigation', async () => {
   const app = setup();
   const click = app.click('https://iweti.com/contact');
   await flush();
-  assert.equal(app.frames.length, 2);
-  assert.equal(app.navigations.length, 0);
-  app.finishRunning();
-  await flush();
+  assert.deepEqual(app.requests, ['/portifolios', '/about']);
   assert.equal(app.navigations.length, 1);
-  assert.equal(app.frames.length, 3);
-  assert.equal(app.frames[2].keyframes[1].transform, 'translateX(-3000px)');
+  assert.equal(app.frames.length, 1);
+  assert.equal(app.frames[0].keyframes[1].transform, 'translateX(-300%)');
+  const overlay = app.document.querySelector('[data-page-journey]');
+  assert.ok(overlay.querySelector('[data-page-preview]').querySelector('.hero'));
+  assert.equal(overlay.querySelector('.site-nav'), null);
+  assert.equal(overlay.querySelector('.header-page-indicator'), null);
   app.finishRunning();
   await click.done;
   assert.deepEqual(app.reloads, []);
-});
-
-test('home waits for its portfolio images before collapsing the hero', async () => {
-  const app = setup();
-  let ready;
-  const image = app.document.createElement('img');
-  const decoded = new Promise((resolve) => {
-    ready = resolve;
-  });
-  image.decode = () => decoded;
-  app.initial.main.append(image);
-  const click = app.click('https://iweti.com/contact');
-  await flush();
-  assert.equal(image.loading, 'eager');
-  assert.equal(app.frames.length, 0);
-  ready();
-  await flush();
-  assert.equal(app.frames.length, 2);
-  app.finishRunning();
-  await flush();
-  app.finishRunning();
-  await click.done;
 });
 
 test('the source preview stays hidden until its cloned images are decoded', async () => {
@@ -443,36 +411,44 @@ test('queued animation frames cannot move the indicator back after a journey fin
   }
 });
 
-test('adjacent arrival at home waits for the lateral transition before expanding', async () => {
+test('adjacent arrival at home keeps the hero in the page through the lateral transition', async () => {
   const app = setup({ path: '/portifolios', holdNative: true });
   const click = app.click('https://iweti.com/');
   await flush();
-  assert.equal(app.frames.length, 0);
-  assert.equal(app.document.querySelector('.site-header').style.height, '80px');
+  const { content, hero } = app.destinations[0];
+  assert.equal(hero.parent, content);
+  assert.equal(content.parent, app.document.body);
   app.finishNative();
-  await flush();
-  assert.equal(app.frames.length, 2);
-  assert.equal(app.frames[0].keyframes[1].height, '680px');
-  app.finishRunning();
   await click.done;
+  assert.equal(app.frames.length, 0);
   assert.deepEqual(app.reloads, []);
 });
 
-test('distant reverse journey reveals the live home then expands its actual hero', async () => {
+test('distant reverse journey includes the live home hero in the lateral sweep', async () => {
   const app = setup({ path: '/contact' });
   const click = app.click('https://iweti.com/');
   await flush();
   assert.deepEqual(app.requests, ['/about', '/portifolios']);
-  assert.equal(app.frames[0].keyframes[0].transform, 'translateX(-3000px)');
-  const hero = app.destinations[0].hero;
-  app.finishRunning();
-  await flush();
-  assert.equal(app.frames.length, 3);
-  assert.equal(app.document.querySelector('.hero'), hero);
-  assert.equal(app.document.querySelector('[data-page-journey]').hidden, true);
+  assert.equal(app.frames[0].keyframes[0].transform, 'translateX(-300%)');
+  const { content, hero, main } = app.destinations[0];
+  const overlay = app.document.querySelector('[data-page-journey]');
+  assert.equal(overlay.querySelector('.hero'), hero);
   app.finishRunning();
   await click.done;
-  assert.equal(app.document.querySelector('main'), app.destinations[0].main);
+  assert.equal(app.frames.length, 1);
+  assert.equal(overlay.hidden, true);
+  assert.equal(hero.parent, content);
+  assert.equal(content.parent, app.document.body);
+  assert.equal(app.document.querySelector('main'), main);
+});
+
+test('cross-page anchors use the direct lateral transition for native anchor scrolling', async () => {
+  const app = setup({ path: '/contact' });
+  const click = app.click('https://iweti.com/#portfolio');
+  await click.done;
+  assert.deepEqual(app.requests, []);
+  assert.equal(app.navigations[0].url, 'https://iweti.com/#portfolio');
+  assert.equal(app.navigations[0].options.info.journey, false);
 });
 
 test('the incoming header keeps the departure indicator before its first layout', async () => {
@@ -494,8 +470,6 @@ test('the incoming header keeps the departure indicator before its first layout'
     await flush();
     assert.deepEqual(incoming, [[from, from]]);
     app.finishNative();
-    await flush();
-    app.finishRunning();
     await flush();
     app.finishRunning();
     await click.done;

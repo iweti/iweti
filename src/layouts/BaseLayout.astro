@@ -33,15 +33,28 @@ const { title, description, home = false, currentPage, footer = {} } = Astro.pro
     />
   </head>
   <body>
-    <SiteHeader home={home} currentPage={currentPage}>
-      <slot name="hero" />
-    </SiteHeader>
-    <slot />
-    <SiteFooter
-      {...footer}
-      home={home}
-      currentPage={currentPage === 'privacy' ? 'privacy' : undefined}
-    />
+    <SiteHeader home={home} currentPage={currentPage} />
+    <div class:list={['page-content', { 'page-content-home': home }]}>
+      {home && (
+        <div class="home-hero relative min-h-170 overflow-hidden max-[901px]:min-h-0" id="home">
+          <slot name="hero" />
+        </div>
+      )}
+      <slot />
+      <SiteFooter
+        {...footer}
+        home={home}
+        currentPage={currentPage === 'privacy' ? 'privacy' : undefined}
+      />
+    </div>
+    <div
+      class="page-journey-overlay"
+      data-page-journey
+      transition:persist="page-journey"
+      hidden
+      aria-hidden="true"
+      inert
+    ></div>
     <script>
       import '../scripts/page-transitions';
       import '../scripts/navigation';

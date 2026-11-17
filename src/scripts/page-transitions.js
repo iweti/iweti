@@ -5,40 +5,26 @@ const root = document.documentElement;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const routeIndex = (url) =>
   routes.indexOf(new URL(url, location.href).pathname.replace(/\/$/, '') || '/');
-const timing = { duration: 650, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' };
 let busy = false;
 let generation = 0;
 let overlay;
 let journey;
-let animations = [];
-let movedNodes = [];
-let styledHeader;
-let headerStyle;
+let sweep;
+let movedContent;
 let pageReady;
 let swapTransition;
 
-function saveHeader(header) {
-  styledHeader = header;
-  headerStyle = header.getAttribute('style');
-}
-
-function restoreHeader() {
-  if (!styledHeader) return;
-  if (headerStyle === null) styledHeader.removeAttribute('style');
-  else styledHeader.setAttribute('style', headerStyle);
-  styledHeader = undefined;
-}
-
-function restoreNodes() {
-  movedNodes.forEach(({ node, marker }) => marker.replaceWith(node));
-  movedNodes = [];
+function restoreContent() {
+  if (!movedContent) return;
+  const { content, marker } = movedContent;
+  marker.replaceWith(content);
+  movedContent = undefined;
 }
 
 function reset() {
-  animations.forEach((animation) => animation.cancel());
-  animations = [];
-  restoreNodes();
-  restoreHeader();
+  sweep?.cancel();
+  sweep = undefined;
+  restoreContent();
   if (overlay) {
     overlay.hidden = true;
     overlay.replaceChildren();
@@ -46,7 +32,6 @@ function reset() {
   overlay = undefined;
   journey = undefined;
   busy = false;
-  delete root.dataset.pageLeaving;
   delete root.dataset.pageDirection;
   delete root.dataset.pageInstant;
 }
@@ -68,38 +53,6 @@ async function waitForImages(container) {
   } finally {
     clearTimeout(timeout);
   }
-}
-
-async function collapseHero() {
-  const header = document.querySelector('.site-header');
-  const hero = document.querySelector('.hero:not([data-page-preview] *)');
-  const navigation = document.querySelector('.site-nav');
-  if (
-    routeIndex(location.href) !== 0 ||
-    !header ||
-    !hero ||
-    !navigation ||
-    hero.getBoundingClientRect().bottom <= navigation.getBoundingClientRect().bottom
-  )
-    return;
-  const currentGeneration = generation;
-  await waitForImages(document.querySelector('main'));
-  if (currentGeneration !== generation) return;
-  saveHeader(header);
-  const height = header.getBoundingClientRect().height;
-  header.style.minHeight = '0';
-  header.style.overflow = 'hidden';
-  animations = [
-    hero.animate(
-      [
-        { transform: 'translateY(0)', opacity: 1 },
-        { transform: 'translateY(-100%)', opacity: 0 },
-      ],
-      timing,
-    ),
-    header.animate([{ height: `${height}px` }, { height: `${navigation.offsetHeight}px` }], timing),
-  ];
-  await Promise.all(animations.map((animation) => animation.finished));
 }
 
 async function prepareJourney(destination) {
@@ -125,71 +78,36 @@ function buildJourney(prepared) {
   if (!overlay) throw new Error('Page transition container unavailable');
   const track = document.createElement('div');
   track.className = 'page-journey-track';
-  const width = window.innerWidth;
   const panels = prepared.indices.map((_, index) => {
     const panel = document.createElement('div');
     panel.className = 'page-journey-panel';
-    panel.style.width = `${width}px`;
     if (index === prepared.indices.length - 1) return panel;
     panel.setAttribute('data-page-preview', '');
     const page = index === 0 ? document : prepared.previews[index - 1];
-    const contents = document.createElement('div');
-    Array.from(page.body.children).forEach((child) => {
-      if (!child.matches('script, .astro-route-announcer')) contents.append(child.cloneNode(true));
-    });
-    contents
-      .querySelectorAll(
-        'script, .site-nav, .header-background, .header-page-indicator, [data-page-journey]',
-      )
-      .forEach((node) => node.remove());
+    const contents = page.querySelector('.page-content').cloneNode(true);
+    contents.querySelectorAll('script').forEach((node) => node.remove());
     contents.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
     contents
       .querySelectorAll('.reveal-pending')
       .forEach((node) => node.classList.remove('reveal-pending'));
-    if (index === 0) {
-      if (styledHeader) {
-        const header = contents.querySelector('.site-header');
-        header.style.minHeight = '0';
-        header.style.height = `${document.querySelector('.site-nav').offsetHeight}px`;
-        header.style.overflow = 'hidden';
-      }
-      contents.style.transform = `translateY(-${window.scrollY}px)`;
-    }
+    if (index === 0) contents.style.transform = `translateY(-${window.scrollY}px)`;
     panel.append(contents);
     return panel;
   });
   (prepared.direction > 0 ? panels : [...panels].reverse()).forEach((panel) => track.append(panel));
-  const start = prepared.direction > 0 ? 0 : -(panels.length - 1) * width;
-  track.style.transform = `translateX(${start}px)`;
+  const start = prepared.direction > 0 ? 0 : -(panels.length - 1) * 100;
+  track.style.transform = `translateX(${start}%)`;
   overlay.replaceChildren(track);
-  journey = { ...prepared, track, panels, width, start };
+  journey = { ...prepared, track, panels, start };
 }
 
-function moveToPanel(node, panel) {
-  if (!node) return;
-  const marker = document.createComment('page-transition-position');
-  node.before(marker);
-  movedNodes.push({ node, marker });
-  panel.append(node);
-}
-
-// The last panel contains live destination nodes, never a preview of the destination.
+// The last panel contains the live destination content.
 function mountDestination() {
-  const panel = journey.panels.at(-1);
-  const header = document.querySelector('.site-header');
-  const shell = header.cloneNode(false);
-  shell.removeAttribute('id');
-  if (routeIndex(location.href) === 0) {
-    const compact = `${document.querySelector('.site-nav').offsetHeight}px`;
-    saveHeader(header);
-    header.style.minHeight = shell.style.minHeight = '0';
-    header.style.height = shell.style.height = compact;
-    header.style.overflow = shell.style.overflow = 'hidden';
-  }
-  panel.append(shell);
-  moveToPanel(document.querySelector('.hero:not([data-page-preview] *)'), shell);
-  moveToPanel(document.querySelector('main:not([data-page-preview] *)'), panel);
-  moveToPanel(document.querySelector('.site-footer:not([data-page-preview] *)'), panel);
+  const content = document.querySelector('.page-content:not([data-page-preview] *)');
+  const marker = document.createComment('page-transition-position');
+  content.before(marker);
+  movedContent = { content, marker };
+  journey.panels.at(-1).append(content);
 }
 
 function updateMenu(index, page = document) {
@@ -200,13 +118,15 @@ function updateMenu(index, page = document) {
 }
 
 async function sweepJourney() {
+  const currentJourney = journey;
   await waitForImages(overlay);
-  const { indices, direction, track, width, start } = journey;
+  if (journey !== currentJourney) return;
+  const { indices, direction, track, start } = currentJourney;
   const steps = indices.length - 1;
-  const sweep = track.animate(
+  const animation = track.animate(
     [
-      { transform: `translateX(${start}px)` },
-      { transform: `translateX(${start - direction * steps * width}px)` },
+      { transform: `translateX(${start}%)` },
+      { transform: `translateX(${start - direction * steps * 100}%)` },
     ],
     {
       duration: (steps - 1) * 240 + 700,
@@ -214,42 +134,19 @@ async function sweepJourney() {
       fill: 'forwards',
     },
   );
-  animations.push(sweep);
+  sweep = animation;
   const update = () => {
     // A queued frame may run after completion or after reset cancels the sweep.
-    if (sweep.playState !== 'running' || journey?.track !== track) return;
-    const progress = sweep.effect.getComputedTiming().progress ?? 0;
+    if (animation.playState !== 'running' || journey?.track !== track) return;
+    const progress = animation.effect.getComputedTiming().progress ?? 0;
     updateMenu(indices[Math.min(steps, Math.round(progress * steps))]);
-    if (sweep.playState === 'running') requestAnimationFrame(update);
+    requestAnimationFrame(update);
   };
   updateMenu(indices[0]);
   requestAnimationFrame(update);
-  await sweep.finished;
+  await animation.finished;
+  if (journey !== currentJourney) return;
   updateMenu(indices[steps]);
-}
-
-async function expandHero() {
-  const header = document.querySelector('.site-header');
-  const hero = document.querySelector('.hero:not([data-page-preview] *)');
-  if (!header || !hero) return;
-  const compact = document.querySelector('.site-nav').offsetHeight;
-  restoreHeader();
-  const height = header.getBoundingClientRect().height;
-  saveHeader(header);
-  header.style.minHeight = '0';
-  header.style.overflow = 'hidden';
-  animations = [
-    header.animate([{ height: `${compact}px` }, { height: `${height}px` }], timing),
-    hero.animate(
-      [
-        { transform: 'translateY(-100%)', opacity: 0 },
-        { transform: 'translateY(0)', opacity: 1 },
-      ],
-      timing,
-    ),
-  ];
-  await Promise.all(animations.map((animation) => animation.finished));
-  restoreHeader();
 }
 
 // Astro swaps the real document content while preserving only the temporary transition container.
@@ -259,7 +156,6 @@ document.addEventListener('astro:before-swap', (event) => {
     reset();
     pageReady?.();
   }
-  restoreHeader();
   swapTransition = event.viewTransition;
   const from = routeIndex(event.from.href);
   const to = routeIndex(event.to.href);
@@ -271,18 +167,10 @@ document.addEventListener('astro:before-swap', (event) => {
   }
   // Set the departure state before layout can start a transition from the destination state.
   if (journey) updateMenu(journey.indices[0], event.newDocument);
-  if (busy) event.newDocument.documentElement.dataset.pageLeaving = 'true';
 });
 
 document.addEventListener('astro:after-swap', () => {
   if (journey) mountDestination();
-  else if (busy && routeIndex(location.href) === 0) {
-    const header = document.querySelector('.site-header');
-    saveHeader(header);
-    header.style.minHeight = '0';
-    header.style.height = `${document.querySelector('.site-nav').offsetHeight}px`;
-    header.style.overflow = 'hidden';
-  }
 });
 
 document.addEventListener('astro:page-load', () => {
@@ -332,17 +220,15 @@ document.addEventListener(
     if (busy) return;
     busy = true;
     const currentGeneration = ++generation;
-    root.dataset.pageLeaving = 'true';
     try {
       let prepared;
-      if (Math.abs(to - from) > 1) {
+      if (Math.abs(to - from) > 1 && !destination.hash) {
         try {
           prepared = await prepareJourney(destination);
         } catch {
           /* Direct transition remains available. */
         }
       }
-      await collapseHero();
       if (currentGeneration !== generation) return;
       if (prepared) {
         buildJourney(prepared);
@@ -373,13 +259,7 @@ document.addEventListener(
       }
       if (currentGeneration !== generation) return;
       await swapTransition?.finished.catch(() => {});
-      if (journey) await sweepJourney();
-      restoreNodes();
-      if (overlay) {
-        overlay.hidden = true;
-        overlay.replaceChildren();
-      }
-      if (to === 0) await expandHero();
+      if (currentGeneration === generation && journey) await sweepJourney();
     } catch {
       // If the router cannot load the destination, normal navigation remains available.
       if (currentGeneration === generation && routeIndex(location.href) !== to)
@@ -388,6 +268,7 @@ document.addEventListener(
       if (currentGeneration === generation) {
         pageReady = undefined;
         reset();
+        updateMenu(routeIndex(location.href));
       }
     }
   },
