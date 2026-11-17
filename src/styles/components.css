@@ -75,13 +75,21 @@
     box-shadow: 0 0 10px rgb(0 216 255 / 30%);
   }
 
-  .header-page-indicator a[aria-current='page']:not([href='/contact'])::before {
+  .header-page-indicator a[aria-current='page']::before,
+  .header-page-indicator a[href='/contact']::before {
     content: '';
     position: absolute;
     inset: auto 0 2px;
     height: calc(var(--site-header-height) - 2px);
     pointer-events: none;
     opacity: 0.5;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 30%,
+      #000 70%,
+      transparent
+    );
     background: linear-gradient(
       to top,
       rgb(0 216 255 / 16%),
@@ -90,7 +98,46 @@
     );
   }
 
+  .header-page-indicator a[href='/contact']::before {
+    animation: contact-light-breathe 4s ease-in-out infinite;
+  }
+
+  .header-page-indicator a[href='/contact']:not([aria-current='page'])::before {
+    background: radial-gradient(
+      ellipse at 50% 50%,
+      rgb(0 216 255 / 20%) 0%,
+      rgb(0 216 255 / 7%) 35%,
+      transparent 70%
+    );
+  }
+
+  @keyframes contact-light-breathe {
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header-page-indicator a[href='/contact']::before {
+      animation: none;
+    }
+  }
+
   @media (max-width: 961px) {
+    .header-page-indicator a[aria-current='page']::before,
+    .header-page-indicator a[href='/contact']::before {
+      content: none;
+      animation: none;
+    }
+
+    .header-page-indicator a span {
+      box-shadow: none;
+    }
+
     .site-nav .nav-links a {
       display: flex;
       align-items: center;
@@ -110,7 +157,6 @@
   }
 
   .nav-links .nav-contact {
-    background: #102b40;
     display: inline-flex;
     align-items: center;
     justify-content: center;
