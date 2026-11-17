@@ -63,7 +63,9 @@
     width: 100%;
     height: 2px;
     background: rgb(0 216 255 / 16%);
-    transition: background-color 180ms ease, box-shadow 180ms ease;
+    transition:
+      background-color 180ms ease,
+      box-shadow 180ms ease;
   }
 
   .header-page-indicator a[aria-current='page'] span,
@@ -369,10 +371,7 @@
   }
 
   .contact-main {
-    background:
-      radial-gradient(ellipse 38rem 32rem at 82% 12%, rgb(0 141 255 / 10%), transparent),
-      radial-gradient(ellipse 48rem 30rem at 65% 78%, rgb(0 141 255 / 8%), transparent),
-      var(--color-ink);
+    background: #07172b;
   }
 
   .contact-main > .contact-page,
@@ -666,20 +665,52 @@
   }
 
   .project-entry {
+    position: relative;
+    min-width: 0;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 1rem;
     scroll-margin-top: 2rem;
   }
 
-  .project-entry + .project-entry {
-    @apply mt-[clamp(3rem,7vw,6rem)] pt-[clamp(3rem,7vw,6rem)];
-    border-top: 1px solid var(--color-border);
+  .project-entry:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 4px;
+  }
+
+  .project-caption {
+    position: absolute;
+    inset: auto 0 0;
+    max-height: 100%;
+    overflow-y: auto;
+    padding: clamp(1rem, 2.5vw, 1.75rem);
+    border-top: 1px solid rgb(255 255 255 / 12%);
+    background: rgb(3 7 15 / 96%);
+    transform: translateY(100%);
+    transition: transform 280ms ease;
+  }
+
+  .project-entry:is(:hover, :focus-within) .project-caption {
+    transform: translateY(0);
+  }
+
+  .project-category {
+    margin-bottom: 0.5rem;
   }
 
   .project-caption h2 {
-    @apply text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.2] font-semibold tracking-[-0.035em];
+    @apply text-[clamp(1.25rem,2.5vw,1.75rem)] leading-[1.2] font-semibold tracking-[-0.035em];
+  }
+
+  .project-description {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
   }
 
   .project-description p {
-    @apply max-w-140 leading-[1.75] text-muted;
+    @apply text-[0.875rem] leading-[1.6] text-muted;
   }
 
   .project-link:hover {
@@ -690,39 +721,21 @@
     @apply grid grid-cols-2 gap-10;
   }
 
-  .project-showcase-page .project-entry + .project-entry {
-    @apply mt-0 pt-0;
-    border-top: 0;
+  @media (hover: none) {
+    .project-caption {
+      transform: translateY(0);
+    }
   }
 
-  .project-showcase-page .project-caption {
-    @apply mt-5;
-  }
-
-  .project-showcase-page .project-category {
-    @apply mb-2;
-  }
-
-  .project-showcase-page .project-caption h2 {
-    @apply text-[clamp(1.5rem,2.5vw,2rem)];
-  }
-
-  .project-showcase-page .project-description {
-    @apply mt-3 flex-col gap-2;
-  }
-
-  .project-showcase-page .project-description p {
-    @apply leading-[1.6];
+  @media (prefers-reduced-motion: reduce) {
+    .project-caption {
+      transition: none;
+    }
   }
 
   @media (max-width: 767px) {
     .project-showcase-page .project-list {
       @apply grid-cols-[minmax(0,1fr)] gap-8;
-    }
-
-    .project-showcase-page .project-entry + .project-entry {
-      @apply pt-8;
-      border-top: 1px solid var(--color-border);
     }
   }
 
@@ -799,7 +812,13 @@
   }
 
   .project-pillar:has(.project-pillar-cover)::after {
-    background: linear-gradient(180deg, rgb(2 9 24 / 25%), transparent 25%, transparent 48%, #041023 80%);
+    background: linear-gradient(
+      180deg,
+      rgb(2 9 24 / 25%),
+      transparent 25%,
+      transparent 48%,
+      #041023 80%
+    );
   }
 
   .project-pillar.is-active {
@@ -1181,17 +1200,25 @@ html[data-page-direction='backward']::view-transition-new(root) {
 }
 
 @keyframes page-out-left {
-  to { transform: translateX(-100%); }
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 @keyframes page-in-right {
-  from { transform: translateX(100%); }
+  from {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes page-out-right {
-  to { transform: translateX(100%); }
+  to {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes page-in-left {
-  from { transform: translateX(-100%); }
+  from {
+    transform: translateX(-100%);
+  }
 }

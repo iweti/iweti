@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jiu-jitsu — composição da capa</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scrollbar-width: none;
+      }
+      body {
+        margin: 0;
+        background: #08090b;
+      }
+      .showcase {
+        position: relative;
+        isolation: isolate;
+        width: 1600px;
+        height: 1600px;
+        overflow: hidden;
+        background:
+          radial-gradient(ellipse at 85% 45%, #991a2355, transparent 60%),
+          radial-gradient(ellipse at 14% 87%, #b82a2a33, transparent 45%),
+          linear-gradient(145deg, #202024, #0b0b0e 52%, #151013);
+      }
+      .showcase::before {
+        content: '';
+        position: absolute;
+        inset: 72% -30% -60%;
+        border-radius: 50%;
+        border-top: 2px solid #f0b5b51c;
+        background: linear-gradient(#ffffff04, #00000066);
+        transform: rotate(-18deg);
+      }
+      .brand {
+        position: absolute;
+        top: 100px;
+        left: 555px;
+        width: 490px;
+        height: auto;
+        mix-blend-mode: lighten;
+      }
+      .ground-shadow {
+        position: absolute;
+        top: 1180px;
+        left: 200px;
+        width: 1210px;
+        height: 115px;
+        background: #000c;
+        border-radius: 50%;
+        filter: blur(42px);
+        transform: none;
+      }
+      .laptop {
+        position: absolute;
+        top: 295px;
+        left: -170px;
+        width: 1940px;
+        transform: perspective(3000px) rotateX(5deg);
+        filter: drop-shadow(-12px 40px 26px #0009);
+      }
+      .display {
+        position: relative;
+        padding: 26px 18px 32px;
+        border: 2px solid #77777b;
+        border-radius: 27px 27px 12px 12px;
+        background: linear-gradient(135deg, #424247, #09090b 35%, #202025);
+        box-shadow:
+          inset 0 0 0 4px #111114,
+          0 2px 1px #ffffff50;
+      }
+      .display::before {
+        content: '';
+        position: absolute;
+        top: 11px;
+        left: calc(50% - 4px);
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #08090c;
+        box-shadow: inset 0 0 0 2px #3a3b40;
+      }
+      .display img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+      }
+      .base {
+        position: relative;
+        width: 2100px;
+        height: 23px;
+        margin-left: -80px;
+        border-radius: 3px 3px 50% 50% / 3px 3px 20px 20px;
+        background: linear-gradient(#b6b6bd, #73737c 23%, #35353d 74%, #111115);
+        box-shadow: 0 3px 1px #0008;
+      }
+      .base::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 900px;
+        width: 250px;
+        height: 9px;
+        border-radius: 0 0 12px 12px;
+        background: linear-gradient(#5d5d66, #a0a0aa);
+      }
+      @media (width <= 800px) {
+        .showcase {
+          zoom: 0.5;
+        }
+      }
+      @font-face {
+        font-family: Barlow;
+        src: url(barlow-condensed-800.ttf);
+        font-weight: 800;
+      }
+      @font-face {
+        font-family: Inter;
+        src: url(inter-600.ttf);
+        font-weight: 600;
+      }
+      .brand {
+        top: 85px;
+        left: 1000px;
+        width: 510px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        mix-blend-mode: normal;
+        color: #fff;
+      }
+      .brand svg {
+        width: 95px;
+        height: 95px;
+        flex-shrink: 0;
+      }
+      .brand span {
+        font:
+          800 84px/1 Barlow,
+          sans-serif;
+        letter-spacing: -2px;
+      }
+      .brand b {
+        color: #e52a2d;
+      }
+      .brand small {
+        display: block;
+        margin-top: 12px;
+        font:
+          600 14px/1 Inter,
+          sans-serif;
+        letter-spacing: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="showcase" aria-label="Jiu-jitsu em notebook, com a interface desktop em destaque">
+      <div class="brand" aria-label="Jiu-Jitsu">
+        <svg viewBox="0 0 40 40" fill="#e52a2d" aria-hidden="true">
+          <path d="M13 6h10l-7 19c-2 6-6 9-12 9l3-8c2 0 3-1 4-4l3-9h-4l3-7Z" />
+          <path d="M27 6h10l-7 19c-2 6-6 9-12 9l3-8c2 0 3-1 4-4l3-9h-4l3-7Z" />
+        </svg>
+        <span>JIU-JITSU<b>.</b><small>A ARTE SUAVE NOS CONECTA</small></span>
+      </div>
+      <div class="ground-shadow" aria-hidden="true"></div>
+      <div class="laptop">
+        <div class="display">
+          <img
+            src="Jiu-jitsu-hero.webp"
+            alt="Interface desktop do site Jiu-jitsu"
+            width="1584"
+            height="674"
+          />
+        </div>
+        <div class="base" aria-hidden="true"></div>
+      </div>
+    </main>
+  </body>
+</html>

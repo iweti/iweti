@@ -29,28 +29,41 @@ const Heading = standalone ? 'h1' : 'h2';
         id={project.slug}
         data-project-name={project.name}
         aria-labelledby={`${project.slug}-title`}
+        tabindex="0"
       >
-        <div
-          class="project-preview flex aspect-16/10 min-h-68 w-full min-w-0 flex-col items-start justify-between rounded-2xl border border-border p-[clamp(1.25rem,4vw,2.5rem)]"
-          data-project={project.slug}
-        >
-          <span class="project-status rounded-4xl border border-border text-[0.75rem]">
-            {project.status}
-          </span>
-          <span
-            class="project-preview-name max-w-full text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-[-0.04em] wrap-anywhere"
-            aria-hidden="true"
+        {project.cover ? (
+          <div class="project-cover relative aspect-square w-full min-w-0 overflow-hidden rounded-2xl border border-border">
+            <img
+              class="block aspect-square h-auto w-full object-contain"
+              src={project.cover.src}
+              alt={project.cover.alt}
+              width={project.cover.width}
+              height={project.cover.height}
+              decoding="async"
+            />
+          </div>
+        ) : (
+          <div
+            class="project-preview flex aspect-square w-full min-w-0 flex-col items-start justify-between rounded-2xl border border-border p-[clamp(1.25rem,4vw,2.5rem)]"
+            data-project={project.slug}
           >
-            {project.name}
-          </span>
-          <span class="project-preview-category text-[0.85rem] text-muted">{project.category}</span>
-        </div>
-        <div class="project-caption mt-[clamp(2rem,5vw,3rem)]">
-          <p class="project-category mb-3 text-[0.65rem] tracking-[0.14em] text-muted uppercase">
+            <span
+              class="project-preview-name my-auto max-w-full text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-[-0.04em] wrap-anywhere"
+              aria-hidden="true"
+            >
+              {project.name}
+            </span>
+            <span class="project-preview-category text-[0.85rem] text-muted">
+              {project.category}
+            </span>
+          </div>
+        )}
+        <div class="project-caption">
+          <p class="project-category text-[0.65rem] tracking-[0.14em] text-muted uppercase">
             {project.category}
           </p>
           <h2 id={`${project.slug}-title`}>{project.name}</h2>
-          <div class="project-description mt-4 flex items-start justify-between gap-8 max-[601px]:flex-col max-[601px]:gap-3">
+          <div class="project-description">
             <p>{project.description}</p>
             {project.url && (
               <a
