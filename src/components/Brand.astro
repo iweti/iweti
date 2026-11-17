@@ -1,14 +1,16 @@
 ---
 interface Props {
   href?: string;
+  current?: boolean;
 }
 
-const { href = '/' } = Astro.props;
+const { href = '/', current = false } = Astro.props;
 ---
 
 <a
   class="brand inline-flex shrink-0 items-center gap-1 text-[1.875rem] leading-none font-black tracking-[-0.13em] whitespace-nowrap text-white"
   href={href}
+  aria-current={current ? 'page' : undefined}
   aria-label="IwetI, página inicial"
 >
   <img

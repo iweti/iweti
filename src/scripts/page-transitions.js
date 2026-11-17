@@ -111,7 +111,7 @@ function mountDestination() {
 }
 
 function updateMenu(index, page = document) {
-  page.querySelectorAll('.nav-links a, .header-page-indicator a').forEach((link) => {
+  page.querySelectorAll('.site-nav .brand, .nav-links a, .header-page-indicator a').forEach((link) => {
     if (routeIndex(link.href) === index) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   });

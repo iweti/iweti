@@ -11,6 +11,39 @@
     view-transition-name: site-navigation;
     background: rgb(1 9 31 / 82%);
     backdrop-filter: blur(14px);
+    transition: transform 200ms ease;
+  }
+
+  .site-nav.is-scroll-hidden {
+    transform: translateY(-100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-nav {
+      transition: none;
+    }
+  }
+
+  @media (min-width: 962px) {
+    .site-nav .nav {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    .site-nav .nav-links {
+      display: contents;
+    }
+
+    .site-nav .brand,
+    .site-nav .nav-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: stretch;
+      align-self: stretch;
+      text-align: center;
+    }
   }
 
   .header-page-indicator {
@@ -20,9 +53,10 @@
   }
 
   .header-page-indicator a {
+    position: relative;
     display: flex;
     align-items: flex-end;
-    min-height: 1.5rem;
+    min-height: 0.5rem;
   }
 
   .header-page-indicator span {
@@ -39,6 +73,35 @@
     box-shadow: 0 0 10px rgb(0 216 255 / 30%);
   }
 
+  .header-page-indicator a[aria-current='page']::before,
+  .header-page-indicator a[href='/contact']::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 2px;
+    height: calc(var(--site-header-height) - 2px);
+    pointer-events: none;
+    opacity: 0.5;
+    background: linear-gradient(
+      to top,
+      rgb(0 216 255 / 16%),
+      rgb(0 216 255 / 5%) 45%,
+      transparent 100%
+    );
+  }
+
+  .header-page-indicator a[href='/contact'][aria-current='page']::before {
+    opacity: 1;
+  }
+
+  @media (max-width: 961px) {
+    .site-nav .nav-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.75rem;
+    }
+  }
+
   .nav-links a {
     @apply relative;
     transition: color 180ms ease;
@@ -49,28 +112,19 @@
     @apply text-white;
   }
 
-  .nav-links .nav-cta {
-    padding: 0.5rem 1rem;
-    border: 1px solid rgb(0 216 255 / 40%);
-    border-radius: 0.75rem;
-    background: #061a2e;
-    color: var(--color-cyan);
-    box-shadow:
-      0 0 12px rgb(0 216 255 / 12%),
-      0 0 28px rgb(0 216 255 / 6%);
-    transition:
-      background-color 180ms ease,
-      box-shadow 180ms ease;
+  .nav-links .nav-contact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
-  .nav-links .nav-cta:hover,
-  .nav-links .nav-cta:focus-visible {
-    border-color: var(--color-cyan);
-    background: #0a2942;
+  .nav-contact svg {
+    flex-shrink: 0;
+  }
+
+  .nav-links a[aria-current='page'] {
     color: var(--color-cyan);
-    box-shadow:
-      0 0 16px rgb(0 216 255 / 50%),
-      0 0 36px rgb(0 216 255 / 25%);
   }
 
   .section-heading h2,
