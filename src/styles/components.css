@@ -1287,3 +1287,13 @@ html:not([data-navigation-state='idle']) .site-nav {
 [data-panel][aria-hidden='true'] * {
   animation-play-state: paused !important;
 }
+
+[data-panel-track] {
+  position: relative;
+  width: 100%;
+}
+[data-panel].is-moving .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}

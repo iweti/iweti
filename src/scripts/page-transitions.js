@@ -1,6 +1,8 @@
 // The five real panels belong to this document for its entire lifetime.
 const panels = [...document.querySelectorAll('[data-panel]')];
 const root = document.documentElement;
+const track = document.querySelector('[data-panel-track]');
+const pageWidth = () => track.clientWidth;
 const sequence = ['/', '/portifolios', '/about', '/contact'];
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const normalize = (path) => path.replace(/\/$/, '') || '/';
@@ -8,6 +10,7 @@ let active = panels.find((panel) => !panel.hidden);
 let state = 'idle';
 let gesture;
 let incoming;
+let travelSteps = 0;
 let timer;
 let animations = [];
 let generation = 0;
@@ -49,8 +52,12 @@ function stop() {
   animations = [];
   gesture = undefined;
   incoming = undefined;
+  travelSteps = 0;
+  track.style.removeProperty('transform');
   panels.forEach((panel) => {
     panel.style.removeProperty('transform');
+    panel.style.removeProperty('left');
+    panel.style.removeProperty('top');
     panel.classList.remove('is-moving');
     panel.hidden = panel !== active;
     panel.inert = panel !== active;
@@ -112,19 +119,29 @@ function activate(url, push = true, restore = false) {
   }
   document.dispatchEvent(new Event('panel:change'));
 }
-function prepare(destination, direction) {
+function prepare(destination) {
   incoming = destination;
-  incoming.hidden = false;
-  incoming.classList.add('is-moving');
-  incoming.style.transform = `translateX(${direction * innerWidth}px)`;
-  // Compensate the document's vertical offset without changing the outgoing Hero height.
-  incoming.style.top = `${scrollY}px`;
+  const from = sequence.indexOf(active.dataset.panel);
+  const to = sequence.indexOf(destination.dataset.panel);
+  travelSteps = to - from;
+  // Keep the source in document flow, and lay the same live intermediate nodes
+  // side by side relative to it; only the common track moves.
+  sequence.slice(Math.min(from, to), Math.max(from, to) + 1).forEach((path) => {
+    const panel = panels.find((panel) => panel.dataset.panel === path);
+    if (panel === active) return;
+    panel.hidden = false;
+    panel
+      .querySelectorAll('.reveal-pending')
+      .forEach((element) => element.classList.remove('reveal-pending'));
+    panel.classList.add('is-moving');
+    panel.style.left = `${(sequence.indexOf(path) - from) * pageWidth()}px`;
+    panel.style.top = `${scrollY}px`;
+  });
 }
-function move(dx, direction) {
-  active.style.transform = `translateX(${dx}px)`;
-  if (incoming) incoming.style.transform = `translateX(${dx + direction * innerWidth}px)`;
+function move(dx) {
+  track.style.transform = `translateX(${dx}px)`;
 }
-function settle(url, commit, dx, direction) {
+function settle(url, commit, dx) {
   setState('animating');
   const version = generation;
   const finish = () => {
@@ -136,28 +153,23 @@ function settle(url, commit, dx, direction) {
     finish();
     return;
   }
-  const end = commit ? -direction * innerWidth : 0;
-  const options = { duration: 280, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' };
+  const end = commit ? -travelSteps * pageWidth() : 0;
+  const duration = 280 * Math.max(1, Math.abs(travelSteps));
+  const options = {
+    duration,
+    easing: Math.abs(travelSteps) > 1 ? 'linear' : 'cubic-bezier(.22,.61,.36,1)',
+    fill: 'forwards',
+  };
   animations = [
-    active.animate(
+    track.animate(
       [{ transform: `translateX(${dx}px)` }, { transform: `translateX(${end}px)` }],
       options,
     ),
   ];
-  if (incoming)
-    animations.push(
-      incoming.animate(
-        [
-          { transform: `translateX(${dx + direction * innerWidth}px)` },
-          { transform: `translateX(${end + direction * innerWidth}px)` },
-        ],
-        options,
-      ),
-    );
   Promise.all(animations.map((animation) => animation.finished))
     .then(finish)
     .catch(() => {});
-  timer = setTimeout(finish, 280);
+  timer = setTimeout(finish, duration);
 }
 document.addEventListener(
   'click',
@@ -188,14 +200,18 @@ document.addEventListener(
     if (url.origin !== location.origin || !destination || url.search !== location.search) return;
     event.preventDefault();
     if (state !== 'idle') return;
-    if (destination === active || reduced.matches) {
+    if (
+      destination === active ||
+      reduced.matches ||
+      !sequence.includes(active.dataset.panel) ||
+      !sequence.includes(destination.dataset.panel)
+    ) {
       activate(url);
       return;
     }
     setState('preparing');
-    const direction = panels.indexOf(destination) > panels.indexOf(active) ? 1 : -1;
-    prepare(destination, direction);
-    settle(url, true, 0, direction);
+    prepare(destination);
+    settle(url, true, 0);
   },
   true,
 );
@@ -258,7 +274,7 @@ document.addEventListener(
       }
       gesture.direction = direction;
       setState('dragging');
-      prepare(destination, direction);
+      prepare(destination);
       active.setPointerCapture?.(event.pointerId);
     }
     if (state !== 'dragging') return;
@@ -266,7 +282,7 @@ document.addEventListener(
     gesture.dx = Math.max(-innerWidth, Math.min(innerWidth, dx));
     // Never pull beyond the chosen adjacent page.
     gesture.dx = gesture.direction > 0 ? Math.min(0, gesture.dx) : Math.max(0, gesture.dx);
-    move(gesture.dx, gesture.direction);
+    move(gesture.dx);
   },
   { passive: false },
 );
@@ -284,7 +300,7 @@ function end(event, cancel = false) {
   setTimeout(() => {
     suppressClick = false;
   }, 0);
-  settle(new URL(incoming.dataset.panel, location.href), commit, current.dx, current.direction);
+  settle(new URL(incoming.dataset.panel, location.href), commit, current.dx);
 }
 document.addEventListener('pointerup', (event) => end(event));
 document.addEventListener('pointercancel', (event) => end(event, true));
