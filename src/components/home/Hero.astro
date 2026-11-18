@@ -53,13 +53,17 @@ const headlineWords = ['experiências', 'digitais'];
   import { onPageLoad } from '../../lib/page-lifecycle';
   onPageLoad((signal) => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const phrases = document.querySelectorAll<HTMLElement>('.hero-wave:not([data-page-preview] *)');
+    const phrases = document.querySelectorAll<HTMLElement>('[data-panel="/"] .hero-wave');
     let animations: Animation[] = [];
 
     function startWaves() {
       animations.forEach((animation) => animation.cancel());
       animations = [];
-      if (reducedMotion.matches) return;
+      if (
+        reducedMotion.matches ||
+        document.querySelector('[data-panel="/"]')?.getAttribute('aria-hidden') === 'true'
+      )
+        return;
 
       phrases.forEach((phrase) => {
         const styles = getComputedStyle(phrase);
@@ -106,6 +110,7 @@ const headlineWords = ['experiências', 'digitais'];
 
     startWaves();
     reducedMotion.addEventListener('change', startWaves, { signal });
+    document.addEventListener('panel:change', startWaves, { signal });
     return () => animations.forEach((animation) => animation.cancel());
   });
 </script>

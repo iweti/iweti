@@ -1,0 +1,19 @@
+---
+import Hero from '../home/Hero.astro';
+import Services from '../home/Services.astro';
+import AboutSection from '../home/AboutSection.astro';
+import PortfolioSection from '../home/PortfolioSection.astro';
+import TestimonialsSection from '../home/TestimonialsSection.astro';
+---
+
+<div class="home-hero relative min-h-170 overflow-hidden max-[901px]:min-h-0" id="home">
+  <Hero />
+</div>
+<main>
+  <div class="home-projects-services">
+    <PortfolioSection />
+    <Services />
+  </div>
+  <AboutSection />
+  <TestimonialsSection />
+</main>

@@ -1,7 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ContactForm from '../components/contact/ContactForm.astro';
-import ContactTestimonials from '../components/contact/ContactTestimonials.astro';
 ---
 
 <BaseLayout
@@ -9,29 +7,4 @@ import ContactTestimonials from '../components/contact/ContactTestimonials.astro
   footer={{ showCta: false, ctaHref: 'mailto:contato@iweti.com' }}
   title="Contato | IwetI"
   description="Entre em contato com a IwetI para conversar sobre seu próximo projeto."
->
-  <main class="contact-main">
-    <section class="contact-page min-h-[calc(100vh-12rem)] py-20">
-      <div class="contact-layout shell grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-start md:gap-12">
-        <div class="contact-intro reveal">
-          <p class="eyebrow">FALE COM A IWETI</p>
-          <h1>Vamos conversar sobre o seu projeto?</h1>
-          <p class="contact-description mt-4 max-w-120 text-[0.95rem] leading-[1.7] text-muted">
-            Preencha seus dados e conte um pouco sobre o que você precisa. Nossa equipe terá prazer
-            em conversar com você.
-          </p>
-          <img
-            class="contact-mascot hidden h-auto w-[min(100%,420px)] md:block"
-            src="/assets/images/mascote-contact-new.png"
-            alt="Mascote IwetI com a mão junto ao ouvido, pronto para escutar"
-            width="1086"
-            height="1448"
-            loading="lazy"
-          />
-        </div>
-        <ContactForm />
-      </div>
-    </section>
-    <ContactTestimonials />
-  </main>
-</BaseLayout>
+/>

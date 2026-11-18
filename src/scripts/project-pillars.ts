@@ -2,7 +2,7 @@ import { onPageLoad } from '../lib/page-lifecycle';
 
 onPageLoad(() => {
   document
-    .querySelectorAll<HTMLElement>('[data-project-pillars]:not([data-page-preview] *)')
+    .querySelectorAll<HTMLElement>('[data-panel="/"] [data-project-pillars]')
     .forEach((group) => {
       const cards = [...group.querySelectorAll<HTMLElement>('[data-pillar]')];
       const hoverPointer = window.matchMedia('(hover: hover) and (pointer: fine)');

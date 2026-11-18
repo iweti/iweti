@@ -50,6 +50,7 @@ export async function sendContact(apiUrl: string, payload: ContactPayload): Prom
     }
 
     if (response.ok) {
+      if (!isRecord(body)) return { kind: 'error', message: unknownOutcome };
       if (isRecord(body) && (body.sucesso === false || body.erro)) {
         return {
           kind: 'error',

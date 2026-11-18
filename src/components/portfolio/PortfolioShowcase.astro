@@ -6,6 +6,7 @@ interface Props {
 }
 const { standalone = false } = Astro.props;
 
+const prefix = standalone ? 'projects-' : '';
 const Heading = standalone ? 'h1' : 'h2';
 ---
 
@@ -14,7 +15,7 @@ const Heading = standalone ? 'h1' : 'h2';
     'project-showcase w-full p-[clamp(3rem,6vw,5rem)_max(1rem,calc((100%-1120px)/2))]',
     { 'project-showcase-page': standalone },
   ]}
-  id="portfolio"
+  id={prefix + 'portfolio'}
   aria-label="Nosso portfólio"
 >
   <header class="project-heading mb-12 max-w-160">

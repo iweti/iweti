@@ -3,7 +3,44 @@ import '../styles/styles.css';
 import type { ComponentProps } from 'astro/types';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { ClientRouter } from 'astro:transitions';
+import Home from '../components/panels/Home.astro';
+import Projects from '../components/panels/Projects.astro';
+import About from '../components/panels/About.astro';
+import Contact from '../components/panels/Contact.astro';
+import Privacy from '../components/panels/Privacy.astro';
+const panels = [
+  {
+    path: '/',
+    component: Home,
+    title: 'IwetI | Tecnologia sem limites',
+    description: 'IwetI - tecnologia, ideias e resultados sem limites.',
+  },
+  {
+    path: '/portifolios',
+    component: Projects,
+    title: 'Projetos | IwetI',
+    description: 'Conheça projetos de sites e soluções digitais desenvolvidos pela IwetI.',
+  },
+  {
+    path: '/about',
+    component: About,
+    title: 'Quem somos | IwetI',
+    description:
+      'Conheça a IwetI, nossa missão e visão e o significado de inovação, pessoas e tecnologia em nosso nome.',
+  },
+  {
+    path: '/contact',
+    component: Contact,
+    title: 'Contato | IwetI',
+    description: 'Entre em contato com a IwetI para conversar sobre seu próximo projeto.',
+  },
+  {
+    path: '/privacy',
+    component: Privacy,
+    title: 'Política de Privacidade | IwetI',
+    description: 'Política de privacidade da IwetI.',
+  },
+];
 
 interface Props {
   title: string;
@@ -13,7 +50,7 @@ interface Props {
   footer?: Omit<ComponentProps<typeof SiteFooter>, 'home' | 'currentPage'>;
 }
 
-const { title, description, home = false, currentPage, footer = {} } = Astro.props;
+const { title, description, home = false, currentPage } = Astro.props;
 ---
 
 <!doctype html>
@@ -22,7 +59,6 @@ const { title, description, home = false, currentPage, footer = {} } = Astro.pro
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <ClientRouter fallback="swap" />
     <title>{title}</title>
     <link rel="icon" type="image/jpg" href="/assets/images/favicon.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,27 +70,29 @@ const { title, description, home = false, currentPage, footer = {} } = Astro.pro
   </head>
   <body>
     <SiteHeader home={home} currentPage={currentPage} />
-    <div class:list={['page-content', { 'page-content-home': home }]}>
-      {home && (
-        <div class="home-hero relative min-h-170 overflow-hidden max-[901px]:min-h-0" id="home">
-          <slot name="hero" />
+    <div data-panels>
+      {panels.map(({ path, component: Panel, title, description }) => (
+        <div
+          data-panel={path}
+          data-title={title}
+          data-description={description}
+          class:list={['page-content', { 'page-content-home': path === '/' }]}
+          hidden={Astro.url.pathname.replace(/\/$/, '') !== path.replace(/\/$/, '')}
+          inert={Astro.url.pathname.replace(/\/$/, '') !== path.replace(/\/$/, '')}
+          aria-hidden={
+            Astro.url.pathname.replace(/\/$/, '') !== path.replace(/\/$/, '') ? 'true' : 'false'
+          }
+        >
+          <Panel />
+          <SiteFooter
+            home={path === '/'}
+            contactAnchor={path === '/' || path === '/portifolios'}
+            showCta={path !== '/contact'}
+            currentPage={path === '/privacy' ? 'privacy' : undefined}
+          />
         </div>
-      )}
-      <slot />
-      <SiteFooter
-        {...footer}
-        home={home}
-        currentPage={currentPage === 'privacy' ? 'privacy' : undefined}
-      />
+      ))}
     </div>
-    <div
-      class="page-journey-overlay"
-      data-page-journey
-      transition:persist="page-journey"
-      hidden
-      aria-hidden="true"
-      inert
-    ></div>
     <script>
       import '../scripts/page-transitions';
       import '../scripts/navigation';

@@ -2,10 +2,12 @@ import { onPageLoad } from '../lib/page-lifecycle';
 
 onPageLoad((signal) => {
   document
-    .querySelectorAll<HTMLButtonElement>('.service-more:not([data-page-preview] *)')
+    .querySelectorAll<HTMLButtonElement>('[data-panel="/"] .service-more')
     .forEach((trigger) => {
       const dialogId = trigger.getAttribute('aria-controls');
-      const dialog = dialogId ? document.getElementById(dialogId) : null;
+      const dialog = dialogId
+        ? trigger.closest('[data-panel]')?.querySelector('#' + CSS.escape(dialogId))
+        : null;
 
       if (!(dialog instanceof HTMLDialogElement)) {
         console.error(`Janela de detalhes do serviço não encontrada: ${dialogId}`);
