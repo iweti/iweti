@@ -27,7 +27,8 @@
   @media (min-width: 962px) {
     .site-nav .nav {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      min-height: calc(var(--site-header-height) - 0.5rem);
       gap: 0.5rem;
     }
 
@@ -42,13 +43,14 @@
       justify-content: center;
       justify-self: stretch;
       align-self: stretch;
+      padding-top: 1rem;
       text-align: center;
     }
   }
 
   .header-page-indicator {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.5rem;
   }
 
@@ -68,15 +70,17 @@
       box-shadow 180ms ease;
   }
 
-  .header-page-indicator a[aria-current='page'] span,
-  .header-page-indicator a:hover span,
-  .header-page-indicator a:focus-visible span {
+  .header-page-indicator a:not([href='/contact']):not([aria-current='page']):is(:hover, :focus-visible) span {
+    background: rgb(0 216 255 / 45%);
+    box-shadow: 0 0 8px rgb(0 216 255 / 18%);
+  }
+
+  .header-page-indicator a[aria-current='page'] span {
     background: var(--color-cyan);
     box-shadow: 0 0 10px rgb(0 216 255 / 30%);
   }
 
-  .header-page-indicator a[aria-current='page']::before,
-  .header-page-indicator a[href='/contact']::before {
+  .header-page-indicator a[aria-current='page']:not([href='/contact'])::before {
     content: '';
     position: absolute;
     inset: auto 0 2px;
@@ -98,40 +102,13 @@
     );
   }
 
-  .header-page-indicator a[href='/contact']::before {
-    animation: contact-light-breathe 4s ease-in-out infinite;
-  }
-
-  .header-page-indicator a[href='/contact']:not([aria-current='page'])::before {
-    background: radial-gradient(
-      ellipse at 50% 50%,
-      rgb(0 216 255 / 20%) 0%,
-      rgb(0 216 255 / 7%) 35%,
-      transparent 70%
-    );
-  }
-
-  @keyframes contact-light-breathe {
-    0%,
-    100% {
-      opacity: 0.2;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .header-page-indicator a[href='/contact']::before {
-      animation: none;
-    }
+  .header-page-indicator a[href='/contact'] span {
+    box-shadow: none;
   }
 
   @media (max-width: 961px) {
-    .header-page-indicator a[aria-current='page']::before,
-    .header-page-indicator a[href='/contact']::before {
+    .header-page-indicator a[aria-current='page']::before {
       content: none;
-      animation: none;
     }
 
     .header-page-indicator a span {
@@ -156,6 +133,50 @@
     @apply text-white;
   }
 
+  @media (min-width: 962px) {
+    .header-page-indicator a:not([href='/contact'])::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 2px;
+      height: calc(var(--site-header-height) - 2px);
+      pointer-events: none;
+      background: linear-gradient(to top, rgb(0 216 255 / 12%), rgb(0 216 255 / 4%) 45%, transparent);
+      mask-image: linear-gradient(to right, transparent, #000 30%, #000 70%, transparent);
+      opacity: 0;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition:
+        opacity 180ms ease,
+        transform 220ms ease-out;
+    }
+
+    .site-nav:has(.brand:focus-visible) .header-page-indicator a[href='/']::after,
+    .site-nav:has(.nav-links a[href='/portifolios']:focus-visible) .header-page-indicator a[href='/portifolios']::after,
+    .site-nav:has(.nav-links a[href='/about']:focus-visible) .header-page-indicator a[href='/about']::after,
+    .site-nav:has(.nav-links a[href='/blog']:focus-visible) .header-page-indicator a[href='/blog']::after,
+    .header-page-indicator a:focus-visible::after {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    @media (hover: hover) {
+      .site-nav:has(.brand:hover) .header-page-indicator a[href='/']::after,
+      .site-nav:has(.nav-links a[href='/portifolios']:hover) .header-page-indicator a[href='/portifolios']::after,
+      .site-nav:has(.nav-links a[href='/about']:hover) .header-page-indicator a[href='/about']::after,
+      .site-nav:has(.nav-links a[href='/blog']:hover) .header-page-indicator a[href='/blog']::after,
+      .header-page-indicator a:hover::after {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header-page-indicator a::after {
+      transition: none;
+    }
+  }
+
   .nav-links .nav-contact {
     display: inline-flex;
     align-items: center;
@@ -169,6 +190,25 @@
 
   .nav-links a[aria-current='page'] {
     color: var(--color-cyan);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-nav .brand > :is(img, small),
+    .site-nav .nav-links a:not(.nav-contact) > span {
+      transition: translate 180ms ease-out;
+    }
+
+    .site-nav .brand[aria-current='page'] > :is(img, small),
+    .site-nav .nav-links a[aria-current='page']:not(.nav-contact) > span {
+      translate: 0 -3px;
+    }
+
+    @media (hover: hover) {
+      .site-nav .brand:hover > :is(img, small),
+      .site-nav .nav-links a:not(.nav-contact):hover > span {
+        translate: 0 -3px;
+      }
+    }
   }
 
   .section-heading h2,
@@ -272,7 +312,7 @@
   }
 
   .service-card:hover {
-    @apply border-[rgb(0_141_255/38%)];
+    @apply border-cyan/38;
     box-shadow: 0 12px 30px rgb(0 0 0 / 18%);
     @apply transform-[translateY(-4px)];
   }
@@ -286,12 +326,12 @@
   }
 
   .service-card h3 {
-    @apply text-[1.125rem] leading-[1.3] font-bold;
+    @apply text-[1.125rem] leading-[1.3] font-bold text-balance;
   }
 
   .service-card p {
     margin-block: 0.5rem 0.75rem;
-    @apply text-[0.95rem] leading-relaxed text-muted;
+    @apply text-[0.95rem] leading-relaxed text-balance text-muted;
   }
 
   .service-more:hover,
@@ -425,6 +465,7 @@
   }
 
   .about-page,
+  .blog-page,
   .privacy-page {
     background:
       radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 10%), transparent 26rem), var(--color-ink);
@@ -564,7 +605,7 @@
   }
 
   .quote:hover {
-    @apply border-[rgb(0_141_255/35%)];
+    @apply border-cyan/35;
     box-shadow: 0 12px 30px rgb(0 0 0 / 18%);
     @apply transform-[translateY(-3px)];
   }
@@ -578,7 +619,7 @@
   }
 
   .quote figcaption b {
-    color: var(--color-blue);
+    color: var(--color-cyan);
   }
 
   .quote figcaption span {
@@ -803,6 +844,20 @@
     border-top: 0;
   }
 
+  .project-showcase,
+  .home-projects-services > .home-projects {
+    --mountain-height: clamp(42rem, 70vw, 65rem);
+    background:
+      linear-gradient(
+        to bottom,
+        rgb(1 9 31 / 72%),
+        rgb(1 9 31 / 42%) calc(var(--mountain-height) * 0.5),
+        var(--color-ink) var(--mountain-height)
+      ),
+      url('/assets/images/hero-background.jpg') center top / auto var(--mountain-height) no-repeat,
+      var(--color-ink);
+  }
+
   .home-projects-heading h2 {
     @apply mt-3 text-[clamp(2rem,4vw,3.25rem)] leading-[1.15] tracking-[-0.035em] text-balance;
   }
@@ -868,7 +923,7 @@
 
   .project-pillar.is-active {
     flex-grow: 4;
-    @apply border-[rgb(139_197_255/65%)];
+    @apply border-cyan/65;
   }
 
   .project-pillar-cover {
@@ -1119,7 +1174,11 @@
   }
 
   .contact-testimonial {
-    background: linear-gradient(145deg, #0b1b35, var(--color-card));
+    background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--color-cyan) 8%, var(--color-card)),
+      var(--color-card)
+    );
   }
 
   .contact-testimonial blockquote {
@@ -1131,11 +1190,11 @@
   }
 
   .contact-testimonial figcaption b {
-    color: var(--color-blue);
+    color: var(--color-cyan);
   }
 
   .contact-testimonial-avatar {
-    background: rgb(0 141 255 / 12%);
+    @apply bg-cyan/12;
   }
 
   .contact-testimonials[data-paused='true'] .contact-testimonials-track {

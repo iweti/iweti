@@ -163,7 +163,7 @@ function setup({
     const content = new Node('div', 'page-content');
     const links = new Node('div', 'nav-links');
     const indicator = new Node('nav', 'header-page-indicator');
-    for (const href of ['/', '/portifolios', '/about', '/contact']) {
+    for (const href of ['/', '/about', '/portifolios', '/blog', '/contact']) {
       for (const parent of [links, indicator]) {
         const link = new Node('a');
         link.setAttribute('href', href);
@@ -319,7 +319,7 @@ function setup({
 }
 
 test('a distant journey ends on the exact live destination elements without reloading', async () => {
-  const app = setup({ path: '/portifolios' });
+  const app = setup({ path: '/about' });
   let initialized = 0;
   app.document.addEventListener('astro:page-load', () => {
     initialized++;
@@ -327,7 +327,7 @@ test('a distant journey ends on the exact live destination elements without relo
   });
   const click = app.click('https://iweti.com/contact');
   await flush();
-  assert.deepEqual(app.requests, ['/about']);
+  assert.deepEqual(app.requests, ['/portifolios', '/blog']);
   assert.equal(app.navigations.length, 1);
   assert.equal(app.frames.length, 1);
   const destination = app.destinations[0];
@@ -352,10 +352,10 @@ test('leaving home carries the hero in the horizontal sweep under the fixed navi
   const app = setup();
   const click = app.click('https://iweti.com/contact');
   await flush();
-  assert.deepEqual(app.requests, ['/portifolios', '/about']);
+  assert.deepEqual(app.requests, ['/about', '/portifolios', '/blog']);
   assert.equal(app.navigations.length, 1);
   assert.equal(app.frames.length, 1);
-  assert.equal(app.frames[0].keyframes[1].transform, 'translateX(-300%)');
+  assert.equal(app.frames[0].keyframes[1].transform, 'translateX(-400%)');
   const overlay = app.document.querySelector('[data-page-journey]');
   assert.ok(overlay.querySelector('[data-page-preview]').querySelector('.hero'));
   assert.equal(overlay.querySelector('.site-nav'), null);
@@ -366,7 +366,7 @@ test('leaving home carries the hero in the horizontal sweep under the fixed navi
 });
 
 test('the source preview stays hidden until its cloned images are decoded', async () => {
-  const app = setup({ path: '/portifolios' });
+  const app = setup({ path: '/about' });
   let ready;
   const decoded = new Promise((resolve) => {
     ready = resolve;
@@ -390,8 +390,8 @@ test('the source preview stays hidden until its cloned images are decoded', asyn
 
 test('queued animation frames cannot move the indicator back after a journey finishes', async () => {
   for (const [from, to] of [
-    ['/portifolios', '/contact'],
-    ['/contact', '/portifolios'],
+    ['/about', '/contact'],
+    ['/contact', '/about'],
   ]) {
     const app = setup({ path: from });
     const click = app.click(`https://iweti.com${to}`);
@@ -402,7 +402,8 @@ test('queued animation frames cannot move the indicator back after a journey fin
         .querySelectorAll('.nav-links a, .header-page-indicator a')
         .filter((link) => link.getAttribute('aria-current') === 'page')
         .map((link) => new URL(link.href).pathname);
-    assert.deepEqual(activeLinks(), ['/about', '/about']);
+    const intermediate = from === '/about' ? '/blog' : '/portifolios';
+    assert.deepEqual(activeLinks(), [intermediate, intermediate]);
     app.finishRunning();
     await click.done;
     assert.deepEqual(activeLinks(), [to, to]);
@@ -412,7 +413,7 @@ test('queued animation frames cannot move the indicator back after a journey fin
 });
 
 test('adjacent arrival at home keeps the hero in the page through the lateral transition', async () => {
-  const app = setup({ path: '/portifolios', holdNative: true });
+  const app = setup({ path: '/about', holdNative: true });
   const click = app.click('https://iweti.com/');
   await flush();
   const { content, hero } = app.destinations[0];
@@ -424,12 +425,30 @@ test('adjacent arrival at home keeps the hero in the page through the lateral tr
   assert.deepEqual(app.reloads, []);
 });
 
+test('blog uses adjacent transitions between projects and contact', async () => {
+  for (const [from, to] of [
+    ['/portifolios', '/blog'],
+    ['/blog', '/contact'],
+    ['/contact', '/blog'],
+    ['/blog', '/portifolios'],
+  ]) {
+    const app = setup({ path: from });
+    await app.click(`https://iweti.com${to}`).done;
+    assert.equal(app.navigations.length, 1);
+    assert.equal(app.navigations[0].url, `https://iweti.com${to}`);
+    assert.equal(app.navigations[0].options.info.journey, false);
+    assert.deepEqual(app.requests, []);
+    assert.equal(app.frames.length, 0);
+    assert.deepEqual(app.reloads, []);
+  }
+});
+
 test('distant reverse journey includes the live home hero in the lateral sweep', async () => {
   const app = setup({ path: '/contact' });
   const click = app.click('https://iweti.com/');
   await flush();
-  assert.deepEqual(app.requests, ['/about', '/portifolios']);
-  assert.equal(app.frames[0].keyframes[0].transform, 'translateX(-300%)');
+  assert.deepEqual(app.requests, ['/blog', '/portifolios', '/about']);
+  assert.equal(app.frames[0].keyframes[0].transform, 'translateX(-400%)');
   const { content, hero, main } = app.destinations[0];
   const overlay = app.document.querySelector('[data-page-journey]');
   assert.equal(overlay.querySelector('.hero'), hero);
@@ -454,7 +473,7 @@ test('cross-page anchors use the direct lateral transition for native anchor scr
 test('the incoming header keeps the departure indicator before its first layout', async () => {
   for (const [from, to] of [
     ['/contact', '/'],
-    ['/portifolios', '/contact'],
+    ['/about', '/contact'],
   ]) {
     const app = setup({ path: from, holdNative: true });
     const incoming = [];
@@ -510,9 +529,9 @@ test('modified, external, same-page, reduced-motion and unsupported navigation a
 });
 
 test('repeated clicks do not create competing transitions', async () => {
-  const app = setup({ path: '/portifolios' });
+  const app = setup({ path: '/about' });
   const first = app.click('https://iweti.com/contact');
-  const second = app.click('https://iweti.com/about');
+  const second = app.click('https://iweti.com/portifolios');
   await second.done;
   await flush();
   assert.equal(app.navigations.length, 1);

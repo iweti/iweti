@@ -11,7 +11,7 @@ const source = ts.transpile(
   ),
 );
 
-function setup(path = '/about', mobile = true) {
+function setup(path = '/portifolios', mobile = true) {
   const handlers = {};
   const clicks = [];
   class Element {
@@ -20,7 +20,7 @@ function setup(path = '/about', mobile = true) {
     }
   }
   const target = new Element();
-  const links = ['/', '/portifolios', '/about', '/contact'].map((pathname) => ({
+  const links = ['/', '/about', '/portifolios', '/blog', '/contact'].map((pathname) => ({
     pathname,
     click: () => clicks.push(pathname),
   }));
@@ -52,6 +52,13 @@ test('swipes advance and return through adjacent pages', () => {
   const app = setup();
   app.gesture(280, 100);
   app.gesture(100, 280);
+  assert.deepEqual(app.clicks, ['/blog', '/about']);
+});
+
+test('blog swipes connect projects and contact', () => {
+  const app = setup('/blog');
+  app.gesture(280, 100);
+  app.gesture(100, 280);
   assert.deepEqual(app.clicks, ['/contact', '/portifolios']);
 });
 
@@ -74,7 +81,7 @@ test('scrolling, short gestures, screen edges and desktop do not navigate', () =
   app.gesture(10, 200);
   app.gesture(280, 100, 0, 80);
   assert.deepEqual(app.clicks, []);
-  const desktop = setup('/about', false);
+  const desktop = setup('/portifolios', false);
   desktop.gesture(280, 100);
   assert.deepEqual(desktop.clicks, []);
 });

@@ -1,6 +1,6 @@
 import { navigate } from 'astro:transitions/client';
 
-const routes = ['/', '/portifolios', '/about', '/contact'];
+const routes = ['/', '/about', '/portifolios', '/blog', '/contact'];
 const root = document.documentElement;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const routeIndex = (url) =>

@@ -50,15 +50,15 @@ const services = [
               <img src={service.icon} alt="" />
             </span>
           </div>
-            <h3 >{service.title}</h3>
-          <p>{service.description}</p>
+          <h3>{service.title}</h3>
+          <p>{service.description.replace(/ (?=\S+$)/, '\u00a0')}</p>
           <button
             class="service-more mt-auto inline-block min-h-11 p-0 text-center text-[0.875rem] font-bold text-cyan"
             type="button"
             aria-haspopup="dialog"
             aria-controls={`service-dialog-${service.id}`}
           >
-            Saiba mais →
+            Saiba mais&nbsp;→
           </button>
         </article>
       ))}
