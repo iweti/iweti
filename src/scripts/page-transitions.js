@@ -13,6 +13,29 @@ let animations = [];
 let generation = 0;
 let suppressClick = false;
 history.scrollRestoration = 'manual';
+let currentEntry = history.state?.panelEntry ?? crypto.randomUUID();
+const entryScrolls = new Map();
+let scrollTimer;
+history.replaceState({ ...history.state, panelEntry: currentEntry }, '');
+
+function persistScroll() {
+  const top = entryScrolls.get(currentEntry);
+  if (top !== undefined && history.state?.panelScroll !== top)
+    history.replaceState({ ...history.state, panelScroll: top }, '');
+}
+window.addEventListener(
+  'scroll',
+  () => {
+    if (active.dataset.panel !== normalize(location.pathname)) return;
+    entryScrolls.set(currentEntry, scrollY);
+    if (scrollTimer !== undefined) return;
+    scrollTimer = setTimeout(() => {
+      scrollTimer = undefined;
+      persistScroll();
+    }, 100);
+  },
+  { passive: true },
+);
 
 function setState(next) {
   state = next;
@@ -40,8 +63,9 @@ function scrollToDestination(url, restore = false) {
   try {
     target = active.querySelector('#' + CSS.escape(decodeURIComponent(url.hash.slice(1))));
   } catch {}
-  if (restore && typeof history.state?.panelScroll === 'number')
-    window.scrollTo({ top: history.state.panelScroll, behavior: 'instant' });
+  const savedScroll = entryScrolls.get(currentEntry) ?? history.state?.panelScroll;
+  if (restore && typeof savedScroll === 'number')
+    window.scrollTo({ top: savedScroll, behavior: 'instant' });
   else if (url.hash && target) target.scrollIntoView({ behavior: 'instant', block: 'start' });
   else
     window.scrollTo({ top: restore ? (history.state?.panelScroll ?? 0) : 0, behavior: 'instant' });
@@ -49,9 +73,17 @@ function scrollToDestination(url, restore = false) {
 function activate(url, push = true, restore = false) {
   const destination = panels.find((panel) => panel.dataset.panel === normalize(url.pathname));
   if (!destination) return;
+  clearTimeout(scrollTimer);
+  scrollTimer = undefined;
   if (push) {
-    history.replaceState({ ...history.state, panelScroll: scrollY }, '', location.href);
-    history.pushState({ panelScroll: 0 }, '', url);
+    entryScrolls.set(currentEntry, scrollY);
+    persistScroll();
+    currentEntry = crypto.randomUUID();
+    history.pushState({ panelEntry: currentEntry, panelScroll: 0 }, '', url);
+  } else {
+    currentEntry = history.state?.panelEntry ?? crypto.randomUUID();
+    if (!history.state?.panelEntry)
+      history.replaceState({ ...history.state, panelEntry: currentEntry }, '');
   }
   active = destination;
   stop();
@@ -243,7 +275,7 @@ function end(event, cancel = false) {
   const current = gesture;
   gesture = undefined;
   if (state !== 'dragging') return;
-  active.releasePointerCapture?.(event.pointerId);
+  if (active.hasPointerCapture?.(event.pointerId)) active.releasePointerCapture(event.pointerId);
   const distance = Math.abs(current.dx);
   const velocity = distance / Math.max(1, performance.now() - current.time);
   const commit = !cancel && (distance >= innerWidth * 0.25 || (velocity >= 0.5 && distance >= 40));
@@ -256,6 +288,10 @@ function end(event, cancel = false) {
 }
 document.addEventListener('pointerup', (event) => end(event));
 document.addEventListener('pointercancel', (event) => end(event, true));
+document.addEventListener('lostpointercapture', (event) => end(event, true));
+window.addEventListener('blur', () => {
+  if (gesture) end({ pointerId: gesture.id }, true);
+});
 window.addEventListener('popstate', () => {
   stop();
   activate(new URL(location.href), false, true);
@@ -263,7 +299,12 @@ window.addEventListener('popstate', () => {
 window.addEventListener('resize', () => {
   if (state !== 'idle') stop();
 });
-window.addEventListener('pagehide', stop);
+window.addEventListener('pagehide', () => {
+  clearTimeout(scrollTimer);
+  scrollTimer = undefined;
+  persistScroll();
+  stop();
+});
 reduced.addEventListener('change', () => {
   if (state !== 'idle') {
     stop();
