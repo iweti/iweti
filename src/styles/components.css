@@ -87,13 +87,7 @@
     height: calc(var(--site-header-height) - 2px);
     pointer-events: none;
     opacity: 0.5;
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 30%,
-      #000 70%,
-      transparent
-    );
+    mask-image: linear-gradient(to right, transparent, #000 30%, #000 70%, transparent);
     background: linear-gradient(
       to top,
       rgb(0 216 255 / 16%),
@@ -1325,4 +1319,40 @@ html[data-page-direction='backward']::view-transition-new(root) {
   from {
     transform: translateX(-100%);
   }
+}
+
+/* Persistent route panels occupy only the active page's document flow. */
+[data-panels] {
+  position: relative;
+  overflow-x: clip;
+  touch-action: pan-y;
+}
+[data-panel][hidden] {
+  display: none !important;
+}
+[data-panel].is-moving {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+html[data-navigation-state='dragging'] [data-panels],
+html[data-navigation-state='animating'] [data-panels] {
+  user-select: none;
+}
+html:not([data-navigation-state='idle']) .site-nav {
+  transform: none !important;
+}
+[data-panel][aria-hidden='true'] * {
+  animation-play-state: paused !important;
+}
+
+[data-panel-track] {
+  position: relative;
+  width: 100%;
+}
+[data-panel].is-moving .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
 }

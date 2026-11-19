@@ -3,7 +3,7 @@ import { whatsappLink } from '../lib/whatsapp';
 import { onPageLoad } from '../lib/page-lifecycle';
 
 onPageLoad(() => {
-  const form = document.querySelector<HTMLFormElement>('.contact-form:not([data-page-preview] *)');
+  const form = document.querySelector<HTMLFormElement>('[data-panel="/contact"] .contact-form');
 
   if (form) {
     const name = form.querySelector<HTMLInputElement>('[name="name"]');

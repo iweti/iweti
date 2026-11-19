@@ -1,18 +1,19 @@
-/** Reconnect page behavior after an Astro navigation and dispose global listeners on departure. */
+/** Mount each behavior once for the persistent document. */
 export function onPageLoad(setup: (signal: AbortSignal) => void | (() => void)) {
-  let dispose: (() => void) | undefined;
-  const cleanup = () => {
-    dispose?.();
-    dispose = undefined;
-  };
-  document.addEventListener('astro:before-swap', cleanup);
-  document.addEventListener('astro:page-load', () => {
-    cleanup();
+  const mount = () => {
     const controller = new AbortController();
     const teardown = setup(controller.signal);
-    dispose = () => {
-      controller.abort();
-      teardown?.();
-    };
-  });
+    window.addEventListener(
+      'pagehide',
+      (event) => {
+        if (event.persisted) return;
+        controller.abort();
+        teardown?.();
+      },
+      { once: true },
+    );
+  };
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', mount, { once: true });
+  else mount();
 }

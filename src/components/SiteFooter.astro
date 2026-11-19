@@ -21,17 +21,20 @@ const {
 const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre um projeto.');
 ---
 
-<footer id={contactAnchor ? 'contato' : undefined} class="site-footer md:pt-14">
+<footer
+  id={contactAnchor ? (home ? 'contato' : 'projects-contato') : undefined}
+  class="site-footer md:pt-14"
+>
   {showCta && (
-  <div class="footer-cta shell mb-9 flex flex-col items-start gap-6 pb-9 md:mb-12 md:flex-row md:items-center md:justify-between md:pb-12">
-    <div>
-      <h2>Vamos tirar o seu projeto do papel?</h2>
-      <p>Fale com nosso time e descubra como a IwetI pode ajudar o seu negócio.</p>
+    <div class="footer-cta shell mb-9 flex flex-col items-start gap-6 pb-9 md:mb-12 md:flex-row md:items-center md:justify-between md:pb-12">
+      <div>
+        <h2>Vamos tirar o seu projeto do papel?</h2>
+        <p>Fale com nosso time e descubra como a IwetI pode ajudar o seu negócio.</p>
+      </div>
+      <a class="btn btn-primary shrink-0" href={ctaHref}>
+        Quero conversar agora →
+      </a>
     </div>
-    <a class="btn btn-primary shrink-0" href={ctaHref}>
-      Quero conversar agora →
-    </a>
-  </div>
   )}
   <div class="shell grid grid-cols-2 gap-x-6 gap-y-8 pb-9 md:grid-cols-4 md:gap-8 md:pb-12">
     <div class="col-span-2">

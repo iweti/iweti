@@ -2,569 +2,440 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import ts from 'typescript';
-
-const source = readFileSync(
-  new URL('../src/scripts/page-transitions.js', import.meta.url),
-  'utf8',
-).replace(/^import .*;\n/, '');
-const flush = () => new Promise((resolve) => setImmediate(resolve));
-
-function setup({
-  path = '/',
-  reduced = false,
-  supported = true,
-  fetchFails = false,
-  holdNative = false,
-} = {}) {
-  const handlers = new Map();
-  const frames = [];
-  const requests = [];
-  const navigations = [];
-  const reloads = [];
-  const destinations = [];
-  const callbacks = [];
-  let finishNative;
-  class Node {
-    constructor(tag = 'div', classes = '') {
-      this.tag = tag;
-      this.className = classes;
-      this.children = [];
-      this.attrs = new Map();
-      this.style = {};
-      this.dataset = {};
-      this.hidden = false;
-      this.classList = {
-        remove: (name) => {
-          this.className = this.className
-            .split(' ')
-            .filter((v) => v !== name)
-            .join(' ');
+import { randomUUID } from 'node:crypto';
+const source = readFileSync(new URL('../src/scripts/page-transitions.js', import.meta.url), 'utf8');
+export function setup(path = '/', reduced = false) {
+  const events = {},
+    timers = [];
+  class Element {
+    constructor(route) {
+      this.dataset = { panel: route, title: route, description: route };
+      this.hidden = route !== path;
+      this.style = {
+        removeProperty(name) {
+          delete this[name];
         },
       };
+      this.classList = { remove() {}, add() {} };
+      this.attributes = {};
+      this.inert = this.hidden;
     }
-    get href() {
-      return new URL(this.attrs.get('href') || '/', 'https://iweti.com').href;
+    setAttribute(k, v) {
+      this.attributes[k] = v;
     }
-    get target() {
-      return this.attrs.get('target') || '';
+    hasAttribute(k) {
+      return Object.hasOwn(this.attributes, k);
     }
-    get relList() {
-      return { contains: () => false };
+    getAttribute(k) {
+      return this.attributes[k];
     }
-    setAttribute(key, value) {
-      this.attrs.set(key, value);
+    removeAttribute(k) {
+      delete this.attributes[k];
     }
-    getAttribute(key) {
-      return this.attrs.get(key) ?? null;
+    querySelectorAll() {
+      return [];
     }
-    hasAttribute(key) {
-      return this.attrs.has(key);
-    }
-    removeAttribute(key) {
-      this.attrs.delete(key);
-      if (key === 'style') this.style = {};
-    }
-    append(child) {
-      child.remove();
-      child.parent = this;
-      this.children.push(child);
-    }
-    before(node) {
-      const at = this.parent.children.indexOf(this);
-      node.remove();
-      node.parent = this.parent;
-      this.parent.children.splice(at, 0, node);
-    }
-    replaceWith(node) {
-      this.before(node);
-      this.remove();
-    }
-    remove() {
-      if (this.parent) this.parent.children = this.parent.children.filter((node) => node !== this);
-      this.parent = undefined;
-    }
-    replaceChildren(...children) {
-      [...this.children].forEach((node) => node.remove());
-      children.forEach((node) => this.append(node));
-    }
-    matches(selector) {
-      return selector.split(',').some((part) => {
-        part = part.trim();
-        if (part.includes(':not([data-page-preview] *)')) {
-          let ancestor = this;
-          while (ancestor) {
-            if (ancestor.hasAttribute('data-page-preview')) return false;
-            ancestor = ancestor.parent;
-          }
-          part = part.replace(':not([data-page-preview] *)', '');
-        }
-        const descendant = part.match(/^(\.[\w-]+) (a)$/);
-        if (descendant) {
-          let ancestor = this.parent;
-          while (ancestor) {
-            if (ancestor.matches(descendant[1])) return this.matches(descendant[2]);
-            ancestor = ancestor.parent;
-          }
-          return false;
-        }
-        if (part.startsWith('.')) return this.className.split(' ').includes(part.slice(1));
-        if (part.startsWith('[')) return this.hasAttribute(part.slice(1, -1));
-        return this.tag === part;
-      });
-    }
-    querySelectorAll(selector) {
-      return this.children.flatMap((child) => [
-        ...(child.matches(selector) ? [child] : []),
-        ...child.querySelectorAll(selector),
-      ]);
-    }
-    querySelector(selector) {
-      return this.querySelectorAll(selector)[0] ?? null;
+    querySelector() {
+      return null;
     }
     closest(selector) {
-      return selector === 'a[href]' && this.tag === 'a' ? this : null;
+      return selector === '[data-panel]' ? this : null;
     }
-    cloneNode(deep) {
-      const node = new Node(this.tag, this.className);
-      node.attrs = new Map(this.attrs);
-      node.style = { ...this.style };
-      if (Object.hasOwn(this, 'decode')) node.decode = this.decode;
-      if (deep) this.children.forEach((child) => node.append(child.cloneNode(true)));
-      return node;
+    animate(frames, options) {
+      this.lastAnimation = { frames, options };
+      return { cancel() {}, finished: new Promise(() => {}) };
     }
-    animate(keyframes, timing) {
-      let finish;
-      const animation = {
-        playState: 'running',
-        effect: {
-          getComputedTiming: () => ({ progress: animation.playState === 'idle' ? null : 0.5 }),
-        },
-      };
-      animation.finished = new Promise((resolve) => {
-        finish = () => {
-          animation.playState = 'finished';
-          resolve();
-        };
-      });
-      animation.cancel = () => {
-        finish();
-        animation.playState = 'idle';
-      };
-      frames.push({ node: this, keyframes, timing, animation, finish });
-      return animation;
+    setPointerCapture(id) {
+      this.captured = id;
+    }
+    hasPointerCapture(id) {
+      return this.captured === id;
+    }
+    releasePointerCapture(id) {
+      if (this.captured !== id) return;
+      this.captured = undefined;
+      events.lostpointercapture?.({ pointerId: id });
     }
   }
-  function makePage(url) {
-    const root = new Node('html');
-    const body = new Node('body');
-    root.append(body);
-    const nav = new Node('header', 'site-nav');
-    const content = new Node('div', 'page-content');
-    const links = new Node('div', 'nav-links');
-    const indicator = new Node('nav', 'header-page-indicator');
-    for (const href of ['/', '/about', '/portifolios', '/blog', '/contact']) {
-      for (const parent of [links, indicator]) {
-        const link = new Node('a');
-        link.setAttribute('href', href);
-        if (href === new URL(url, 'https://iweti.com').pathname)
-          link.setAttribute('aria-current', 'page');
-        parent.append(link);
+  const panels = ['/', '/about', '/portifolios', '/blog', '/contact', '/privacy'].map(
+    (r) => new Element(r),
+  );
+  const track = new Element('track');
+  track.clientWidth = 1000;
+  const location = new URL('http://localhost' + path);
+  const entries = [{ url: location.href, state: {} }];
+  let index = 0;
+  let currentScroll = 0;
+  const history = {
+    replaceCalls: 0,
+    get state() {
+      return entries[index].state;
+    },
+    get length() {
+      return entries.length;
+    },
+    pushState(data, _, url) {
+      const href = new URL(url, location).href;
+      entries.splice(++index);
+      entries.push({ url: href, state: structuredClone(data) });
+      location.href = href;
+    },
+    replaceState(data) {
+      this.replaceCalls++;
+      entries[index].state = structuredClone(data);
+    },
+    back() {
+      if (index > 0) {
+        location.href = entries[--index].url;
+        events.popstate();
       }
-    }
-    nav.append(links);
-    nav.append(indicator);
-    const slot = new Node('div', 'page-journey-overlay');
-    slot.setAttribute('data-page-journey', '');
-    slot.hidden = true;
-    const hero = new Node('section', 'hero');
-    if (new URL(url, 'https://iweti.com').pathname === '/') content.append(hero);
-    const main = new Node('main');
-    main.page = url;
-    const input = new Node('input');
-    input.value = 'preserved';
-    main.append(input);
-    const footer = new Node('footer', 'site-footer');
-    content.append(main);
-    content.append(footer);
-    body.append(nav);
-    body.append(content);
-    body.append(slot);
-    return {
-      root,
-      body,
-      content,
-      hero,
-      nav,
-      main,
-      input,
-      footer,
-      slot,
-      documentElement: root,
-      querySelector: (selector) => root.querySelector(selector),
-      querySelectorAll: (selector) => root.querySelectorAll(selector),
-    };
-  }
-  const initial = makePage(path);
-  const document = {
-    documentElement: initial.root,
-    body: initial.body,
-    ...(supported ? { startViewTransition() {} } : {}),
-    createElement: (tag) => new Node(tag),
-    createComment: () => new Node('comment'),
-    querySelector: (selector) => document.documentElement.querySelector(selector),
-    querySelectorAll: (selector) => document.documentElement.querySelectorAll(selector),
-    addEventListener: (name, handler) => {
-      const list = handlers.get(name) || [];
-      list.push(handler);
-      handlers.set(name, list);
+    },
+    forward() {
+      if (index + 1 < entries.length) {
+        location.href = entries[++index].url;
+        events.popstate();
+      }
     },
   };
-  const emit = (name, event = {}) => {
-    let result;
-    for (const handler of handlers.get(name) || []) result = handler(event);
-    return result;
+  const root = { dataset: {} };
+  const document = {
+    documentElement: root,
+    readyState: 'complete',
+    querySelectorAll: (s) => (s === '[data-panel]' ? panels : []),
+    querySelector: (s) =>
+      s === '[data-panel-track]' ? track : s === 'meta[name="description"]' ? {} : null,
+    addEventListener(n, cb) {
+      events[n] = cb;
+    },
+    dispatchEvent() {},
   };
-  const location = {
-    href: `https://iweti.com${path}`,
-    origin: 'https://iweti.com',
-    assign: (url) => reloads.push(url),
-  };
-  const navigate = async (url, options) => {
-    navigations.push({ url, options });
-    const destination = makePage(url);
-    destinations.push(destination);
-    const transition = {
-      finished: holdNative
-        ? new Promise((resolve) => {
-            finishNative = resolve;
-          })
-        : Promise.resolve(),
-    };
-    emit('astro:before-swap', {
-      from: new URL(location.href),
-      to: new URL(url),
-      info: options.info,
-      newDocument: destination,
-      viewTransition: transition,
-    });
-    const persisted = document.querySelector('[data-page-journey]');
-    destination.slot.replaceWith(persisted);
-    Object.keys(document.documentElement.dataset).forEach((key) => {
-      delete document.documentElement.dataset[key];
-    });
-    Object.assign(document.documentElement.dataset, destination.root.dataset);
-    document.documentElement.replaceChildren(destination.body);
-    document.body = destination.body;
-    location.href = url;
-    emit('astro:after-swap');
-    emit('astro:page-load');
+  const window = {
+    addEventListener(n, cb) {
+      events[n] = cb;
+    },
+    getSelection: () => null,
+    scrollTo({ top }) {
+      currentScroll = top;
+    },
   };
   vm.runInNewContext(source, {
     document,
+    window,
     location,
-    navigate,
-    Element: Node,
+    history,
+    Element,
+    HTMLElement: Element,
     URL,
-    AbortSignal,
-    setTimeout,
-    clearTimeout,
-    queueMicrotask,
-    requestAnimationFrame: (fn) => callbacks.push(fn),
-    window: { scrollY: 0, matchMedia: () => ({ matches: reduced }) },
-    fetch: async (url) => {
-      requests.push(url);
-      if (fetchFails) throw new Error('unavailable');
-      return { ok: true, text: async () => url };
+    Event,
+    CSS: { escape: (x) => x },
+    matchMedia: () => ({ matches: reduced, addEventListener() {} }),
+    innerWidth: 1000,
+    get scrollY() {
+      return currentScroll;
     },
-    DOMParser: class {
-      parseFromString(url) {
-        return makePage(url);
-      }
+    crypto: { randomUUID },
+    performance: { now: () => 100 },
+    getComputedStyle: () => ({ overflowX: 'visible' }),
+    setTimeout: (cb) => (timers.push(cb), timers.length),
+    clearTimeout: (id) => {
+      timers[id - 1] = null;
     },
   });
-  const click = (url, options = {}) => {
-    const link = new Node('a');
-    link.setAttribute('href', url);
-    if (options.target) link.setAttribute('target', options.target);
-    if (options.download) link.setAttribute('download', '');
+  const fire = (name, values = {}) => {
     const event = {
-      target: link,
+      target: panels.find((p) => !p.hidden),
       button: 0,
-      defaultPrevented: false,
+      isPrimary: true,
+      pointerId: 1,
+      clientX: 700,
+      clientY: 300,
       preventDefault() {
-        this.defaultPrevented = true;
+        this.prevented = true;
       },
-      ...options.event,
+      ...values,
     };
-    return { event, done: emit('click', event) };
+    events[name]?.(event);
+    return event;
   };
   return {
-    click,
-    emit,
-    document,
-    frames,
-    requests,
-    navigations,
-    reloads,
-    destinations,
-    initial,
-    finishNative: () => finishNative(),
-    callbacks,
-    finishRunning: () =>
-      frames
-        .filter((frame) => frame.animation.playState === 'running')
-        .forEach((frame) => frame.finish()),
+    panels,
+    track,
+    click(path) {
+      const link = new Element();
+      link.href = new URL(path, location).href;
+      link.closest = () => link;
+      link.relList = { contains: () => false };
+      return fire('click', { target: link });
+    },
+    root,
+    fire,
+    history,
+    location,
+    events,
+    scrollTo(top) {
+      currentScroll = top;
+      events.scroll?.();
+    },
+    get scrollY() {
+      return currentScroll;
+    },
+    finish() {
+      const queued = timers.splice(0);
+      queued.forEach((cb) => cb?.());
+    },
   };
 }
-
-test('a distant journey ends on the exact live destination elements without reloading', async () => {
-  const app = setup({ path: '/about' });
-  let initialized = 0;
-  app.document.addEventListener('astro:page-load', () => {
-    initialized++;
-    app.document.querySelector('main:not([data-page-preview] *)').children[0].value = 'initialized';
-  });
-  const click = app.click('https://iweti.com/contact');
-  await flush();
-  assert.deepEqual(app.requests, ['/portifolios', '/blog']);
-  assert.equal(app.navigations.length, 1);
-  assert.equal(app.frames.length, 1);
-  const destination = app.destinations[0];
-  const overlay = app.document.querySelector('[data-page-journey]');
-  assert.equal(overlay.hidden, false);
-  assert.ok(overlay.querySelectorAll('main').includes(destination.main));
-  assert.equal(destination.input.value, 'initialized');
-  assert.equal(app.frames[0].timing.easing, 'cubic-bezier(0.45, 0, 0.2, 1)');
-  app.finishRunning();
-  await click.done;
-  assert.equal(app.document.querySelector('main'), destination.main);
-  assert.equal(destination.main.parent, destination.content);
-  assert.equal(destination.content.parent, app.document.body);
-  assert.equal(destination.input.value, 'initialized');
-  assert.equal(initialized, 1);
-  assert.equal(overlay.hidden, true);
-  assert.deepEqual(app.reloads, []);
-  assert.equal(app.navigations.length, 1);
+test('drag follows the pointer and confirmation activates the same mounted panel', () => {
+  const a = setup();
+  const original = a.panels[1];
+  a.fire('pointerdown');
+  a.fire('pointermove', { clientX: 400 });
+  assert.equal(a.root.dataset.navigationState, 'dragging');
+  assert.equal(a.track.style.transform, 'translateX(-300px)');
+  a.fire('pointerup', { clientX: 400 });
+  assert.equal(a.root.dataset.navigationState, 'animating');
+  a.finish();
+  assert.equal(original.hidden, false);
+  assert.equal(a.location.pathname, '/about');
+  assert.equal(a.panels[0].inert, true);
 });
-
-test('leaving home carries the hero in the horizontal sweep under the fixed navigation', async () => {
-  const app = setup();
-  const click = app.click('https://iweti.com/contact');
-  await flush();
-  assert.deepEqual(app.requests, ['/about', '/portifolios', '/blog']);
-  assert.equal(app.navigations.length, 1);
-  assert.equal(app.frames.length, 1);
-  assert.equal(app.frames[0].keyframes[1].transform, 'translateX(-400%)');
-  const overlay = app.document.querySelector('[data-page-journey]');
-  assert.ok(overlay.querySelector('[data-page-preview]').querySelector('.hero'));
-  assert.equal(overlay.querySelector('.site-nav'), null);
-  assert.equal(overlay.querySelector('.header-page-indicator'), null);
-  app.finishRunning();
-  await click.done;
-  assert.deepEqual(app.reloads, []);
+test('short drag cancels in 280ms', () => {
+  const a = setup();
+  a.fire('pointerdown');
+  a.fire('pointermove', { clientX: 680 });
+  a.fire('pointerup');
+  assert.equal(a.track.lastAnimation.options.duration, 280);
+  a.finish();
+  assert.equal(a.location.pathname, '/');
+  assert.equal(a.panels[1].hidden, true);
 });
-
-test('the source preview stays hidden until its cloned images are decoded', async () => {
-  const app = setup({ path: '/about' });
-  let ready;
-  const decoded = new Promise((resolve) => {
-    ready = resolve;
-  });
-  const image = app.document.createElement('img');
-  image.decode = () => decoded;
-  app.initial.main.append(image);
-  const click = app.click('https://iweti.com/contact');
-  await flush();
-  const overlay = app.document.querySelector('[data-page-journey]');
-  assert.ok(overlay.querySelector('img'));
-  assert.equal(overlay.hidden, true);
-  assert.equal(app.navigations.length, 0);
-  ready();
-  await flush();
-  assert.equal(overlay.hidden, false);
-  assert.equal(app.navigations.length, 1);
-  app.finishRunning();
-  await click.done;
-});
-
-test('queued animation frames cannot move the indicator back after a journey finishes', async () => {
-  for (const [from, to] of [
-    ['/about', '/contact'],
-    ['/contact', '/about'],
+test('blog swipes connect projects and contact', () => {
+  for (const [clientX, destination] of [
+    [300, '/contact'],
+    [1000, '/portifolios'],
   ]) {
-    const app = setup({ path: from });
-    const click = app.click(`https://iweti.com${to}`);
-    await flush();
-    app.callbacks.shift()();
-    const activeLinks = () =>
-      app.document
-        .querySelectorAll('.nav-links a, .header-page-indicator a')
-        .filter((link) => link.getAttribute('aria-current') === 'page')
-        .map((link) => new URL(link.href).pathname);
-    const intermediate = from === '/about' ? '/blog' : '/portifolios';
-    assert.deepEqual(activeLinks(), [intermediate, intermediate]);
-    app.finishRunning();
-    await click.done;
-    assert.deepEqual(activeLinks(), [to, to]);
-    app.callbacks.splice(0).forEach((callback) => callback());
-    assert.deepEqual(activeLinks(), [to, to]);
+    const a = setup('/blog');
+    a.fire('pointerdown');
+    a.fire('pointermove', { clientX });
+    a.fire('pointerup', { clientX });
+    a.finish();
+    assert.equal(a.location.pathname, destination);
   }
 });
-
-test('adjacent arrival at home keeps the hero in the page through the lateral transition', async () => {
-  const app = setup({ path: '/about', holdNative: true });
-  const click = app.click('https://iweti.com/');
-  await flush();
-  const { content, hero } = app.destinations[0];
-  assert.equal(hero.parent, content);
-  assert.equal(content.parent, app.document.body);
-  app.finishNative();
-  await click.done;
-  assert.equal(app.frames.length, 0);
-  assert.deepEqual(app.reloads, []);
+test('vertical intention preserves vertical scrolling', () => {
+  const a = setup();
+  a.fire('pointerdown');
+  const e = a.fire('pointermove', { clientX: 695, clientY: 350 });
+  assert.equal(e.prevented, undefined);
+  assert.equal(a.root.dataset.navigationState, 'idle');
 });
-
-test('blog uses adjacent transitions between projects and contact', async () => {
-  for (const [from, to] of [
-    ['/portifolios', '/blog'],
-    ['/blog', '/contact'],
-    ['/contact', '/blog'],
-    ['/blog', '/portifolios'],
-  ]) {
-    const app = setup({ path: from });
-    await app.click(`https://iweti.com${to}`).done;
-    assert.equal(app.navigations.length, 1);
-    assert.equal(app.navigations[0].url, `https://iweti.com${to}`);
-    assert.equal(app.navigations[0].options.info.journey, false);
-    assert.deepEqual(app.requests, []);
-    assert.equal(app.frames.length, 0);
-    assert.deepEqual(app.reloads, []);
+test('horizontal extremities and privacy are blocked', () => {
+  for (const path of ['/', '/contact', '/privacy']) {
+    const a = setup(path);
+    a.fire('pointerdown');
+    a.fire('pointermove', { clientX: path === '/' ? 900 : 200 });
+    assert.equal(a.root.dataset.navigationState, 'idle');
   }
 });
-
-test('distant reverse journey includes the live home hero in the lateral sweep', async () => {
-  const app = setup({ path: '/contact' });
-  const click = app.click('https://iweti.com/');
-  await flush();
-  assert.deepEqual(app.requests, ['/blog', '/portifolios', '/about']);
-  assert.equal(app.frames[0].keyframes[0].transform, 'translateX(-400%)');
-  const { content, hero, main } = app.destinations[0];
-  const overlay = app.document.querySelector('[data-page-journey]');
-  assert.equal(overlay.querySelector('.hero'), hero);
-  app.finishRunning();
-  await click.done;
-  assert.equal(app.frames.length, 1);
-  assert.equal(overlay.hidden, true);
-  assert.equal(hero.parent, content);
-  assert.equal(content.parent, app.document.body);
-  assert.equal(app.document.querySelector('main'), main);
+test('reduced motion commits immediately and pointercancel never commits', () => {
+  const a = setup('/', true);
+  a.fire('pointerdown');
+  a.fire('pointermove', { clientX: 300 });
+  a.fire('pointerup');
+  assert.equal(a.location.pathname, '/about');
+  assert.equal(a.root.dataset.navigationState, 'idle');
+  const b = setup();
+  b.fire('pointerdown');
+  b.fire('pointermove', { clientX: 300 });
+  b.fire('pointercancel');
+  b.finish();
+  assert.equal(b.location.pathname, '/');
+});
+test('popstate cancels pending animation and reconciles the URL', () => {
+  const a = setup();
+  a.fire('pointerdown');
+  a.fire('pointermove', { clientX: 300 });
+  a.fire('pointerup');
+  a.location.pathname = '/portifolios';
+  a.location.href = 'http://localhost/portifolios';
+  a.events.popstate();
+  a.finish();
+  assert.equal(a.root.dataset.navigationState, 'idle');
+  assert.equal(a.panels[2].hidden, false);
+  assert.equal(a.panels[1].hidden, true);
+});
+test('interactive controls and selection exclusions do not start a drag', () => {
+  const a = setup();
+  const control = { closest: () => true };
+  a.fire('pointerdown', { target: control });
+  a.fire('pointermove', { clientX: 200 });
+  assert.equal(a.root.dataset.navigationState, 'idle');
 });
 
-test('cross-page anchors use the direct lateral transition for native anchor scrolling', async () => {
-  const app = setup({ path: '/contact' });
-  const click = app.click('https://iweti.com/#portfolio');
-  await click.done;
-  assert.deepEqual(app.requests, []);
-  assert.equal(app.navigations[0].url, 'https://iweti.com/#portfolio');
-  assert.equal(app.navigations[0].options.info.journey, false);
+for (const interruption of ['blur', 'lostpointercapture']) {
+  test(interruption + ' cancels an unfinished drag without creating a history entry', () => {
+    const a = setup();
+    a.fire('pointerdown');
+    a.fire('pointermove', { clientX: 300 });
+    assert.equal(a.root.dataset.navigationState, 'dragging');
+    a.fire(interruption);
+    a.finish();
+    assert.equal(a.root.dataset.navigationState, 'idle');
+    assert.equal(a.history.length, 1);
+    assert.equal(a.location.pathname, '/');
+    assert.equal(a.track.style.transform, undefined);
+    assert.ok(a.panels.every((panel) => panel.style.left === undefined));
+    assert.equal(a.panels[1].hidden, true);
+  });
+}
+test('normal capture release does not cancel a confirmed pointerup', () => {
+  const a = setup();
+  a.fire('pointerdown');
+  a.fire('pointermove', { clientX: 300 });
+  a.fire('pointerup');
+  a.finish();
+  assert.equal(a.location.pathname, '/about');
+  assert.equal(a.history.length, 2);
+  assert.equal(a.root.dataset.navigationState, 'idle');
+});
+test('new scroll after back survives forward and back, even before persistence timer fires', () => {
+  const a = setup('/', true);
+  a.scrollTo(200);
+  a.fire('pointerdown');
+  a.fire('pointermove', { clientX: 300 });
+  a.fire('pointerup');
+  assert.equal(a.location.pathname, '/about');
+  a.history.back();
+  assert.equal(a.scrollY, 200);
+  a.scrollTo(640);
+  a.history.forward();
+  a.finish();
+  assert.equal(a.scrollY, 0);
+  a.history.back();
+  assert.equal(a.scrollY, 640);
+  assert.equal(a.location.pathname, '/');
 });
 
-test('the incoming header keeps the departure indicator before its first layout', async () => {
-  for (const [from, to] of [
-    ['/contact', '/'],
-    ['/about', '/contact'],
-  ]) {
-    const app = setup({ path: from, holdNative: true });
-    const incoming = [];
-    app.document.addEventListener('astro:before-swap', (event) => {
-      incoming.push(
-        event.newDocument
-          .querySelectorAll('.nav-links a, .header-page-indicator a')
-          .filter((link) => link.getAttribute('aria-current') === 'page')
-          .map((link) => new URL(link.href).pathname),
+test('scroll events coalesce history writes and persist the latest position', () => {
+  const a = setup();
+  const initialWrites = a.history.replaceCalls;
+  for (let top = 10; top <= 300; top += 10) a.scrollTo(top);
+  assert.equal(a.history.replaceCalls, initialWrites);
+  a.finish();
+  assert.equal(a.history.replaceCalls, initialWrites + 1);
+  assert.equal(a.history.state.panelScroll, 300);
+  a.scrollTo(300);
+  a.finish();
+  assert.equal(a.history.replaceCalls, initialWrites + 1);
+});
+test('capture loss from a different pointer leaves the active drag intact', () => {
+  const a = setup();
+  a.fire('pointerdown');
+  a.fire('pointermove', { clientX: 300 });
+  a.fire('lostpointercapture', { pointerId: 2 });
+  assert.equal(a.root.dataset.navigationState, 'dragging');
+  a.fire('pointercancel');
+  a.finish();
+  assert.equal(a.root.dataset.navigationState, 'idle');
+  assert.equal(a.history.length, 1);
+});
+
+for (const [from, to] of [
+  ['/', '/portifolios'],
+  ['/', '/contact'],
+  ['/contact', '/'],
+  ['/portifolios', '/'],
+  ['/contact', '/portifolios'],
+  ['/about', '/contact'],
+  ['/contact', '/about'],
+]) {
+  test(
+    'continuous live-panel journey ' + from + ' -> ' + to + ' commits only the destination',
+    () => {
+      const a = setup(from);
+      const sequence = ['/', '/about', '/portifolios', '/blog', '/contact'];
+      const first = sequence.indexOf(from),
+        last = sequence.indexOf(to);
+      const nodes = [...a.panels];
+      a.panels[3].inputValue = 'draft kept across journeys';
+      a.click(to);
+      assert.equal(a.root.dataset.navigationState, 'animating');
+      assert.equal(a.location.pathname, from);
+      assert.equal(a.history.length, 1);
+      const steps = last - first;
+      const animation = a.track.lastAnimation;
+      assert.equal(animation.frames[0].transform, 'translateX(0px)');
+      assert.equal(animation.frames[1].transform, 'translateX(' + -steps * 1000 + 'px)');
+      assert.equal(animation.options.duration, Math.abs(steps) * 280);
+      assert.equal(animation.options.easing, 'linear');
+      sequence.forEach((path, index) => {
+        const panel = a.panels[index];
+        assert.equal(panel.dataset.panel, path);
+        const included = index >= Math.min(first, last) && index <= Math.max(first, last);
+        assert.equal(panel.hidden, !included);
+        if (included && index !== first) {
+          assert.equal(panel.style.left, (index - first) * 1000 + 'px');
+          assert.equal(panel.inert, true);
+          // With one linear track animation this live panel crosses the viewport
+          // center at its own offset, without any second animation or route swap.
+          const progress = (index - first) / steps;
+          assert.equal(Number.parseFloat(panel.style.left) - steps * 1000 * progress, 0);
+        }
+        assert.equal(panel.lastAnimation, undefined);
+      });
+      a.click('/privacy');
+      assert.equal(a.location.pathname, from);
+      a.finish();
+      assert.equal(a.location.pathname, to);
+      assert.equal(a.history.length, 2);
+      assert.equal(a.track.style.transform, undefined);
+      a.panels.forEach((panel, index) => assert.equal(panel, nodes[index]));
+      assert.equal(a.panels[3].inputValue, 'draft kept across journeys');
+      assert.deepEqual(
+        a.panels.filter((panel) => !panel.hidden).map((panel) => panel.dataset.panel),
+        [to],
       );
-    });
-    const click = app.click(`https://iweti.com${to}`);
-    await flush();
-    assert.deepEqual(incoming, [[from, from]]);
-    app.finishNative();
-    await flush();
-    app.finishRunning();
-    await click.done;
-    const active = app.document
-      .querySelectorAll('.header-page-indicator a')
-      .find((link) => link.getAttribute('aria-current') === 'page');
-    assert.equal(new URL(active.href).pathname, to);
-  }
-});
-
-test('failed previews still use a direct client navigation instead of a second document load', async () => {
-  const app = setup({ path: '/contact', fetchFails: true });
-  const click = app.click('https://iweti.com/');
-  await flush();
-  app.finishRunning();
-  await click.done;
-  assert.equal(app.navigations.length, 1);
-  assert.equal(app.navigations[0].options.info.journey, false);
-  assert.deepEqual(app.reloads, []);
-});
-
-test('modified, external, same-page, reduced-motion and unsupported navigation are not intercepted', async () => {
-  for (const [configuration, url, options] of [
-    [{ reduced: true }, 'https://iweti.com/contact', {}],
-    [{ supported: false }, 'https://iweti.com/contact', {}],
-    [{}, 'https://example.com/contact', {}],
-    [{}, 'https://iweti.com/#solucoes', {}],
-    [{}, 'https://iweti.com/contact', { target: '_blank' }],
-    [{}, 'https://iweti.com/contact', { download: true }],
-    [{}, 'https://iweti.com/contact', { event: { ctrlKey: true } }],
-  ]) {
-    const app = setup(configuration);
-    const click = app.click(url, options);
-    await click.done;
-    assert.equal(click.event.defaultPrevented, false);
-    assert.equal(app.navigations.length, 0);
-  }
-});
-
-test('repeated clicks do not create competing transitions', async () => {
-  const app = setup({ path: '/about' });
-  const first = app.click('https://iweti.com/contact');
-  const second = app.click('https://iweti.com/portifolios');
-  await second.done;
-  await flush();
-  assert.equal(app.navigations.length, 1);
-  app.finishRunning();
-  await first.done;
-});
-
-test('page initializers clean their global events before swapping and reconnect on each page load', () => {
-  const listeners = new Map();
-  const lifecycle = ts.transpile(
-    readFileSync(new URL('../src/lib/page-lifecycle.ts', import.meta.url), 'utf8'),
-    { target: ts.ScriptTarget.ESNext, module: ts.ModuleKind.CommonJS },
+      a.history.back();
+      assert.equal(a.location.pathname, from);
+      assert.equal(a.root.dataset.navigationState, 'idle');
+    },
   );
-  const exports = {};
-  vm.runInNewContext(lifecycle, {
-    exports,
-    AbortController,
-    document: { addEventListener: (name, callback) => listeners.set(name, callback) },
-  });
-  const signals = [];
-  let disposed = 0;
-  exports.onPageLoad((signal) => {
-    signals.push(signal);
-    return () => {
-      disposed++;
-    };
-  });
-  listeners.get('astro:page-load')();
-  assert.equal(signals[0].aborted, false);
-  listeners.get('astro:before-swap')();
-  assert.equal(signals[0].aborted, true);
-  listeners.get('astro:page-load')();
-  assert.equal(signals.length, 2);
-  assert.equal(signals[1].aborted, false);
-  assert.equal(disposed, 1);
+}
+test('hash is retained during a distant journey and reduced-motion skips intermediates', () => {
+  const a = setup('/contact');
+  a.click('/about#about-identity-title');
+  assert.equal(a.location.hash, '');
+  assert.equal(a.panels[3].hidden, false);
+  a.finish();
+  assert.equal(a.location.hash, '#about-identity-title');
+  const b = setup('/', true);
+  b.click('/contact');
+  assert.equal(b.location.pathname, '/contact');
+  assert.equal(b.track.lastAnimation, undefined);
+  assert.equal(b.panels[1].hidden, true);
+  assert.equal(b.panels[2].hidden, true);
+});
+test('privacy navigates directly outside the journey in both directions', () => {
+  const a = setup();
+  a.click('/privacy');
+  assert.equal(a.location.pathname, '/privacy');
+  assert.equal(a.track.lastAnimation, undefined);
+  a.click('/about');
+  assert.equal(a.location.pathname, '/about');
+  assert.equal(a.track.lastAnimation, undefined);
+});
+test('popstate interrupts a distant journey without committing its destination', () => {
+  const a = setup();
+  a.click('/contact');
+  a.location.href = 'http://localhost/about';
+  a.events.popstate();
+  a.finish();
+  assert.equal(a.history.length, 1);
+  assert.equal(a.location.pathname, '/about');
+  assert.equal(a.track.style.transform, undefined);
+  assert.equal(a.root.dataset.navigationState, 'idle');
+  assert.deepEqual(
+    a.panels.filter((panel) => !panel.hidden).map((panel) => panel.dataset.panel),
+    ['/about'],
+  );
 });
