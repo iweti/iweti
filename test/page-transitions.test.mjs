@@ -16,6 +16,7 @@ function setup({
   supported = true,
   fetchFails = false,
   holdNative = false,
+  blogResponse,
 } = {}) {
   const handlers = new Map();
   const frames = [];
@@ -34,6 +35,7 @@ function setup({
       this.style = {};
       this.dataset = {};
       this.hidden = false;
+      this.listeners = new Map();
       this.classList = {
         remove: (name) => {
           this.className = this.className
@@ -65,6 +67,10 @@ function setup({
       this.attrs.delete(key);
       if (key === 'style') this.style = {};
     }
+    addEventListener(type, listener) {
+      this.listeners.set(type, listener);
+    }
+    focus() {}
     append(child) {
       child.remove();
       child.parent = this;
@@ -129,6 +135,7 @@ function setup({
       const node = new Node(this.tag, this.className);
       node.attrs = new Map(this.attrs);
       node.style = { ...this.style };
+      node.hidden = this.hidden;
       if (Object.hasOwn(this, 'decode')) node.decode = this.decode;
       if (deep) this.children.forEach((child) => node.append(child.cloneNode(true)));
       return node;
@@ -181,6 +188,9 @@ function setup({
     if (new URL(url, 'https://iweti.com').pathname === '/') content.append(hero);
     const main = new Node('main');
     main.page = url;
+    if (new URL(url, 'https://iweti.com').pathname === '/blog') {
+      main.setAttribute('data-blog-listing', '');
+    }
     const input = new Node('input');
     input.value = 'preserved';
     main.append(input);
@@ -190,6 +200,23 @@ function setup({
     body.append(nav);
     body.append(content);
     body.append(slot);
+    const blogTemplate = new Node('template');
+    blogTemplate.setAttribute('data-blog-preview', '');
+    const blogPreview = new Node('div', 'page-content blog-preview');
+    const controls = new Node('div');
+    controls.setAttribute('data-blog-controls', '');
+    controls.hidden = true;
+    for (const name of ['retry', 'cancel']) {
+      const control = new Node('button');
+      control.setAttribute(`data-blog-${name}`, '');
+      controls.append(control);
+    }
+    const cards = new Node('div');
+    cards.setAttribute('data-blog-preview-cards', '');
+    cards.append(controls);
+    blogPreview.append(cards);
+    blogTemplate.content = { firstElementChild: blogPreview };
+    body.append(blogTemplate);
     return {
       root,
       body,
@@ -232,7 +259,14 @@ function setup({
   };
   const navigate = async (url, options) => {
     navigations.push({ url, options });
-    const destination = makePage(url);
+    const preparation = {
+      to: new URL(url),
+      info: options.info,
+      signal: new AbortController().signal,
+    };
+    emit('astro:before-preparation', preparation);
+    await preparation.loader?.();
+    const destination = preparation.newDocument ?? makePage(url);
     destinations.push(destination);
     const transition = {
       finished: holdNative
@@ -266,14 +300,16 @@ function setup({
     navigate,
     Element: Node,
     URL,
+    AbortController,
     AbortSignal,
     setTimeout,
     clearTimeout,
     queueMicrotask,
     requestAnimationFrame: (fn) => callbacks.push(fn),
-    window: { scrollY: 0, matchMedia: () => ({ matches: reduced }) },
-    fetch: async (url) => {
+    window: { scrollY: 0, matchMedia: () => ({ matches: reduced }), addEventListener: () => {} },
+    fetch: async (url, options) => {
       requests.push(url);
+      if (url === 'https://iweti.com/blog' && blogResponse) return blogResponse(options);
       if (fetchFails) throw new Error('unavailable');
       return { ok: true, text: async () => url };
     },
@@ -327,7 +363,7 @@ test('a distant journey ends on the exact live destination elements without relo
   });
   const click = app.click('https://iweti.com/contact');
   await flush();
-  assert.deepEqual(app.requests, ['/portifolios', '/blog']);
+  assert.deepEqual(app.requests, ['/portifolios']);
   assert.equal(app.navigations.length, 1);
   assert.equal(app.frames.length, 1);
   const destination = app.destinations[0];
@@ -352,7 +388,7 @@ test('leaving home carries the hero in the horizontal sweep under the fixed navi
   const app = setup();
   const click = app.click('https://iweti.com/contact');
   await flush();
-  assert.deepEqual(app.requests, ['/about', '/portifolios', '/blog']);
+  assert.deepEqual(app.requests, ['/about', '/portifolios']);
   assert.equal(app.navigations.length, 1);
   assert.equal(app.frames.length, 1);
   assert.equal(app.frames[0].keyframes[1].transform, 'translateX(-400%)');
@@ -425,11 +461,115 @@ test('adjacent arrival at home keeps the hero in the page through the lateral tr
   assert.deepEqual(app.reloads, []);
 });
 
+test('passing Blog shows the local cards in either direction without requesting the listing', async () => {
+  for (const [from, to] of [
+    ['/portifolios', '/contact'],
+    ['/contact', '/portifolios'],
+  ]) {
+    const app = setup({ path: from });
+    const click = app.click(`https://iweti.com${to}`);
+    await flush();
+    assert.deepEqual(app.requests, []);
+    assert.equal(app.navigations.length, 1);
+    assert.equal(app.navigations[0].url, `https://iweti.com${to}`);
+    const overlay = app.document.querySelector('[data-page-journey]');
+    assert.equal(overlay.querySelectorAll('.blog-preview').length, 1);
+    assert.equal(overlay.querySelector('[data-blog-preview-cards]').hidden, false);
+    assert.equal(overlay.querySelector('[data-blog-controls]').hidden, true);
+    app.finishRunning();
+    await click.done;
+    assert.equal(overlay.querySelector('.blog-preview'), null);
+  }
+});
+
+test('entering Blog shows the built cards before the response and swaps in the listing once', async () => {
+  let respond;
+  const app = setup({
+    blogResponse: () =>
+      new Promise((resolve) => {
+        respond = resolve;
+      }),
+  });
+  app.click('https://iweti.com/blog');
+  await flush();
+  assert.deepEqual(app.requests, ['https://iweti.com/blog']);
+  assert.equal(app.navigations[0].url, 'https://iweti.com/blog');
+  const overlay = app.document.querySelector('[data-page-journey]');
+  assert.equal(overlay.hidden, false);
+  assert.ok(overlay.querySelector('.blog-preview'));
+  assert.equal(overlay.querySelector('[data-blog-preview-cards]').hidden, false);
+  assert.equal(overlay.querySelector('[data-blog-controls]').hidden, true);
+  assert.equal(app.frames.length, 1);
+  assert.equal(app.destinations.length, 0);
+  app.finishRunning();
+  await flush();
+  assert.equal(overlay.hidden, false);
+  assert.equal(overlay.querySelector('[data-blog-preview-ready]').inert, false);
+  respond({ ok: true, text: async () => 'https://iweti.com/blog' });
+  await flush();
+  assert.equal(app.frames.length, 1);
+  assert.equal(app.destinations.length, 1);
+  assert.equal(app.document.querySelector('main'), app.destinations[0].main);
+  assert.equal(overlay.hidden, true);
+});
+
+test('Blog request failure exposes retry and cancelling aborts the outstanding request', async () => {
+  let request;
+  let attempts = 0;
+  const app = setup({
+    path: '/portifolios',
+    reduced: true,
+    blogResponse: ({ signal }) => {
+      request = signal;
+      if (++attempts === 1) return { ok: false };
+      return new Promise((_, reject) => {
+        signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+      });
+    },
+  });
+  app.click('https://iweti.com/blog');
+  await flush();
+  const overlay = app.document.querySelector('[data-page-journey]');
+  const retry = overlay.querySelector('[data-blog-retry]');
+  assert.equal(overlay.querySelector('[data-blog-controls]').hidden, false);
+  assert.equal(overlay.querySelector('[data-blog-preview-cards]').hidden, false);
+  assert.equal(app.frames.length, 0);
+  retry.listeners.get('click')();
+  await flush();
+  assert.equal(attempts, 2);
+  assert.equal(overlay.querySelector('[data-blog-controls]').hidden, true);
+  overlay.querySelector('[data-blog-cancel]').listeners.get('click')();
+  await flush();
+  assert.equal(request.aborted, true);
+  assert.equal(overlay.hidden, true);
+  assert.equal(app.destinations.length, 0);
+  assert.equal(app.initial.content.inert, false);
+});
+
+test('returning to Blog animates the loaded cards without showing loading or requesting it again', async () => {
+  const app = setup({ path: '/portifolios' });
+  app.click('https://iweti.com/blog');
+  await flush();
+  app.finishRunning();
+  await flush();
+  await app.click('https://iweti.com/portifolios').done;
+
+  app.click('https://iweti.com/blog');
+  await flush();
+  const overlay = app.document.querySelector('[data-page-journey]');
+  assert.equal(overlay.hidden, false);
+  assert.ok(overlay.querySelector('[data-blog-listing]'));
+  assert.equal(overlay.querySelector('[data-blog-status]'), null);
+  assert.deepEqual(app.requests, ['https://iweti.com/blog']);
+  app.finishRunning();
+  await flush();
+  assert.equal(overlay.hidden, true);
+  assert.ok(app.document.querySelector('[data-blog-listing]'));
+});
+
 test('blog uses adjacent transitions between projects and contact', async () => {
   for (const [from, to] of [
-    ['/portifolios', '/blog'],
     ['/blog', '/contact'],
-    ['/contact', '/blog'],
     ['/blog', '/portifolios'],
   ]) {
     const app = setup({ path: from });
@@ -447,7 +587,7 @@ test('distant reverse journey includes the live home hero in the lateral sweep',
   const app = setup({ path: '/contact' });
   const click = app.click('https://iweti.com/');
   await flush();
-  assert.deepEqual(app.requests, ['/blog', '/portifolios', '/about']);
+  assert.deepEqual(app.requests, ['/portifolios', '/about']);
   assert.equal(app.frames[0].keyframes[0].transform, 'translateX(-400%)');
   const { content, hero, main } = app.destinations[0];
   const overlay = app.document.querySelector('[data-page-journey]');

@@ -44,7 +44,11 @@ const pageSegments = [
       <a href="/portifolios" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
         <span>Projetos</span>
       </a>
-      <a href="/blog" aria-current={currentPage === 'blog' ? 'page' : undefined}>
+      <a
+        href="/blog"
+        data-astro-prefetch="false"
+        aria-current={currentPage === 'blog' ? 'page' : undefined}
+      >
         <span>Blog</span>
       </a>
       <a

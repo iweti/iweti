@@ -13,6 +13,16 @@ let sweep;
 let movedContent;
 let pageReady;
 let swapTransition;
+let blogEntry;
+let cachedBlog;
+
+// A direct entry already contains the complete static listing in this document.
+if (
+  routes[routeIndex(location.href)] === '/blog' &&
+  document.querySelector('[data-blog-listing]')
+) {
+  cachedBlog = { url: location.href, html: `<!doctype html>${root.outerHTML}` };
+}
 
 function restoreContent() {
   if (!movedContent) return;
@@ -22,6 +32,13 @@ function restoreContent() {
 }
 
 function reset() {
+  if (blogEntry) {
+    blogEntry.controller?.abort();
+    blogEntry.source.inert = false;
+    overlay.inert = true;
+    overlay.setAttribute('aria-hidden', 'true');
+    blogEntry = undefined;
+  }
   sweep?.cancel();
   sweep = undefined;
   restoreContent();
@@ -65,9 +82,19 @@ async function prepareJourney(destination) {
   );
   const previews = await Promise.all(
     indices.slice(1, -1).map(async (index) => {
-      const response = await fetch(routes[index], { signal: AbortSignal.timeout(5000) });
+      const path = routes[index];
+      if (path === '/blog') {
+        const preview = document.querySelector('[data-blog-preview]')?.content.firstElementChild;
+        if (!preview) throw new Error('Blog preview unavailable');
+        return preview;
+      }
+      const response = await fetch(path, { signal: AbortSignal.timeout(5000) });
       if (!response.ok) throw new Error('Page preview unavailable');
-      return new DOMParser().parseFromString(await response.text(), 'text/html');
+      const preview = new DOMParser()
+        .parseFromString(await response.text(), 'text/html')
+        .querySelector('.page-content');
+      if (!preview) throw new Error('Page preview content unavailable');
+      return preview;
     }),
   );
   return { indices, direction, previews };
@@ -81,10 +108,13 @@ function buildJourney(prepared) {
   const panels = prepared.indices.map((_, index) => {
     const panel = document.createElement('div');
     panel.className = 'page-journey-panel';
-    if (index === prepared.indices.length - 1) return panel;
+    if (index === prepared.indices.length - 1 && !prepared.placeholder) return panel;
     panel.setAttribute('data-page-preview', '');
-    const page = index === 0 ? document : prepared.previews[index - 1];
-    const contents = page.querySelector('.page-content').cloneNode(true);
+    const page =
+      index === 0
+        ? document.querySelector('.page-content')
+        : (prepared.previews[index - 1] ?? prepared.placeholder);
+    const contents = page.cloneNode(true);
     contents.querySelectorAll('script').forEach((node) => node.remove());
     contents.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
     contents
@@ -111,23 +141,28 @@ function mountDestination() {
 }
 
 function updateMenu(index, page = document) {
-  page.querySelectorAll('.site-nav .brand, .nav-links a, .header-page-indicator a').forEach((link) => {
-    if (routeIndex(link.href) === index) link.setAttribute('aria-current', 'page');
-    else link.removeAttribute('aria-current');
-  });
+  page
+    .querySelectorAll('.site-nav .brand, .nav-links a, .header-page-indicator a')
+    .forEach((link) => {
+      if (routeIndex(link.href) === index) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
 }
 
-async function sweepJourney() {
+async function sweepJourney({ waitForAssets = true, motion = true } = {}) {
   const currentJourney = journey;
-  await waitForImages(overlay);
+  if (waitForAssets) await waitForImages(overlay);
   if (journey !== currentJourney) return;
   const { indices, direction, track, start } = currentJourney;
   const steps = indices.length - 1;
+  const end = start - direction * steps * 100;
+  if (!motion) {
+    track.style.transform = `translateX(${end}%)`;
+    updateMenu(indices[steps]);
+    return;
+  }
   const animation = track.animate(
-    [
-      { transform: `translateX(${start}%)` },
-      { transform: `translateX(${start - direction * steps * 100}%)` },
-    ],
+    [{ transform: `translateX(${start}%)` }, { transform: `translateX(${end}%)` }],
     {
       duration: (steps - 1) * 240 + 700,
       easing: 'cubic-bezier(0.45, 0, 0.2, 1)',
@@ -149,6 +184,121 @@ async function sweepJourney() {
   updateMenu(indices[steps]);
 }
 
+function cancelBlogEntry({ restoreFocus = false } = {}) {
+  if (!blogEntry) return;
+  const { link } = blogEntry;
+  reset();
+  updateMenu(routeIndex(location.href));
+  if (restoreFocus) link.focus({ preventScroll: true });
+}
+
+async function loadBlog(entry) {
+  entry.controller = new AbortController();
+  entry.pending = true;
+  if (entry.error) entry.error.hidden = true;
+  try {
+    await navigate(entry.url.href, {
+      info: { controlled: true, blogEntry: entry },
+      sourceElement: entry.link,
+    });
+  } catch {
+    await entry.revealed;
+    if (blogEntry !== entry) return;
+    if (!entry.error) {
+      cachedBlog = undefined;
+      location.assign(entry.url.href);
+      return;
+    }
+    entry.pending = false;
+    entry.error.hidden = false;
+  }
+}
+
+function showBlog(destination, link, from, to) {
+  const cachedDocument =
+    cachedBlog?.url === destination.href
+      ? new DOMParser().parseFromString(cachedBlog.html, 'text/html')
+      : undefined;
+  const placeholder =
+    cachedDocument?.querySelector('.page-content') ??
+    document.querySelector('[data-blog-preview]')?.content.firstElementChild;
+  const source = document.querySelector('.page-content');
+  if (
+    !placeholder ||
+    (!cachedDocument && !placeholder.querySelector('[data-blog-preview-cards]')) ||
+    !source ||
+    !document.querySelector('[data-page-journey]')
+  )
+    return false;
+
+  buildJourney({ indices: [from, to], direction: Math.sign(to - from), previews: [], placeholder });
+  const panel = journey.panels.at(-1);
+  const entry = { url: destination, link, source, cachedDocument, panel };
+  const origin = journey.panels[0];
+  origin.inert = true;
+  origin.setAttribute('aria-hidden', 'true');
+  source.inert = true;
+  overlay.inert = false;
+  overlay.removeAttribute('aria-hidden');
+  overlay.hidden = false;
+  panel.inert = true;
+  if (!cachedDocument) {
+    entry.error = panel.querySelector('[data-blog-controls]');
+    entry.error
+      .querySelector('[data-blog-retry]')
+      .addEventListener('click', () => void loadBlog(entry));
+    entry.error.querySelector('[data-blog-cancel]').addEventListener('click', () => {
+      cancelBlogEntry({ restoreFocus: true });
+    });
+  }
+  blogEntry = entry;
+  busy = true;
+  entry.revealed = sweepJourney({ waitForAssets: false, motion: !reducedMotion.matches })
+    .catch(() => {})
+    .then(() => {
+      if (blogEntry !== entry) return;
+      panel.inert = false;
+      panel.setAttribute('data-blog-preview-ready', '');
+    });
+  void loadBlog(entry);
+  return true;
+}
+
+document.addEventListener('astro:before-preparation', (event) => {
+  const entry = event.info?.blogEntry;
+  if (!entry) {
+    cancelBlogEntry();
+    return;
+  }
+  // Blog uses the layout's shared CSS. Fetch its HTML once and let Astro swap the document.
+  event.loader = async () => {
+    let page = entry.cachedDocument;
+    if (!page) {
+      const signal = AbortSignal.any([
+        entry.controller.signal,
+        event.signal,
+        AbortSignal.timeout(8000),
+      ]);
+      const response = await fetch(event.to.href, { signal });
+      if (!response.ok) throw new Error('Blog unavailable');
+      const html = await response.text();
+      page = new DOMParser().parseFromString(html, 'text/html');
+      if (!page.querySelector('[data-blog-listing]')) throw new Error('Blog content unavailable');
+      signal.throwIfAborted();
+      cachedBlog = { url: event.to.href, html };
+    }
+    await entry.revealed;
+    entry.controller.signal.throwIfAborted();
+    event.signal.throwIfAborted();
+    event.newDocument = page;
+  };
+});
+
+window.addEventListener('popstate', () => cancelBlogEntry(), true);
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && blogEntry) cancelBlogEntry({ restoreFocus: true });
+});
+
 // Astro swaps the real document content while preserving only the temporary transition container.
 document.addEventListener('astro:before-swap', (event) => {
   if (!event.info?.controlled) {
@@ -162,15 +312,19 @@ document.addEventListener('astro:before-swap', (event) => {
   if (from >= 0 && to >= 0 && from !== to) {
     event.newDocument.documentElement.dataset.pageDirection = to > from ? 'forward' : 'backward';
   }
-  if (event.info?.journey || reducedMotion.matches || from < 0 || to < 0) {
+  if (event.info?.blogEntry || event.info?.journey || reducedMotion.matches || from < 0 || to < 0) {
     event.newDocument.documentElement.dataset.pageInstant = 'true';
   }
   // Set the departure state before layout can start a transition from the destination state.
-  if (journey) updateMenu(journey.indices[0], event.newDocument);
+  if (journey && !event.info?.blogEntry) updateMenu(journey.indices[0], event.newDocument);
 });
 
 document.addEventListener('astro:after-swap', () => {
-  if (journey) mountDestination();
+  if (blogEntry) {
+    const top = blogEntry.panel.scrollTop;
+    reset();
+    if (top) window.scrollTo({ top, behavior: 'instant' });
+  } else if (journey) mountDestination();
 });
 
 document.addEventListener('astro:page-load', () => {
@@ -205,8 +359,27 @@ document.addEventListener(
     )
       return;
     const destination = new URL(link.href, location.href);
+    if (blogEntry) {
+      if (destination.href === blogEntry.url.href && blogEntry.pending) {
+        event.preventDefault();
+        return;
+      }
+      cancelBlogEntry();
+    }
     const from = routeIndex(location.href);
     const to = routeIndex(destination.href);
+    if (
+      !busy &&
+      destination.origin === location.origin &&
+      destination.pathname.replace(/\/$/, '') === '/blog' &&
+      !destination.hash &&
+      from >= 0 &&
+      from !== to &&
+      showBlog(destination, link, from, to)
+    ) {
+      event.preventDefault();
+      return;
+    }
     if (
       destination.origin !== location.origin ||
       from < 0 ||

@@ -70,7 +70,7 @@
       box-shadow 180ms ease;
   }
 
-  .header-page-indicator a:not([href='/contact']):not([aria-current='page']):is(:hover, :focus-visible) span {
+  .header-page-indicator a:not([aria-current='page']):is(:hover, :focus-visible) span {
     background: rgb(0 216 255 / 45%);
     box-shadow: 0 0 8px rgb(0 216 255 / 18%);
   }
@@ -80,7 +80,7 @@
     box-shadow: 0 0 10px rgb(0 216 255 / 30%);
   }
 
-  .header-page-indicator a[aria-current='page']:not([href='/contact'])::before {
+  .header-page-indicator a[aria-current='page']::before {
     content: '';
     position: absolute;
     inset: auto 0 2px;
@@ -100,10 +100,6 @@
       rgb(0 216 255 / 5%) 45%,
       transparent 100%
     );
-  }
-
-  .header-page-indicator a[href='/contact'] span {
-    box-shadow: none;
   }
 
   @media (max-width: 961px) {
@@ -134,7 +130,7 @@
   }
 
   @media (min-width: 962px) {
-    .header-page-indicator a:not([href='/contact'])::after {
+    .header-page-indicator a::after {
       content: '';
       position: absolute;
       inset: auto 0 2px;
@@ -154,6 +150,7 @@
     .site-nav:has(.nav-links a[href='/portifolios']:focus-visible) .header-page-indicator a[href='/portifolios']::after,
     .site-nav:has(.nav-links a[href='/about']:focus-visible) .header-page-indicator a[href='/about']::after,
     .site-nav:has(.nav-links a[href='/blog']:focus-visible) .header-page-indicator a[href='/blog']::after,
+    .site-nav:has(.nav-links a[href='/contact']:focus-visible) .header-page-indicator a[href='/contact']::after,
     .header-page-indicator a:focus-visible::after {
       opacity: 1;
       transform: scaleY(1);
@@ -164,6 +161,7 @@
       .site-nav:has(.nav-links a[href='/portifolios']:hover) .header-page-indicator a[href='/portifolios']::after,
       .site-nav:has(.nav-links a[href='/about']:hover) .header-page-indicator a[href='/about']::after,
       .site-nav:has(.nav-links a[href='/blog']:hover) .header-page-indicator a[href='/blog']::after,
+      .site-nav:has(.nav-links a[href='/contact']:hover) .header-page-indicator a[href='/contact']::after,
       .header-page-indicator a:hover::after {
         opacity: 1;
         transform: scaleY(1);
@@ -194,18 +192,18 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .site-nav .brand > :is(img, small),
-    .site-nav .nav-links a:not(.nav-contact) > span {
+    .site-nav .nav-links a > :is(span, svg) {
       transition: translate 180ms ease-out;
     }
 
     .site-nav .brand[aria-current='page'] > :is(img, small),
-    .site-nav .nav-links a[aria-current='page']:not(.nav-contact) > span {
+    .site-nav .nav-links a[aria-current='page'] > :is(span, svg) {
       translate: 0 -3px;
     }
 
     @media (hover: hover) {
       .site-nav .brand:hover > :is(img, small),
-      .site-nav .nav-links a:not(.nav-contact):hover > span {
+      .site-nav .nav-links a:hover > :is(span, svg) {
         translate: 0 -3px;
       }
     }
@@ -1289,6 +1287,11 @@ html[data-page-instant] .reveal {
   flex: 0 0 100%;
   height: 100%;
   overflow: hidden;
+}
+
+.page-journey-panel[data-blog-preview-ready] {
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 html[data-page-direction='forward']::view-transition-new(root) {

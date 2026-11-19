@@ -3,6 +3,9 @@ import '../styles/styles.css';
 import type { ComponentProps } from 'astro/types';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import BlogIntro from '../components/blog/BlogIntro.astro';
+import BlogCards from '../components/blog/BlogCards.astro';
+import { blogPageSize, getBlogPosts } from '../lib/blog';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props {
@@ -14,6 +17,8 @@ interface Props {
 }
 
 const { title, description, home = false, currentPage, footer = {} } = Astro.props;
+const previewPosts =
+  currentPage === 'blog' || currentPage === 'privacy' ? undefined : await getBlogPosts();
 ---
 
 <!doctype html>
@@ -47,6 +52,35 @@ const { title, description, home = false, currentPage, footer = {} } = Astro.pro
         currentPage={currentPage === 'privacy' ? 'privacy' : undefined}
       />
     </div>
+    <template data-blog-preview>
+      <div class="page-content blog-preview">
+        <section class="blog-page min-h-[calc(100vh-12rem)] py-20">
+          <div class="shell">
+            <BlogIntro />
+            {previewPosts && (
+              <div data-blog-preview-cards>
+                <div data-blog-controls hidden class="mx-auto mb-6 max-w-232 text-center">
+                  <p role="status">Não foi possível abrir a listagem completa.</p>
+                  <div class="mt-3 flex justify-center gap-5">
+                    <button type="button" data-blog-retry class="underline">
+                      Tentar novamente
+                    </button>
+                    <button type="button" data-blog-cancel class="underline">
+                      Voltar
+                    </button>
+                  </div>
+                </div>
+                <BlogCards
+                  posts={previewPosts.slice(0, blogPageSize)}
+                  page={1}
+                  totalPages={Math.ceil(previewPosts.length / blogPageSize)}
+                />
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+    </template>
     <div
       class="page-journey-overlay"
       data-page-journey
