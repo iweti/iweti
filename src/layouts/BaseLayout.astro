@@ -4,8 +4,9 @@ import type { ComponentProps } from 'astro/types';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Home from '../components/panels/Home.astro';
-import Projects from '../components/panels/Projects.astro';
 import About from '../components/panels/About.astro';
+import Projects from '../components/panels/Projects.astro';
+import Blog from '../components/panels/Blog.astro';
 import Contact from '../components/panels/Contact.astro';
 import Privacy from '../components/panels/Privacy.astro';
 const panels = [
@@ -16,17 +17,23 @@ const panels = [
     description: 'IwetI - tecnologia, ideias e resultados sem limites.',
   },
   {
+    path: '/about',
+    component: About,
+    title: 'Quem somos | IwetI',
+    description:
+      'Conheça a IwetI, nossa missão e visão e o significado de inovação, pessoas e tecnologia em nosso nome.',
+  },
+  {
     path: '/portifolios',
     component: Projects,
     title: 'Projetos | IwetI',
     description: 'Conheça projetos de sites e soluções digitais desenvolvidos pela IwetI.',
   },
   {
-    path: '/about',
-    component: About,
-    title: 'Quem somos | IwetI',
-    description:
-      'Conheça a IwetI, nossa missão e visão e o significado de inovação, pessoas e tecnologia em nosso nome.',
+    path: '/blog',
+    component: Blog,
+    title: 'Blog | IwetI',
+    description: 'Blog da IwetI sobre tecnologia, inovação e soluções digitais.',
   },
   {
     path: '/contact',

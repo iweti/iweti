@@ -3,11 +3,10 @@
 
 @theme {
   --color-ink: #01091f;
-  --color-blue: #008dff;
   --color-action: var(--color-cyan);
   --color-action-hover: #00bfdf;
   --color-cyan: #00d8ff;
-  --color-heading-accent: #8bc5ff;
+  --color-heading-accent: var(--color-cyan);
   --color-text-primary: #f3f6fc;
   --color-muted: #9db4d1;
   --color-surface: #020d24;
@@ -24,6 +23,9 @@
     scroll-padding-top: var(--site-header-height);
     scrollbar-gutter: stable;
     line-height: normal;
+    @media (min-width: 962px) {
+      --site-header-height: 6.5rem;
+    }
   }
 
   body {

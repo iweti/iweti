@@ -4,14 +4,15 @@ import HeaderPageIndicator from './HeaderPageIndicator.astro';
 
 interface Props {
   home?: boolean;
-  currentPage?: 'about' | 'contact' | 'portifolios' | 'privacy';
+  currentPage?: 'about' | 'contact' | 'portifolios' | 'blog' | 'privacy';
 }
 
 const { home = false, currentPage } = Astro.props;
 const pageSegments = [
   { label: 'Início', href: '/', active: home },
-  { label: 'Projetos', href: '/portifolios', active: currentPage === 'portifolios' },
   { label: 'Quem somos', href: '/about', active: currentPage === 'about' },
+  { label: 'Projetos', href: '/portifolios', active: currentPage === 'portifolios' },
+  { label: 'Blog', href: '/blog', active: currentPage === 'blog' },
   { label: 'Fale conosco', href: '/contact', active: currentPage === 'contact' },
 ];
 ---
@@ -37,11 +38,14 @@ const pageSegments = [
       class="nav-links flex items-center gap-6 text-[clamp(1rem,1.2vw,1.125rem)] font-semibold text-[#e2e8f0] max-[961px]:absolute max-[961px]:top-[calc(100%-0.5rem)] max-[961px]:left-0 max-[961px]:z-1 max-[961px]:hidden max-[961px]:w-full max-[961px]:flex-col max-[961px]:items-stretch max-[961px]:rounded-xl max-[961px]:border max-[961px]:border-[rgb(0_141_255/30%)] max-[961px]:p-5 max-[961px]:text-center"
       id="menu"
     >
-      <a href="/portifolios" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
-        Projetos
-      </a>
       <a href="/about" aria-current={currentPage === 'about' ? 'page' : undefined}>
-        Quem somos
+        <span>Quem somos</span>
+      </a>
+      <a href="/portifolios" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
+        <span>Projetos</span>
+      </a>
+      <a href="/blog" aria-current={currentPage === 'blog' ? 'page' : undefined}>
+        <span>Blog</span>
       </a>
       <a
         class="nav-contact"

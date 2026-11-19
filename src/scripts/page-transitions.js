@@ -1,9 +1,9 @@
-// The five real panels belong to this document for its entire lifetime.
+// The real panels belong to this document for its entire lifetime.
 const panels = [...document.querySelectorAll('[data-panel]')];
 const root = document.documentElement;
 const track = document.querySelector('[data-panel-track]');
 const pageWidth = () => track.clientWidth;
-const sequence = ['/', '/portifolios', '/about', '/contact'];
+const sequence = ['/', '/about', '/portifolios', '/blog', '/contact'];
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const normalize = (path) => path.replace(/\/$/, '') || '/';
 let active = panels.find((panel) => !panel.hidden);

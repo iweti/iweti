@@ -57,7 +57,9 @@ export function setup(path = '/', reduced = false) {
       events.lostpointercapture?.({ pointerId: id });
     }
   }
-  const panels = ['/', '/portifolios', '/about', '/contact', '/privacy'].map((r) => new Element(r));
+  const panels = ['/', '/about', '/portifolios', '/blog', '/contact', '/privacy'].map(
+    (r) => new Element(r),
+  );
   const track = new Element('track');
   track.clientWidth = 1000;
   const location = new URL('http://localhost' + path);
@@ -194,7 +196,7 @@ test('drag follows the pointer and confirmation activates the same mounted panel
   assert.equal(a.root.dataset.navigationState, 'animating');
   a.finish();
   assert.equal(original.hidden, false);
-  assert.equal(a.location.pathname, '/portifolios');
+  assert.equal(a.location.pathname, '/about');
   assert.equal(a.panels[0].inert, true);
 });
 test('short drag cancels in 280ms', () => {
@@ -206,6 +208,19 @@ test('short drag cancels in 280ms', () => {
   a.finish();
   assert.equal(a.location.pathname, '/');
   assert.equal(a.panels[1].hidden, true);
+});
+test('blog swipes connect projects and contact', () => {
+  for (const [clientX, destination] of [
+    [300, '/contact'],
+    [1000, '/portifolios'],
+  ]) {
+    const a = setup('/blog');
+    a.fire('pointerdown');
+    a.fire('pointermove', { clientX });
+    a.fire('pointerup', { clientX });
+    a.finish();
+    assert.equal(a.location.pathname, destination);
+  }
 });
 test('vertical intention preserves vertical scrolling', () => {
   const a = setup();
@@ -227,7 +242,7 @@ test('reduced motion commits immediately and pointercancel never commits', () =>
   a.fire('pointerdown');
   a.fire('pointermove', { clientX: 300 });
   a.fire('pointerup');
-  assert.equal(a.location.pathname, '/portifolios');
+  assert.equal(a.location.pathname, '/about');
   assert.equal(a.root.dataset.navigationState, 'idle');
   const b = setup();
   b.fire('pointerdown');
@@ -241,8 +256,8 @@ test('popstate cancels pending animation and reconciles the URL', () => {
   a.fire('pointerdown');
   a.fire('pointermove', { clientX: 300 });
   a.fire('pointerup');
-  a.location.pathname = '/about';
-  a.location.href = 'http://localhost/about';
+  a.location.pathname = '/portifolios';
+  a.location.href = 'http://localhost/portifolios';
   a.events.popstate();
   a.finish();
   assert.equal(a.root.dataset.navigationState, 'idle');
@@ -279,7 +294,7 @@ test('normal capture release does not cancel a confirmed pointerup', () => {
   a.fire('pointermove', { clientX: 300 });
   a.fire('pointerup');
   a.finish();
-  assert.equal(a.location.pathname, '/portifolios');
+  assert.equal(a.location.pathname, '/about');
   assert.equal(a.history.length, 2);
   assert.equal(a.root.dataset.navigationState, 'idle');
 });
@@ -289,7 +304,7 @@ test('new scroll after back survives forward and back, even before persistence t
   a.fire('pointerdown');
   a.fire('pointermove', { clientX: 300 });
   a.fire('pointerup');
-  assert.equal(a.location.pathname, '/portifolios');
+  assert.equal(a.location.pathname, '/about');
   a.history.back();
   assert.equal(a.scrollY, 200);
   a.scrollTo(640);
@@ -326,17 +341,19 @@ test('capture loss from a different pointer leaves the active drag intact', () =
 });
 
 for (const [from, to] of [
-  ['/', '/about'],
+  ['/', '/portifolios'],
   ['/', '/contact'],
   ['/contact', '/'],
-  ['/about', '/'],
+  ['/portifolios', '/'],
   ['/contact', '/portifolios'],
+  ['/about', '/contact'],
+  ['/contact', '/about'],
 ]) {
   test(
     'continuous live-panel journey ' + from + ' -> ' + to + ' commits only the destination',
     () => {
       const a = setup(from);
-      const sequence = ['/', '/portifolios', '/about', '/contact'];
+      const sequence = ['/', '/about', '/portifolios', '/blog', '/contact'];
       const first = sequence.indexOf(from),
         last = sequence.indexOf(to);
       const nodes = [...a.panels];
@@ -385,10 +402,10 @@ for (const [from, to] of [
   );
 }
 test('hash is retained during a distant journey and reduced-motion skips intermediates', () => {
-  const a = setup();
+  const a = setup('/contact');
   a.click('/about#about-identity-title');
   assert.equal(a.location.hash, '');
-  assert.equal(a.panels[1].hidden, false);
+  assert.equal(a.panels[3].hidden, false);
   a.finish();
   assert.equal(a.location.hash, '#about-identity-title');
   const b = setup('/', true);
