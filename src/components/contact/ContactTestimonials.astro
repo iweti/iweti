@@ -100,7 +100,7 @@ const testimonials = [
   import { onPageLoad } from '../../lib/page-lifecycle';
   onPageLoad((signal) => {
     document
-      .querySelectorAll<HTMLElement>('[data-testimonial-carousel]:not([data-page-preview] *)')
+      .querySelectorAll<HTMLElement>('[data-testimonial-carousel]')
       .forEach((carousel) => {
         const resume = () => {
           carousel.dataset.paused = 'false';

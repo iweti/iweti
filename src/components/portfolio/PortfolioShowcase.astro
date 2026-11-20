@@ -23,7 +23,7 @@ const Heading = standalone ? 'h1' : 'h2';
     <p>Conheça nossos sites, aplicativos e plataformas digitais.</p>
   </header>
   <div class="project-list">
-    {projects.map((project) => (
+    {projects.map((project, index) => (
       <article
         class="project-entry"
         id={project.slug}
@@ -39,6 +39,7 @@ const Heading = standalone ? 'h1' : 'h2';
               alt={project.cover.alt}
               width={project.cover.width}
               height={project.cover.height}
+              loading={standalone && index === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />
           </div>

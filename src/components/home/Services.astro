@@ -6,25 +6,25 @@ const services = [
     id: 'sites',
     title: 'Desenvolvimento de Sites',
     description: 'Sites que impulsionam sua presença digital.',
-    icon: '/assets/images/servicesimages/monitor-padrao-nuvem.png',
+    icon: '/assets/images/servicesimages/monitor-padrao-nuvem-160.webp',
   },
   {
     id: 'sistemas',
     title: 'Sistemas Personalizados',
     description: 'Soluções criadas para o seu negócio.',
-    icon: '/assets/images/servicesimages/codigo-padrao-nuvem.png',
+    icon: '/assets/images/servicesimages/codigo-padrao-nuvem-160.webp',
   },
   {
     id: 'aplicacoes',
     title: 'Aplicações Web e Mobile',
     description: 'Tecnologia que conecta você ao futuro.',
-    icon: '/assets/images/servicesimages/smartphone-padrao-nuvem.png',
+    icon: '/assets/images/servicesimages/smartphone-padrao-nuvem-160.webp',
   },
   {
     id: 'consultoria',
     title: 'Consultoria de Tecnologia',
     description: 'Estratégia para crescer com segurança.',
-    icon: '/assets/images/servicesimages/nuvem-nitida.png',
+    icon: '/assets/images/servicesimages/nuvem-nitida-160.webp',
   },
 ];
 ---
@@ -47,7 +47,7 @@ const services = [
               class="service-icon flex h-20 w-20 shrink-0 items-center justify-center rounded-[0.8rem] border border-border"
               aria-hidden="true"
             >
-              <img src={service.icon} alt="" />
+              <img src={service.icon} alt="" width="160" height="160" loading="lazy" decoding="async" />
             </span>
           </div>
           <h3>{service.title}</h3>

@@ -2,7 +2,7 @@ import { onPageLoad } from '../lib/page-lifecycle';
 
 onPageLoad((signal) => {
   document
-    .querySelectorAll<HTMLButtonElement>('.service-more:not([data-page-preview] *)')
+    .querySelectorAll<HTMLButtonElement>('.service-more')
     .forEach((trigger) => {
       const dialogId = trigger.getAttribute('aria-controls');
       const dialog = dialogId ? document.getElementById(dialogId) : null;

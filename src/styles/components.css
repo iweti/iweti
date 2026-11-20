@@ -11,17 +11,6 @@
     view-transition-name: site-navigation;
     background: rgb(1 9 31 / 82%);
     backdrop-filter: blur(14px);
-    transition: transform 200ms ease;
-  }
-
-  .site-nav.is-scroll-hidden {
-    transform: translateY(-100%);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .site-nav {
-      transition: none;
-    }
   }
 
   @media (min-width: 962px) {
@@ -228,11 +217,22 @@
     padding-top: var(--site-header-height);
   }
 
+  .home-hero,
+  .about,
+  .project-showcase,
+  .home-projects-services {
+    --iweti-background: url('/assets/images/hero-background-1600.webp');
+
+    @media (max-width: 767px) {
+      --iweti-background: url('/assets/images/hero-background-900.webp');
+    }
+  }
+
   .home-hero {
     background:
       linear-gradient(90deg, rgb(1 7 18 / 34%) 0%, rgb(1 7 18 / 12%) 52%, rgb(1 7 18 / 8%) 100%),
       linear-gradient(180deg, rgb(1 8 22 / 56%) 0%, rgb(1 8 22 / 42%) 35%, rgb(1 8 22 / 72%) 100%),
-      url('/assets/images/hero-background.jpg') center bottom/cover no-repeat;
+      var(--iweti-background) center bottom/cover no-repeat;
   }
 
   main > section:not(.contact-page),
@@ -370,7 +370,7 @@
       radial-gradient(ellipse at 20% 58%, rgb(0 126 255 / 8%), transparent 25rem),
       radial-gradient(ellipse at 86% 24%, rgb(0 216 255 / 4%), transparent 23rem),
       linear-gradient(95deg, rgb(1 8 22 / 60%), rgb(1 8 22 / 74%)),
-      url('/assets/images/hero-background.jpg') center/cover no-repeat;
+      var(--iweti-background) center/cover no-repeat;
   }
 
   .about-mascot {
@@ -852,7 +852,7 @@
         rgb(1 9 31 / 42%) calc(var(--mountain-height) * 0.5),
         var(--color-ink) var(--mountain-height)
       ),
-      url('/assets/images/hero-background.jpg') center top / auto var(--mountain-height) no-repeat,
+      var(--iweti-background) center top / auto var(--mountain-height) no-repeat,
       var(--color-ink);
   }
 
@@ -1244,7 +1244,7 @@
 
 html[data-page-direction]::view-transition-old(root),
 html[data-page-direction]::view-transition-new(root) {
-  animation-duration: 700ms;
+  animation-duration: 280ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: both;
   mix-blend-mode: normal;
@@ -1252,46 +1252,6 @@ html[data-page-direction]::view-transition-new(root) {
 
 html[data-page-direction='forward']::view-transition-old(root) {
   animation-name: page-out-left;
-}
-
-html[data-page-instant]::view-transition-old(root),
-html[data-page-instant]::view-transition-new(root),
-html[data-page-instant]::view-transition-group(root) {
-  animation: none;
-}
-
-html[data-page-instant]::view-transition-old(root) {
-  visibility: hidden;
-}
-
-html[data-page-instant] .reveal {
-  opacity: 1;
-  transform: none;
-}
-
-.page-journey-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  overflow: hidden;
-  background: var(--color-ink);
-}
-
-.page-journey-track {
-  display: flex;
-  height: 100%;
-  will-change: transform;
-}
-
-.page-journey-panel {
-  flex: 0 0 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.page-journey-panel[data-blog-preview-ready] {
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 html[data-page-direction='forward']::view-transition-new(root) {

@@ -1,7 +1,7 @@
 import { onPageLoad } from '../lib/page-lifecycle';
 
 onPageLoad(() => {
-  const revealElements = document.querySelectorAll('.reveal:not([data-page-preview] *)');
+  const revealElements = document.querySelectorAll('.reveal');
 
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
