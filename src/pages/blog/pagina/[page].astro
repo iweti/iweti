@@ -1,0 +1,26 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BlogListing from '../../../components/blog/BlogListing.astro';
+import { blogPageSize, getBlogPosts } from '../../../lib/blog';
+
+export const getStaticPaths = (async () => {
+  const posts = await getBlogPosts();
+  const totalPages = Math.ceil(posts.length / blogPageSize);
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => {
+    const page = index + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        posts: posts.slice((page - 1) * blogPageSize, page * blogPageSize),
+        page,
+        totalPages,
+      },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const { posts, page, totalPages } = Astro.props;
+---
+
+<BlogListing {posts} {page} {totalPages} />

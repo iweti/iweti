@@ -1,0 +1,12 @@
+---
+import BlogListing from '../components/blog/BlogListing.astro';
+import { blogPageSize, getBlogPosts } from '../lib/blog';
+
+const posts = await getBlogPosts();
+---
+
+<BlogListing
+  posts={posts.slice(0, blogPageSize)}
+  page={1}
+  totalPages={Math.ceil(posts.length / blogPageSize)}
+/>

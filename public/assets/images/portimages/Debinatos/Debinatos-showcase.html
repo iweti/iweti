@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debinatos — composição da capa</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scrollbar-width: none;
+      }
+      body {
+        margin: 0;
+        background: #08090b;
+      }
+      .showcase {
+        position: relative;
+        isolation: isolate;
+        width: 1600px;
+        height: 1600px;
+        overflow: hidden;
+        background:
+          radial-gradient(ellipse at 20% 20%, #b53f2455, transparent 52%),
+          radial-gradient(ellipse at 14% 87%, #db862a33, transparent 45%),
+          linear-gradient(145deg, #202024, #0b0b0e 52%, #18110f);
+      }
+      .showcase::before {
+        content: '';
+        position: absolute;
+        inset: 48% -30% -60%;
+        border-radius: 50%;
+        border-top: 2px solid #f0b5b51c;
+        background: linear-gradient(#ffffff04, #00000066);
+        transform: rotate(-18deg);
+      }
+      .brand {
+        z-index: 3;
+        position: absolute;
+        top: 45px;
+        left: 1170px;
+        width: 330px;
+        height: auto;
+        filter: drop-shadow(0 16px 24px #0007);
+      }
+      .ground-shadow {
+        position: absolute;
+        top: 1190px;
+        left: 200px;
+        width: 1210px;
+        height: 115px;
+        background: #000c;
+        border-radius: 50%;
+        filter: blur(42px);
+        transform: rotate(-7deg);
+      }
+      .laptop {
+        position: absolute;
+        top: 365px;
+        left: 260px;
+        width: 1540px;
+        transform: perspective(2400px) rotateY(-13deg) rotateX(5deg) rotateZ(8deg);
+        filter: drop-shadow(-12px 40px 26px #0009);
+      }
+      .display {
+        position: relative;
+        padding: 26px 18px 32px;
+        border: 2px solid #77777b;
+        border-radius: 27px 27px 12px 12px;
+        background: linear-gradient(135deg, #424247, #09090b 35%, #202025);
+        box-shadow:
+          inset 0 0 0 4px #111114,
+          0 2px 1px #ffffff50;
+      }
+      .display::before {
+        content: '';
+        position: absolute;
+        top: 11px;
+        left: calc(50% - 4px);
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #08090c;
+        box-shadow: inset 0 0 0 2px #3a3b40;
+      }
+      .display img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+      }
+      .base {
+        position: relative;
+        width: 1650px;
+        height: 23px;
+        margin-left: -55px;
+        border-radius: 3px 3px 50% 50% / 3px 3px 20px 20px;
+        background: linear-gradient(#b6b6bd, #73737c 23%, #35353d 74%, #111115);
+        box-shadow: 0 3px 1px #0008;
+      }
+      .base::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 700px;
+        width: 250px;
+        height: 9px;
+        border-radius: 0 0 12px 12px;
+        background: linear-gradient(#5d5d66, #a0a0aa);
+      }
+      .phone {
+        z-index: 2;
+        position: absolute;
+        top: -210px;
+        left: -45px;
+        width: 700px;
+        padding: 18px;
+        border: 2px solid #8b8589;
+        border-radius: 84px;
+        background: linear-gradient(120deg, #5b575a, #0d0c0f 28%, #39363b);
+        box-shadow:
+          inset 0 0 0 4px #111114,
+          -24px 32px 35px #0009,
+          2px 2px 1px #ffffff30;
+        transform: perspective(1800px) rotateY(8deg) rotateZ(-10deg);
+      }
+      .phone img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 64px;
+      }
+      @media (width <= 800px) {
+        .showcase {
+          zoom: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="showcase" aria-label="Debinatos em notebook e smartphone">
+      <img
+        class="brand"
+        src="Debinatos-showcase-logo.png"
+        alt="Debinatos"
+        width="135"
+        height="111"
+      />
+      <div class="ground-shadow" aria-hidden="true"></div>
+      <div class="laptop">
+        <div class="display">
+          <img
+            src="Debinatos-main.png"
+            alt="Interface desktop do site Debinatos"
+            width="1888"
+            height="872"
+          />
+        </div>
+        <div class="base" aria-hidden="true"></div>
+      </div>
+      <div class="phone">
+        <img
+          src="Debinatos-main-mobile.png"
+          alt="Interface mobile do site Debinatos"
+          width="780"
+          height="1688"
+        />
+      </div>
+    </main>
+  </body>
+</html>

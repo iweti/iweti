@@ -9,14 +9,16 @@ import TestimonialsSection from '../components/home/TestimonialsSection.astro';
 
 <BaseLayout
   home
-  footer={{ contactAnchor: true, ctaLabel: 'Quero conversar agora →' }}
+  footer={{ contactAnchor: true }}
   title="IwetI | Tecnologia sem limites"
   description="IwetI - tecnologia, ideias e resultados sem limites."
 >
   <Hero slot="hero" />
   <main>
-    <PortfolioSection />
-    <Services />
+    <div class="home-projects-services">
+      <PortfolioSection />
+      <Services />
+    </div>
     <AboutSection />
     <TestimonialsSection />
   </main>

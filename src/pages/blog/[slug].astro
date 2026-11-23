@@ -1,0 +1,63 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { blogDate, getBlogPosts } from '../../lib/blog';
+
+export const getStaticPaths = (async () => {
+  const posts = await getBlogPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, date, author, category } = post.data;
+---
+
+<BaseLayout currentPage="blog" title={`${title} | IwetI`} {description}>
+  <main class="blog-page py-20">
+    <article class="shell">
+      <div class="mx-auto max-w-160">
+        <a href="/blog" class="underline underline-offset-4" data-astro-prefetch="false">
+          Voltar ao blog
+        </a>
+        <header class="mt-8 mb-10">
+          <p class="eyebrow">{category}</p>
+          <h1>{title}</h1>
+          <p class="mt-4 leading-relaxed text-muted">{description}</p>
+          <p class="mt-4 text-sm text-muted">
+            {author} ·{' '}
+            <time datetime={date.toISOString().slice(0, 10)}>{blogDate.format(date)}</time>
+          </p>
+        </header>
+        <div class="article-body leading-relaxed">
+          <Content />
+        </div>
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .article-body :global(h2) {
+    margin-block: 2rem 0.75rem;
+    font-size: 1.35rem;
+  }
+  .article-body :global(p),
+  .article-body :global(ul),
+  .article-body :global(ol) {
+    margin-block: 0.75rem;
+  }
+  .article-body :global(ul),
+  .article-body :global(ol) {
+    padding-inline-start: 1.5rem;
+    list-style: revert;
+  }
+  .article-body :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .article-body :global(code) {
+    overflow-wrap: anywhere;
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCards from './BlogCards.astro';
+import BlogIntro from './BlogIntro.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  page: number;
+  totalPages: number;
+}
+
+const { posts, page, totalPages } = Astro.props;
+---
+
+<BaseLayout
+  currentPage="blog"
+  title={page === 1 ? 'Blog | IwetI' : `Blog, página ${page} | IwetI`}
+  description="Guias e atualidades da IwetI sobre sites, automação e presença digital."
+>
+  <main>
+    <section class="blog-page min-h-[calc(100vh-12rem)] py-20">
+      <div class="shell">
+        <BlogIntro />
+        <BlogCards {posts} {page} {totalPages} />
+      </div>
+    </section>
+  </main>
+</BaseLayout>

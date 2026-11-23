@@ -1,69 +1,118 @@
-const menuButton = document.querySelector<HTMLButtonElement>('.menu-toggle');
-const menu = document.querySelector<HTMLElement>('.nav-links');
+import { onPageLoad } from '../lib/page-lifecycle';
 
-if (menuButton && menu) {
-  const closeMenu = () => {
-    menu.classList.remove('open');
-    menuButton.setAttribute('aria-expanded', 'false');
-  };
+onPageLoad((signal) => {
+  const menuButton = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const menu = document.querySelector<HTMLElement>('.nav-links');
 
-  menuButton.addEventListener('click', () => {
-    const isOpen = menu.classList.toggle('open');
-    menuButton.setAttribute('aria-expanded', String(isOpen));
-  });
+  const mobile = window.matchMedia('(max-width: 961px) and (pointer: coarse)');
+  let swipe: { x: number; y: number; time: number; id: number } | undefined;
 
-  menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeMenu();
-  });
-}
-
-const navigation = document.querySelector<HTMLElement>('.site-nav');
-
-if (navigation) {
-  const scrollThreshold = 8;
-  let previousScrollY = Math.max(0, window.scrollY);
-  let framePending = false;
-
-  const updateNavigation = () => {
-    // Clamp elastic overscroll so bouncing at either edge does not change direction.
-    const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    const scrollY = Math.min(maxScrollY, Math.max(0, window.scrollY));
-    const delta = scrollY - previousScrollY;
-    const nearTop = scrollY <= navigation.offsetHeight;
-    const menuOpen = menuButton?.getAttribute('aria-expanded') === 'true';
-    const keyboardFocus = navigation.querySelector(':focus-visible');
-
-    navigation.classList.toggle('is-scrolled', scrollY > 0);
-
-    if (nearTop || menuOpen || keyboardFocus) {
-      navigation.classList.remove('is-hidden');
-      previousScrollY = scrollY;
-    } else if (Math.abs(delta) >= scrollThreshold) {
-      navigation.classList.toggle('is-hidden', delta > 0);
-      previousScrollY = scrollY;
-    }
-
-    framePending = false;
-  };
-
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!framePending) {
-        framePending = true;
-        window.requestAnimationFrame(updateNavigation);
+  document.addEventListener(
+    'touchstart',
+    (event) => {
+      swipe = undefined;
+      if (!mobile.matches || event.touches.length !== 1) return;
+      if (menuButton?.getAttribute('aria-expanded') === 'true') return;
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (
+        target.closest(
+          'a, button, form, input, textarea, select, [contenteditable], dialog, [data-testimonial-carousel], [data-no-swipe]',
+        )
+      )
+        return;
+      for (let element: Element | null = target; element; element = element.parentElement) {
+        if (
+          element.scrollWidth > element.clientWidth &&
+          /auto|scroll/.test(getComputedStyle(element).overflowX)
+        )
+          return;
       }
+      const touch = event.touches[0];
+      if (touch.clientX < 24 || touch.clientX > window.innerWidth - 24) return;
+      swipe = { x: touch.clientX, y: touch.clientY, time: performance.now(), id: touch.identifier };
     },
-    { passive: true },
+    { passive: true, signal },
   );
 
-  navigation.addEventListener('focusin', () => {
-    navigation.classList.remove('is-hidden');
-  });
+  document.addEventListener(
+    'touchmove',
+    (event) => {
+      if (!swipe) return;
+      const touch = event.touches[0];
+      if (
+        event.touches.length !== 1 ||
+        touch.identifier !== swipe.id ||
+        Math.abs(touch.clientY - swipe.y) > 24
+      )
+        swipe = undefined;
+    },
+    { passive: true, signal },
+  );
 
-  updateNavigation();
-}
+  document.addEventListener(
+    'touchcancel',
+    () => {
+      swipe = undefined;
+    },
+    { passive: true, signal },
+  );
+  document.addEventListener(
+    'touchend',
+    (event) => {
+      const start = swipe;
+      swipe = undefined;
+      if (!start || !mobile.matches || event.touches.length) return;
+      const touch = Array.from(event.changedTouches).find((item) => item.identifier === start.id);
+      if (!touch) return;
+      const dx = touch.clientX - start.x;
+      const dy = touch.clientY - start.y;
+      if (
+        Math.abs(dx) < 72 ||
+        Math.abs(dx) < Math.abs(dy) * 1.8 ||
+        performance.now() - start.time > 700
+      )
+        return;
+      if (window.getSelection()?.toString()) return;
+      const links = Array.from(
+        document.querySelectorAll<HTMLAnchorElement>('.header-page-indicator a'),
+      );
+      const current = links.findIndex(
+        (link) =>
+          link.pathname === location.pathname.replace(/\/$/, '') ||
+          (link.pathname === '/' && location.pathname === '/'),
+      );
+      if (current < 0) return;
+      links[current + (dx < 0 ? 1 : -1)]?.click();
+    },
+    { passive: true, signal },
+  );
 
-export {};
+  if (menuButton && menu) {
+    const closeMenu = () => {
+      menu.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+    };
+
+    menuButton.addEventListener(
+      'click',
+      () => {
+        const isOpen = menu.classList.toggle('open');
+        menuButton.setAttribute('aria-expanded', String(isOpen));
+      },
+      { signal },
+    );
+
+    menu
+      .querySelectorAll('a')
+      .forEach((link) => link.addEventListener('click', closeMenu, { signal }));
+
+    document.addEventListener(
+      'keydown',
+      (event) => {
+        if (event.key === 'Escape') closeMenu();
+      },
+      { signal },
+    );
+  }
+});

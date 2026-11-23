@@ -57,7 +57,11 @@ export async function sendContact(apiUrl: string, payload: ContactPayload): Prom
         };
       }
 
-      return isRecord(body) && isNewsletterStatus(body.newsletter)
+      if (!isRecord(body) || (body.sucesso !== true && body.contato !== 'encaminhado')) {
+        return { kind: 'error', message: unknownOutcome };
+      }
+
+      return isNewsletterStatus(body.newsletter)
         ? { kind: 'success', newsletter: body.newsletter }
         : { kind: 'success' };
     }

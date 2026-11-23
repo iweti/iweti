@@ -1,57 +1,81 @@
 ---
 import Brand from './Brand.astro';
+import HeaderPageIndicator from './HeaderPageIndicator.astro';
 
 interface Props {
   home?: boolean;
-  currentPage?: 'about' | 'contact' | 'portifolios' | 'privacy';
+  currentPage?: 'about' | 'contact' | 'portifolios' | 'blog' | 'privacy';
 }
 
 const { home = false, currentPage } = Astro.props;
+const pageSegments = [
+  { label: 'Início', href: '/', active: home },
+  { label: 'Quem somos', href: '/about', active: currentPage === 'about' },
+  { label: 'Projetos', href: '/portifolios', active: currentPage === 'portifolios' },
+  { label: 'Blog', href: '/blog', active: currentPage === 'blog' },
+  { label: 'Fale conosco', href: '/contact', active: currentPage === 'contact' },
+];
 ---
 
-<header
-  class:list={[
-    'site-header relative overflow-hidden pt-20 max-[961px]:z-100 max-[961px]:overflow-visible max-md:min-h-0 md:max-[901px]:min-h-0',
-    { 'min-h-170': home, 'site-header-compact': !home },
-  ]}
-  id={home ? 'home' : undefined}
->
-  <div class="site-nav fixed z-100">
-    <nav
-      class="nav relative z-30 shell flex min-h-20 items-center justify-between"
-      aria-label="Navegação principal"
+<header class="site-nav fixed z-100">
+  <nav
+    class="nav relative z-30 shell flex min-h-20 items-center justify-between"
+    aria-label="Navegação principal"
+  >
+    <Brand href={home ? '#home' : '/'} current={home} />
+    <button
+      class="menu-toggle hidden max-[961px]:flex max-[961px]:shrink-0 max-[961px]:flex-col max-[961px]:gap-1.5 max-[961px]:p-2"
+      type="button"
+      aria-expanded="false"
+      aria-controls="menu"
     >
-      <Brand href={home ? '#home' : '/'} />
-      <button
-        class="menu-toggle hidden max-[961px]:flex max-[961px]:shrink-0 max-[961px]:flex-col max-[961px]:gap-1.5 max-[961px]:p-2"
-        type="button"
-        aria-expanded="false"
-        aria-controls="menu"
+      <span></span>
+      <span></span>
+      <span></span>
+      <span class="sr-only">Abrir menu</span>
+    </button>
+    <div
+      class="nav-links flex items-center gap-6 text-[clamp(1rem,1.2vw,1.125rem)] font-semibold text-[#e2e8f0] max-[961px]:absolute max-[961px]:top-[calc(100%-0.5rem)] max-[961px]:left-0 max-[961px]:z-1 max-[961px]:hidden max-[961px]:w-full max-[961px]:flex-col max-[961px]:items-stretch max-[961px]:rounded-xl max-[961px]:border max-[961px]:border-[rgb(0_141_255/30%)] max-[961px]:p-5 max-[961px]:text-center"
+      id="menu"
+    >
+      <a href="/about" aria-current={currentPage === 'about' ? 'page' : undefined}>
+        <span>Quem somos</span>
+      </a>
+      <a href="/portifolios" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
+        <span>Projetos</span>
+      </a>
+      <a
+        href="/blog"
+        data-astro-prefetch="false"
+        aria-current={currentPage === 'blog' ? 'page' : undefined}
       >
-        <span></span>
-        <span></span>
-        <span></span>
-        <span class="sr-only">Abrir menu</span>
-      </button>
-      <div
-        class="nav-links flex items-center gap-6 text-[0.875rem] font-medium text-[#e2e8f0] max-[961px]:absolute max-[961px]:top-[calc(100%-0.5rem)] max-[961px]:left-0 max-[961px]:z-1 max-[961px]:hidden max-[961px]:w-full max-[961px]:flex-col max-[961px]:items-stretch max-[961px]:rounded-xl max-[961px]:border max-[961px]:border-[rgb(0_141_255/30%)] max-[961px]:p-5 max-[961px]:text-center"
-        id="menu"
+        <span>Blog</span>
+      </a>
+      <a
+        class="nav-contact"
+        href="/contact"
+        aria-current={currentPage === 'contact' ? 'page' : undefined}
       >
-        <a href="/portifolios" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
-          Projetos
-        </a>
-        <a href="/about" aria-current={currentPage === 'about' ? 'page' : undefined}>
-          Quem somos
-        </a>
-        <a
-          class="nav-cta"
-          href="/contact"
-          aria-current={currentPage === 'contact' ? 'page' : undefined}
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
         >
-          Fale conosco →
-        </a>
-      </div>
-    </nav>
+          <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3H13a8.5 8.5 0 0 1 8 8v.5Z" />
+          <path d="M8 10h8M8 14h5" />
+        </svg>
+        <span>Fale conosco</span>
+      </a>
+    </div>
+  </nav>
+  <div class="shell">
+    <HeaderPageIndicator pages={pageSegments} />
   </div>
-  <slot />
 </header>

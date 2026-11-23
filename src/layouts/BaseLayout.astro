@@ -3,6 +3,7 @@ import '../styles/styles.css';
 import type { ComponentProps } from 'astro/types';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -21,6 +22,7 @@ const { title, description, home = false, currentPage, footer = {} } = Astro.pro
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <ClientRouter fallback="swap" />
     <title>{title}</title>
     <link rel="icon" type="image/jpg" href="/assets/images/favicon.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,16 +33,22 @@ const { title, description, home = false, currentPage, footer = {} } = Astro.pro
     />
   </head>
   <body>
-    <SiteHeader home={home} currentPage={currentPage}>
-      <slot name="hero" />
-    </SiteHeader>
-    <slot />
-    <SiteFooter
-      {...footer}
-      home={home}
-      currentPage={currentPage === 'privacy' ? 'privacy' : undefined}
-    />
+    <SiteHeader home={home} currentPage={currentPage} />
+    <div class:list={['page-content', { 'page-content-home': home }]}>
+      {home && (
+        <div class="home-hero relative min-h-170 overflow-hidden max-[901px]:min-h-0" id="home">
+          <slot name="hero" />
+        </div>
+      )}
+      <slot />
+      <SiteFooter
+        {...footer}
+        home={home}
+        currentPage={currentPage === 'privacy' ? 'privacy' : undefined}
+      />
+    </div>
     <script>
+      import '../scripts/page-transitions';
       import '../scripts/navigation';
       import '../scripts/reveal';
     </script>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LivesRun — composição da capa</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scrollbar-width: none;
+      }
+      body {
+        margin: 0;
+        background: #0b0c0f;
+      }
+      .showcase {
+        position: relative;
+        isolation: isolate;
+        width: 1600px;
+        height: 1600px;
+        overflow: hidden;
+        background:
+          radial-gradient(ellipse at 85% 48%, #ff692b28, transparent 52%),
+          radial-gradient(ellipse at 14% 87%, #ff692b22, transparent 45%),
+          linear-gradient(145deg, #202024, #0b0c0f 52%, #191411);
+      }
+      .showcase::before {
+        content: '';
+        position: absolute;
+        inset: 48% -30% -60%;
+        border-radius: 50%;
+        border-top: 2px solid #ffb38e1c;
+        background: linear-gradient(#ffffff04, #00000066);
+        transform: rotate(-18deg);
+      }
+      .brand {
+        position: absolute;
+        top: 120px;
+        left: 110px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        font:
+          900 76px/1 Arial,
+          sans-serif;
+        letter-spacing: -5px;
+        color: #f6f7f8;
+      }
+      .brand img {
+        width: 88px;
+        height: 88px;
+      }
+      .brand span span {
+        color: #ff692b;
+      }
+      .shadow {
+        position: absolute;
+        top: 1370px;
+        left: 220px;
+        width: 1180px;
+        height: 90px;
+        background: #000d;
+        border-radius: 50%;
+        filter: blur(40px);
+        transform: rotate(-5deg);
+      }
+      .phone {
+        position: absolute;
+        width: 464px;
+        padding: 12px;
+        border: 2px solid #87817d;
+        border-radius: 49px;
+        background: linear-gradient(120deg, #625a55, #0d0c0f 28%, #3e3833);
+        box-shadow:
+          inset 0 0 0 4px #111114,
+          -25px 35px 38px #0009,
+          2px 2px 1px #ffffff30;
+      }
+      .phone img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 35px;
+      }
+      .phone.home {
+        left: 150px;
+        top: 525px;
+        width: 350px;
+        transform: perspective(2200px) rotateY(10deg) rotateZ(-12deg);
+      }
+      .phone.history {
+        left: 620px;
+        top: -180px;
+        width: 800px;
+        padding: 18px;
+        border-radius: 67px;
+        transform: perspective(2800px) rotateY(-8deg) rotateZ(18deg);
+        box-shadow:
+          inset 0 0 0 5px #111114,
+          -60px 50px 70px #000c,
+          3px 3px 1px #ffffff30;
+      }
+      .phone.history img {
+        border-radius: 47px;
+      }
+    </style>
+  </head>
+  <body>
+    <main
+      class="showcase"
+      aria-label="Close diagonal do histórico LivesRun com tela inicial menor ao fundo"
+    >
+      <div class="brand">
+        <img src="LivesRun-icon.svg" alt="" /><span>livesrun<span>.</span></span>
+      </div>
+      <div class="shadow" aria-hidden="true"></div>
+      <div class="phone home">
+        <img
+          src="LivesRun-home.png"
+          width="440"
+          height="956"
+          alt="Tela inicial real do LivesRun em modo demonstração"
+        />
+      </div>
+      <div class="phone history">
+        <img
+          src="LivesRun-history.png"
+          width="440"
+          height="956"
+          alt="Histórico real do LivesRun com atividades fictícias da demonstração"
+        />
+      </div>
+    </main>
+  </body>
+</html>

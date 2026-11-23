@@ -1,4 +1,4 @@
-export const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER ?? '5511978538445';
+export const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER || '5511978538445';
 
 export function whatsappLink(number: string | undefined, message: string): string | undefined {
   const digits = number?.replace(/[\s()+-]/g, '') || '';

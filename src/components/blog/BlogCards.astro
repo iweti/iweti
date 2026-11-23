@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { blogDate, blogPageHref } from '../../lib/blog';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  page: number;
+  totalPages: number;
+}
+
+const { posts, page, totalPages } = Astro.props;
+---
+
+{posts.length ? (
+  <ul class="mx-auto grid max-w-232 gap-5 md:grid-cols-2">
+    {posts.map(({ id, data }) => (
+      <li class="rounded-2xl border border-cyan/25 bg-card p-6">
+        <p class="text-sm text-muted">
+          {data.category} ·{' '}
+          <time datetime={data.date.toISOString().slice(0, 10)}>{blogDate.format(data.date)}</time>
+        </p>
+        <h2 class="mt-3 text-xl">
+          <a class="underline-offset-4 hover:underline" href={`/blog/${id}`}>
+            {data.title}
+          </a>
+        </h2>
+        <p class="mt-3 leading-relaxed text-muted">{data.description}</p>
+      </li>
+    ))}
+  </ul>
+) : (
+  <p class="text-center text-muted">Nenhuma publicação por enquanto.</p>
+)}
+{totalPages > 1 && (
+  <nav
+    class="mt-10 flex flex-wrap items-center justify-center gap-5"
+    aria-label="Paginação do blog"
+  >
+    {page > 1 && (
+      <a class="underline" href={blogPageHref(page - 1)}>
+        Página anterior
+      </a>
+    )}
+    <span>
+      Página {page} de {totalPages}
+    </span>
+    {page < totalPages && (
+      <a class="underline" href={blogPageHref(page + 1)}>
+        Próxima página
+      </a>
+    )}
+  </nav>
+)}

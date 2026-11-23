@@ -3,11 +3,10 @@
 
 @theme {
   --color-ink: #01091f;
-  --color-blue: #008dff;
-  --color-action: #0874c2;
-  --color-action-hover: #0868ad;
+  --color-action: var(--color-cyan);
+  --color-action-hover: #00bfdf;
   --color-cyan: #00d8ff;
-  --color-heading-accent: #8bc5ff;
+  --color-heading-accent: var(--color-cyan);
   --color-text-primary: #f3f6fc;
   --color-muted: #9db4d1;
   --color-surface: #020d24;
@@ -19,8 +18,14 @@
 
 @layer base {
   html {
+    --site-header-height: 5.5rem;
     @apply scroll-smooth motion-reduce:scroll-auto;
+    scroll-padding-top: var(--site-header-height);
+    scrollbar-gutter: stable;
     line-height: normal;
+    @media (min-width: 962px) {
+      --site-header-height: 6.5rem;
+    }
   }
 
   body {
@@ -111,9 +116,9 @@
 }
 
 @utility btn-primary {
-  @apply bg-action text-white;
+  @apply border border-cyan/40 bg-[#061a2e] text-cyan;
   &:hover {
-    @apply bg-action-hover;
+    @apply border-cyan bg-[#0a2942];
   }
 }
 

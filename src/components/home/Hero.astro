@@ -35,9 +35,6 @@ const headlineWords = ['experiências', 'digitais'];
       <a class="btn btn-primary" href="/contact">
         Conversar sobre meu projeto →
       </a>
-      <a class="btn btn-ghost" href="#portfolio">
-        Ver projetos
-      </a>
     </div>
   </div>
   <div
@@ -46,65 +43,74 @@ const headlineWords = ['experiências', 'digitais'];
   >
     <img
       class="mascot hero-mascot relative z-10 h-full max-h-full w-auto max-w-full object-contain max-md:mx-auto max-md:h-full max-md:w-full max-md:max-w-full md:max-[1025px]:right-0 md:max-[1025px]:h-92.5 md:max-[901px]:mx-auto md:max-[901px]:h-full md:max-[901px]:w-[min(100%,30rem)] md:max-[901px]:max-w-full"
-      src="/assets/images/mascot-hero.png"
+      src="/assets/images/mascot-hero-640.webp"
+      srcset="/assets/images/mascot-hero-384.webp 384w, /assets/images/mascot-hero-640.webp 640w, /assets/images/mascot-hero-960.webp 960w"
+      sizes="(max-width: 767px) 280px, (max-width: 901px) 380px, 500px"
+      width="640"
+      height="782"
+      fetchpriority="high"
       alt="Mascote IwetI celebrando"
     />
   </div>
 </section>
 
 <script>
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const phrases = document.querySelectorAll<HTMLElement>('.hero-wave');
-  let animations: Animation[] = [];
+  import { onPageLoad } from '../../lib/page-lifecycle';
+  onPageLoad((signal) => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const phrases = document.querySelectorAll<HTMLElement>('.hero-wave');
+    let animations: Animation[] = [];
 
-  function startWaves() {
-    animations.forEach((animation) => animation.cancel());
-    animations = [];
-    if (reducedMotion.matches) return;
+    function startWaves() {
+      animations.forEach((animation) => animation.cancel());
+      animations = [];
+      if (reducedMotion.matches) return;
 
-    phrases.forEach((phrase) => {
-      const styles = getComputedStyle(phrase);
-      const milliseconds = (name: string) => {
-        const value = styles.getPropertyValue(name).trim();
-        return parseFloat(value) * (value.endsWith('ms') ? 1 : 1000);
-      };
-      const waveDuration = Math.max(1, milliseconds('--wave-duration'));
-      const pause = Math.max(0, milliseconds('--wave-pause'));
-      const startDelay = Math.max(0, milliseconds('--wave-start-delay'));
-      const cycle = waveDuration + pause;
-      const letters = phrase.querySelectorAll<HTMLElement>('.hero-wave-letter');
-      const letterDuration = waveDuration * (3 / 7);
-      const travelDuration = waveDuration - letterDuration;
-      const lastIndex = Math.max(
-        1,
-        ...Array.from(letters, (letter) => Number(letter.dataset.waveIndex)),
-      );
-
-      letters.forEach((letter) => {
-        animations.push(
-          letter.animate(
-            [
-              { transform: 'translateY(0)', offset: 0, easing: 'ease-in-out' },
-              {
-                transform: 'translateY(-0.12em)',
-                offset: letterDuration / cycle / 2,
-                easing: 'ease-in-out',
-              },
-              { transform: 'translateY(0)', offset: letterDuration / cycle },
-              { transform: 'translateY(0)', offset: 1 },
-            ],
-            {
-              duration: cycle,
-              delay: startDelay + (Number(letter.dataset.waveIndex) / lastIndex) * travelDuration,
-              iterations: Infinity,
-              easing: 'linear',
-            },
-          ),
+      phrases.forEach((phrase) => {
+        const styles = getComputedStyle(phrase);
+        const milliseconds = (name: string) => {
+          const value = styles.getPropertyValue(name).trim();
+          return parseFloat(value) * (value.endsWith('ms') ? 1 : 1000);
+        };
+        const waveDuration = Math.max(1, milliseconds('--wave-duration'));
+        const pause = Math.max(0, milliseconds('--wave-pause'));
+        const startDelay = Math.max(0, milliseconds('--wave-start-delay'));
+        const cycle = waveDuration + pause;
+        const letters = phrase.querySelectorAll<HTMLElement>('.hero-wave-letter');
+        const letterDuration = waveDuration * (3 / 7);
+        const travelDuration = waveDuration - letterDuration;
+        const lastIndex = Math.max(
+          1,
+          ...Array.from(letters, (letter) => Number(letter.dataset.waveIndex)),
         );
-      });
-    });
-  }
 
-  startWaves();
-  reducedMotion.addEventListener('change', startWaves);
+        letters.forEach((letter) => {
+          animations.push(
+            letter.animate(
+              [
+                { transform: 'translateY(0)', offset: 0, easing: 'ease-in-out' },
+                {
+                  transform: 'translateY(-0.12em)',
+                  offset: letterDuration / cycle / 2,
+                  easing: 'ease-in-out',
+                },
+                { transform: 'translateY(0)', offset: letterDuration / cycle },
+                { transform: 'translateY(0)', offset: 1 },
+              ],
+              {
+                duration: cycle,
+                delay: startDelay + (Number(letter.dataset.waveIndex) / lastIndex) * travelDuration,
+                iterations: Infinity,
+                easing: 'linear',
+              },
+            ),
+          );
+        });
+      });
+    }
+
+    startWaves();
+    reducedMotion.addEventListener('change', startWaves, { signal });
+    return () => animations.forEach((animation) => animation.cancel());
+  });
 </script>

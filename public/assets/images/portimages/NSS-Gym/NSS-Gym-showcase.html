@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NSS Gym — composição da capa</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scrollbar-width: none;
+      }
+      body {
+        margin: 0;
+        background: #090b09;
+      }
+      .showcase {
+        position: relative;
+        isolation: isolate;
+        width: 1600px;
+        height: 1600px;
+        overflow: hidden;
+        background:
+          radial-gradient(ellipse at 95% 75%, #8d9b4359, transparent 59%),
+          radial-gradient(ellipse at 18% 20%, #a2b24b15, transparent 48%),
+          linear-gradient(145deg, #22251f, #0c0e0c 54%, #14170f);
+      }
+      .showcase::before {
+        content: '';
+        position: absolute;
+        inset: 64% -30% -62%;
+        border-radius: 50%;
+        border-top: 2px solid #e9efbf20;
+        background: linear-gradient(#ffffff04, #00000066);
+        transform: rotate(-18deg);
+      }
+      h1 {
+        position: absolute;
+        top: 185px;
+        left: 150px;
+        margin: 0;
+        color: #f0f2e9;
+        font-family: Arial, sans-serif;
+        font-size: 128px;
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: -7px;
+      }
+      h1 span {
+        color: #b7c578;
+      }
+      .ground-shadow {
+        position: absolute;
+        top: 1200px;
+        left: 900px;
+        width: 740px;
+        height: 180px;
+        border-radius: 50%;
+        background: #000c;
+        filter: blur(40px);
+        transform: rotate(-7deg);
+      }
+      .phone {
+        position: absolute;
+        width: 560px;
+        padding: 15px;
+        border: 2px solid #929581;
+        border-radius: 60px;
+        background: linear-gradient(120deg, #626651, #10110f 28%, #363b2c);
+        box-shadow:
+          inset 0 0 0 5px #10110f,
+          -30px 38px 48px #0009,
+          3px 2px 1px #ffffff30;
+      }
+      .phone img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 43px;
+      }
+      .home {
+        top: 300px;
+        left: 1090px;
+        transform: perspective(2200px) rotateY(-14deg) rotateX(5deg) rotateZ(22deg);
+      }
+      @media (width <= 800px) {
+        .showcase {
+          zoom: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="showcase" aria-label="NSS Gym em smartphone no canto inferior direito">
+      <h1>NSS <span>Gym</span></h1>
+      <div class="ground-shadow" aria-hidden="true"></div>
+      <div class="phone home">
+        <img
+          src="NSS-Gym-home.png"
+          alt="Tela inicial real do NSS Gym, com área vazia e abas Home e Perfil"
+          width="390"
+          height="844"
+        />
+      </div>
+    </main>
+  </body>
+</html>
