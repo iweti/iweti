@@ -847,12 +847,14 @@
     --mountain-height: clamp(42rem, 70vw, 65rem);
     background:
       linear-gradient(
-        to bottom,
-        rgb(1 9 31 / 72%),
-        rgb(1 9 31 / 42%) calc(var(--mountain-height) * 0.5),
-        var(--color-ink) var(--mountain-height)
-      ),
-      var(--iweti-background) center top / auto var(--mountain-height) no-repeat,
+          to bottom,
+          rgb(1 9 31 / 72%),
+          rgb(1 9 31 / 42%) calc(var(--mountain-height) * 0.5),
+          var(--color-ink) var(--mountain-height)
+        )
+        center var(--portfolio-background-offset, 0px) / 100% var(--mountain-height) no-repeat,
+      var(--iweti-background) center var(--portfolio-background-offset, 0px) / auto
+        var(--mountain-height) no-repeat,
       var(--color-ink);
   }
 
