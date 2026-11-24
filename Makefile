@@ -3,7 +3,11 @@
 .PHONY: help dev lint
 
 help:
-	@printf 'Comandos disponíveis:\n  make help  Exibe esta ajuda\n  make dev   Inicia o servidor de desenvolvimento\n  make lint  Verifica tipos e formatação\n'
+	@printf '%s\n' \
+		'Comandos disponíveis:' \
+		'  make help  Exibe esta ajuda' \
+		'  make dev   Inicia o servidor de desenvolvimento' \
+		'  make lint  Verifica tipos e formatação'
 
 dev:
 	npm run dev

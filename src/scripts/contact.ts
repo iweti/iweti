@@ -11,14 +11,23 @@ onPageLoad(() => {
     const subject = form.querySelector<HTMLInputElement>('[name="subject"]');
     const message = form.querySelector<HTMLTextAreaElement>('[name="message"]');
     const newsletter = form.querySelector<HTMLInputElement>('[name="recebernovidades"]');
-    const button = form.querySelector<HTMLButtonElement>('[type="submit"]');
+    const emailButton = form.querySelector<HTMLButtonElement>('[type="submit"]');
     const whatsapp = form.querySelector<HTMLButtonElement>('[data-contact-send="whatsapp"]');
-    const buttonLabel = button?.querySelector<HTMLElement>('[data-contact-label]');
+    const emailLabel = emailButton?.querySelector<HTMLElement>('[data-contact-label]');
     const feedback = form.querySelector<HTMLElement>('.contact-feedback');
 
-    if (name && email && subject && message && newsletter && button && buttonLabel && feedback) {
-      let sending = false;
-      let forwarded = false;
+    if (
+      name &&
+      email &&
+      subject &&
+      message &&
+      newsletter &&
+      emailButton &&
+      emailLabel &&
+      feedback
+    ) {
+      let emailSending = false;
+      let emailForwarded = false;
 
       const showFeedback = (text: string, state: 'success' | 'partial' | 'error') => {
         feedback.textContent = text;
@@ -30,11 +39,10 @@ onPageLoad(() => {
 
       const updateButtons = () => {
         const complete = fields.every((field) => field.value.trim() && field.validity.valid);
-        for (const action of [button, whatsapp]) {
-          if (!action) continue;
-          action.disabled = sending || forwarded;
-          action.setAttribute('aria-disabled', String(!complete || sending || forwarded));
-        }
+        const emailBlocked = emailSending || emailForwarded;
+        emailButton.disabled = emailBlocked;
+        emailButton.setAttribute('aria-disabled', String(!complete || emailBlocked));
+        whatsapp?.setAttribute('aria-disabled', String(!complete));
       };
 
       const validate = () => {
@@ -60,7 +68,7 @@ onPageLoad(() => {
       updateButtons();
 
       whatsapp?.addEventListener('click', () => {
-        if (sending || forwarded || !validate()) return;
+        if (!validate()) return;
 
         const body = `Olá, meu nome é ${name.value.trim()}.\nAssunto: ${subject.value.trim()}\n${message.value.trim()}\nEmail: ${email.value.trim()}`;
         const url = whatsappLink(form.dataset.whatsappNumber, body);
@@ -69,7 +77,7 @@ onPageLoad(() => {
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        if (sending || forwarded || !validate()) return;
+        if (emailSending || emailForwarded || !validate()) return;
 
         const payload: ContactPayload = {
           nome: name.value.trim(),
@@ -79,10 +87,10 @@ onPageLoad(() => {
           recebernovidades: newsletter.checked,
         };
 
-        sending = true;
+        emailSending = true;
         updateButtons();
-        buttonLabel.textContent = 'Enviando…';
-        form.setAttribute('aria-busy', 'true');
+        emailLabel.textContent = 'Enviando…';
+        emailButton.setAttribute('aria-busy', 'true');
         feedback.hidden = false;
         feedback.textContent = 'Enviando sua mensagem…';
         delete feedback.dataset.state;
@@ -93,7 +101,7 @@ onPageLoad(() => {
         }, 10_000);
 
         try {
-          const result = await sendContact(form.dataset.apiUrl || 'https://api.iweti.com', payload);
+          const result = await sendContact(form.dataset.apiUrl, payload);
 
           if (result.kind === 'success') {
             const newsletterMessages = {
@@ -107,7 +115,7 @@ onPageLoad(() => {
             );
             form.reset();
           } else if (result.kind === 'partial') {
-            forwarded = true;
+            emailForwarded = true;
             showFeedback(
               'Sua mensagem já foi encaminhada à IWETI, mas não foi possível confirmar a inscrição nas novidades. Não é necessário reenviar a mensagem.',
               'partial',
@@ -122,10 +130,10 @@ onPageLoad(() => {
           );
         } finally {
           window.clearTimeout(waitingNotice);
-          sending = false;
-          form.removeAttribute('aria-busy');
+          emailSending = false;
+          emailButton.removeAttribute('aria-busy');
           updateButtons();
-          buttonLabel.textContent = forwarded ? 'Mensagem encaminhada' : 'Enviar por e-mail';
+          emailLabel.textContent = emailForwarded ? 'Mensagem encaminhada' : 'Enviar por e-mail';
         }
       });
     }

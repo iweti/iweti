@@ -2,7 +2,7 @@
 import { whatsappLink, whatsappNumber } from '../../lib/whatsapp';
 
 // This public URL is replaced at build time by Vercel. No API key is needed.
-const apiUrl = import.meta.env.PUBLIC_API_URL?.trim() || 'https://api.iweti.com';
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 const hasWhatsapp = Boolean(whatsappLink(whatsappNumber, ''));
 ---
 
