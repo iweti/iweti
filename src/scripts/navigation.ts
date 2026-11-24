@@ -19,7 +19,7 @@ onPageLoad((signal) => {
       if (!(target instanceof Element)) return;
       if (
         target.closest(
-          'a, button, form, input, textarea, select, [contenteditable], dialog, [data-testimonial-carousel], [data-no-swipe]',
+          'a, button, form, input, textarea, select, [contenteditable], dialog, [data-no-swipe]',
         )
       )
         return;
