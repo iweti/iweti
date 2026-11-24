@@ -105,3 +105,133 @@ const hasWhatsapp = Boolean(whatsappLink(whatsappNumber, ''));
 <script>
   import '../../scripts/contact';
 </script>
+
+<style>
+  @reference '../../styles/styles.css';
+
+  @layer utilities {
+    .contact-form {
+      background: var(--color-card);
+      box-shadow: 0 18px 48px rgb(0 105 255 / 8%);
+    }
+
+    .contact-form label {
+      @apply grid gap-2 text-[0.8rem] font-semibold text-[#e2e8f0];
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      @apply w-full;
+      padding: 0.8rem 0.9rem;
+      @apply rounded-lg border border-[rgb(0_141_255/28%)];
+      outline: none;
+      background: rgb(2 13 36 / 76%);
+      @apply text-white;
+      font: inherit;
+      @apply text-[0.85rem];
+      transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+    }
+
+    .contact-form textarea {
+      @apply min-h-40 resize-y;
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      @apply text-[#7187a3];
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      @apply border-cyan;
+      box-shadow: 0 0 0 3px rgb(0 216 255 / 12%);
+    }
+
+    .contact-form .btn {
+      @apply justify-self-start border-0;
+    }
+
+    .contact-form label.contact-newsletter {
+      @apply flex cursor-pointer items-start gap-[0.65rem] leading-normal;
+    }
+
+    .contact-form .contact-newsletter input {
+      @apply h-4 w-4 flex-[0_0_auto] p-0;
+      margin: 0.15rem 0 0;
+      @apply accent-action;
+    }
+
+    .contact-feedback[data-state='success'] {
+      @apply text-cyan;
+    }
+
+    .contact-feedback[data-state='error'],
+    .contact-feedback[data-state='partial'] {
+      @apply text-[#ffd6a3];
+    }
+
+    .contact-form .btn:disabled {
+      @apply transform-none cursor-default opacity-70;
+    }
+
+    .contact-form .contact-actions .btn {
+      @apply flex min-h-15 w-[min(100%,22rem)];
+      padding: 1rem 1.5rem;
+      @apply gap-[0.7rem] justify-self-center border-2 border-solid text-[0.85rem];
+    }
+
+    .contact-actions .btn img {
+      @apply h-6 w-6 object-contain;
+    }
+
+    .contact-form [data-contact-send='email'] {
+      @apply border-cyan/40 text-cyan;
+      background: #061a2e;
+    }
+
+    .contact-form [data-contact-send='email']:hover {
+      @apply border-cyan text-cyan;
+      background: #0a2942;
+    }
+
+    .contact-form [data-contact-send='email'][aria-disabled='true']:hover {
+      @apply border-cyan/40 text-cyan;
+      background: #061a2e;
+    }
+
+    .contact-form [data-contact-send='whatsapp'] {
+      @apply border-[#25d366];
+      background: rgb(37 211 102 / 10%);
+      @apply text-[#7aefa7];
+    }
+
+    .contact-form [data-contact-send='whatsapp']:hover {
+      @apply border-[#25d366];
+      background: #25d366;
+      @apply text-[#062b15];
+    }
+
+    .contact-form [data-contact-send='whatsapp'][aria-disabled='true']:hover {
+      @apply border-[#25d366];
+      background: rgb(37 211 102 / 10%);
+      @apply text-[#7aefa7];
+    }
+
+    .contact-actions-separator::before,
+    .contact-actions-separator::after {
+      @apply h-px flex-1;
+      background: rgb(157 180 209 / 35%);
+      @apply [content:''];
+    }
+
+    .contact-form .btn[aria-disabled='true'] {
+      @apply cursor-not-allowed opacity-55;
+    }
+
+    .contact-form .btn[aria-disabled='true']:hover {
+      @apply transform-none;
+    }
+  }
+</style>

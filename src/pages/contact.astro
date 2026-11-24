@@ -35,3 +35,25 @@ import ContactTestimonials from '../components/contact/ContactTestimonials.astro
     <ContactTestimonials />
   </main>
 </BaseLayout>
+
+<style>
+  @reference '../styles/styles.css';
+
+  @layer utilities {
+    .contact-main {
+      background:
+        radial-gradient(ellipse 38rem 32rem at 82% 12%, rgb(0 141 255 / 10%), transparent),
+        radial-gradient(ellipse 48rem 30rem at 65% 78%, rgb(0 141 255 / 8%), transparent),
+        var(--color-ink);
+    }
+
+    .contact-main > .contact-page,
+    .contact-main > :global(.contact-testimonials) {
+      background: transparent;
+    }
+
+    .contact-mascot {
+      margin: 64px auto 0;
+    }
+  }
+</style>

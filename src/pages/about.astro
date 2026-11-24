@@ -9,7 +9,7 @@ import ParticipantsSection from '../components/about/ParticipantsSection.astro';
   description="Conheça a IwetI, nossa missão e visão e o significado de inovação, pessoas e tecnologia em nosso nome."
 >
   <main>
-    <section class="about-page min-h-[calc(100vh-12rem)] py-20">
+    <section class="about-page section-divider min-h-[calc(100vh-12rem)] py-20">
       <div class="about-page-content shell grid gap-16 md:grid-cols-[1fr] md:gap-12">
         <header class="about-page-copy max-w-216 reveal">
           <p class="eyebrow">QUEM SOMOS</p>
@@ -105,3 +105,45 @@ import ParticipantsSection from '../components/about/ParticipantsSection.astro';
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  @reference '../styles/styles.css';
+
+  @layer utilities {
+    .about-page-copy > p:not(.eyebrow) {
+      @apply mt-4 max-w-140 text-[0.95rem] leading-[1.7] text-muted;
+    }
+
+    .about-purpose,
+    .about-pillar {
+      background:
+        radial-gradient(ellipse at 90% 0%, rgb(0 141 255 / 12%), transparent 65%), var(--color-card);
+    }
+
+    .about-purpose-vision {
+      background:
+        radial-gradient(ellipse at 90% 0%, rgb(0 216 255 / 10%), transparent 65%), var(--color-card);
+    }
+
+    .about-pillar-people {
+      background:
+        radial-gradient(ellipse at 50% 0%, rgb(0 216 255 / 14%), transparent 70%), var(--color-card);
+    }
+
+    .about-pillar-mark {
+      background: rgb(0 141 255 / 12%);
+    }
+
+    .about-pillar h3 {
+      @apply text-[1.15rem] font-bold text-white;
+    }
+
+    .about-pillar p {
+      @apply mt-[0.6rem] text-[0.88rem] leading-[1.7] text-muted;
+    }
+
+    .about-identity-note strong {
+      @apply text-text-primary;
+    }
+  }
+</style>

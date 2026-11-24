@@ -34,7 +34,7 @@ const { title, description, home = false, currentPage, footer = {} } = Astro.pro
   </head>
   <body>
     <SiteHeader home={home} currentPage={currentPage} />
-    <div class:list={['page-content', { 'page-content-home': home }]}>
+    <div class:list={['page-content', { 'pt-(--site-header-height)': !home }]}>
       <slot />
       <SiteFooter
         {...footer}

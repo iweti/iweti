@@ -24,3 +24,19 @@ const { href = '/', current = false } = Astro.props;
     TECNOLOGIA <br /> SEM LIMITES
   </small>
 </a>
+
+<style>
+  @reference '../styles/styles.css';
+
+  @layer utilities {
+    .brand small {
+      @apply mt-1 block text-[0.6rem] leading-none font-medium tracking-[0.18em] whitespace-nowrap;
+    }
+
+    @media (max-width: 380px) {
+      .brand small {
+        @apply hidden;
+      }
+    }
+  }
+</style>

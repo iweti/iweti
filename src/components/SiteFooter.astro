@@ -21,7 +21,7 @@ const {
 const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre um projeto.');
 ---
 
-<footer id={contactAnchor ? 'contato' : undefined} class="site-footer md:pt-14">
+<footer id={contactAnchor ? 'contato' : undefined} class="site-footer section-divider pt-10 md:pt-14">
   {showCta && (
   <div class="footer-cta shell mb-9 flex flex-col items-start gap-6 pb-9 md:mb-12 md:flex-row md:items-center md:justify-between md:pb-12">
     <div>
@@ -83,6 +83,8 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
 </footer>
 
 <style>
+  @reference '../styles/styles.css';
+
   .site-footer h3 {
     margin: 0.25rem 0 1.25rem;
     font-size: 0.8rem;
@@ -104,5 +106,19 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
   .footer-link:hover,
   .footer-link:focus-visible {
     color: var(--color-cyan);
+  }
+
+  @layer utilities {
+    .site-footer {
+      background: #020b25;
+    }
+
+    .footer-cta {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .footer-cta p {
+      @apply mt-2 text-[0.82rem] text-muted;
+    }
   }
 </style>

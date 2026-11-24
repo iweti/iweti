@@ -12,7 +12,7 @@ const Heading = standalone ? 'h1' : 'h2';
 <section
   class:list={[
     'project-showcase w-full p-[clamp(3rem,6vw,5rem)_max(1rem,calc((100%-1120px)/2))]',
-    { 'project-showcase-page': standalone },
+    { 'project-showcase-page section-divider': standalone },
   ]}
   id="portfolio"
   aria-label="Nosso portfólio"
@@ -86,3 +86,120 @@ const Heading = standalone ? 'h1' : 'h2';
 <script>
   import '../../scripts/portfolio';
 </script>
+
+<style>
+  @reference '../../styles/styles.css';
+
+  @layer utilities {
+    .project-showcase {
+      @apply portfolio-background;
+    }
+
+    .project-heading :is(h1, h2) {
+      @apply text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-semibold tracking-[-0.04em];
+    }
+
+    .project-heading > p:last-child {
+      @apply mt-4 leading-[1.7] text-muted;
+    }
+
+    .project-entry {
+      position: relative;
+      min-width: 0;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: 1rem;
+      scroll-margin-top: 2rem;
+    }
+
+    .project-entry:focus-visible {
+      outline: 2px solid var(--color-action);
+      outline-offset: 4px;
+    }
+
+    .project-caption {
+      position: absolute;
+      inset: auto 0 0;
+      max-height: 100%;
+      overflow-y: auto;
+      padding: clamp(1rem, 2.5vw, 1.75rem);
+      border-top: 1px solid rgb(255 255 255 / 12%);
+      background: rgb(3 7 15 / 96%);
+      transform: translateY(100%);
+      transition: transform 280ms ease;
+    }
+
+    .project-entry:is(:hover, :focus-within) .project-caption {
+      transform: translateY(0);
+    }
+
+    .project-category {
+      margin-bottom: 0.5rem;
+    }
+
+    .project-caption h2 {
+      @apply text-[clamp(1.25rem,2.5vw,1.75rem)] leading-[1.2] font-semibold tracking-[-0.035em];
+    }
+
+    .project-description {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .project-description p {
+      @apply text-[0.875rem] leading-[1.6] text-muted;
+    }
+
+    .project-link:hover {
+      @apply underline underline-offset-[0.3em];
+    }
+
+    .project-showcase-page .project-list {
+      @apply grid grid-cols-2 gap-10;
+    }
+
+    @media (hover: none) {
+      .project-caption {
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .project-caption {
+        transition: none;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .project-showcase-page .project-list {
+        @apply grid-cols-[minmax(0,1fr)] gap-8;
+      }
+    }
+
+    .project-preview {
+      background: linear-gradient(135deg, #173a3d, var(--color-card));
+    }
+
+    .project-preview[data-project='nss-gym'] {
+      background: linear-gradient(135deg, #333a22, var(--color-card));
+    }
+
+    .project-preview[data-project='jiu-jitsu'] {
+      background: linear-gradient(135deg, #432b30, var(--color-card));
+    }
+
+    .project-status {
+      padding: 0.4rem 0.75rem;
+    }
+
+    .project-preview[data-project='frattellianos'] {
+      background: linear-gradient(135deg, #352d26, var(--color-card));
+    }
+
+    .project-preview[data-project='debinatos'] {
+      background: linear-gradient(135deg, #26364c, var(--color-card));
+    }
+  }
+</style>

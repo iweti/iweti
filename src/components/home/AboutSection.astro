@@ -1,4 +1,4 @@
-<section class="about overflow-hidden py-12" id="sobre">
+<section class="about section-divider overflow-hidden py-12" id="sobre">
   <div class="about-inner shell grid items-center gap-6 max-md:text-center md:grid-cols-[0.8fr_1.45fr]">
     <img
       class="mascot about-mascot relative top-4 mx-auto h-52 max-h-none object-contain max-md:top-2 max-md:h-44"
@@ -36,7 +36,81 @@
 </section>
 
 <style>
+  @reference '../../styles/styles.css';
+
   dl.reveal-pending {
     opacity: 1;
+  }
+
+  @layer utilities {
+    .about strong {
+      @apply block text-text-primary;
+    }
+
+    .about {
+      background:
+        radial-gradient(ellipse at 20% 58%, rgb(0 126 255 / 8%), transparent 25rem),
+        radial-gradient(ellipse at 86% 24%, rgb(0 216 255 / 4%), transparent 23rem),
+        linear-gradient(95deg, rgb(1 8 22 / 60%), rgb(1 8 22 / 74%)),
+        var(--iweti-background) center/cover no-repeat;
+    }
+
+    .about-mascot {
+      filter: drop-shadow(0 12px 24px rgb(0 0 0 / 25%));
+    }
+
+    .about p:not(.eyebrow) {
+      @apply mt-4 text-[0.875rem] text-[#e2e8f0];
+    }
+
+    .about dl {
+      @apply grid grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))] gap-[0.65rem];
+    }
+
+    .about dl > div {
+      @apply flex min-w-0 items-center justify-center gap-3 rounded-[0.8rem] border border-border p-4;
+      background: rgb(4 19 42 / 36%);
+      box-shadow: 0 16px 26px rgb(2 11 24 / 14%);
+      backdrop-filter: blur(7px);
+      @apply text-left;
+    }
+
+    .about dt {
+      @apply text-[clamp(1.8rem,3vw,2.25rem)] leading-none font-bold text-text-primary;
+    }
+
+    .about dd {
+      @apply text-[clamp(1rem,1.5vw,1.2rem)] leading-tight font-bold text-white;
+    }
+
+    @media (min-width: 768px) {
+      .about dl {
+        @apply col-span-full;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .about dl {
+        @apply mt-3;
+      }
+
+      .about dl > div {
+        padding: 0.75rem 0.45rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .about dl {
+        @apply grid-cols-[1fr];
+      }
+
+      .about dt {
+        @apply text-[2rem];
+      }
+
+      .about dd {
+        @apply text-[1.05rem];
+      }
+    }
   }
 </style>

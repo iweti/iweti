@@ -19,7 +19,7 @@ const { posts, page, totalPages } = Astro.props;
   description="Guias e atualidades da IwetI sobre sites, automação e presença digital."
 >
   <main>
-    <section class="blog-page min-h-[calc(100vh-12rem)] py-20">
+    <section class="blog-page section-divider min-h-[calc(100vh-12rem)] py-20">
       <div class="shell">
         <BlogIntro />
         <BlogCards {posts} {page} {totalPages} />

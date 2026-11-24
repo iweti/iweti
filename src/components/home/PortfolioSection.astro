@@ -118,3 +118,205 @@ const projectMarks: Record<string, string> = {
 <script>
   import '../../scripts/project-pillars';
 </script>
+
+<style>
+  @reference '../../styles/styles.css';
+
+  @layer utilities {
+    .portfolio {
+      background:
+        radial-gradient(ellipse at 82% 12%, rgb(0 141 255 / 8%), transparent 26rem),
+        var(--color-ink);
+    }
+
+    .home-projects {
+      background:
+        radial-gradient(ellipse at 75% 50%, rgb(0 126 255 / 8%), transparent 65%), var(--color-ink);
+    }
+
+    .home-projects-heading h2 {
+      @apply mt-3 text-[clamp(2rem,4vw,3.25rem)] leading-[1.15] tracking-[-0.035em] text-balance;
+    }
+
+    .project-pillar {
+      background: linear-gradient(155deg, #263d53, #07152b 75%);
+      transition:
+        flex-grow 600ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 350ms ease;
+    }
+
+    .project-pillars.visible .project-pillar {
+      animation: pillar-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: calc(var(--pillar-index, 0) * 110ms);
+    }
+
+    @keyframes pillar-enter {
+      from {
+        opacity: 0;
+        transform: translateY(2rem) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .project-pillar[data-project='frattellianos'] {
+      background: #221b1b;
+    }
+
+    .project-pillar[data-project='debinatos'] {
+      background: #48443c;
+    }
+
+    .project-pillar[data-project='livesrun'] {
+      background: radial-gradient(ellipse at 70% 30%, #286e6a, transparent 75%), #092b32;
+    }
+
+    .project-pillar[data-project='nss-gym'] {
+      background: radial-gradient(ellipse at 70% 30%, #5a6730, transparent 75%), #202b22;
+    }
+
+    .project-pillar[data-project='jiu-jitsu'] {
+      background: radial-gradient(ellipse at 70% 30%, #753e52, transparent 75%), #301d31;
+    }
+
+    .project-pillar::after {
+      @apply absolute inset-0 -z-1 [content:''];
+      background: linear-gradient(180deg, rgb(2 9 24 / 68%), rgb(2 9 24 / 15%) 20%, #041023 62%);
+      @apply pointer-events-none;
+    }
+
+    .project-pillar:has(.project-pillar-cover)::after {
+      background: linear-gradient(
+        180deg,
+        rgb(2 9 24 / 25%),
+        transparent 25%,
+        transparent 48%,
+        #041023 80%
+      );
+    }
+
+    .project-pillar.is-active {
+      flex-grow: 4;
+      @apply border-cyan/65;
+    }
+
+    .project-pillar-cover {
+      transform: scale(1.06);
+      transition:
+        opacity 350ms ease,
+        transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .project-pillar.is-active .project-pillar-cover {
+      transform: scale(1);
+      @apply opacity-100;
+    }
+
+    .project-pillar-mark {
+      transition: opacity 350ms ease;
+    }
+
+    .project-pillar.is-active .project-pillar-mark {
+      @apply opacity-18;
+    }
+
+    .project-pillar-trigger:focus-visible {
+      @apply rounded-[0.9rem] outline-offset-[-5px];
+    }
+
+    .project-pillar.is-active .project-pillar-trigger {
+      @apply bottom-auto h-24;
+    }
+
+    .project-pillar.is-active .project-pillar-name {
+      @apply top-6 bottom-auto left-5 max-w-[calc(100%-2.5rem)] transform-none text-[clamp(1.15rem,1.7vw,1.65rem)] wrap-anywhere whitespace-normal [writing-mode:horizontal-tb];
+    }
+
+    .project-pillar-details {
+      transition:
+        opacity 350ms ease,
+        transform 350ms ease,
+        visibility 350ms;
+    }
+
+    .project-pillar.is-active .project-pillar-details {
+      @apply visible transform-none opacity-100;
+    }
+
+    .project-pillar-link:hover {
+      @apply underline underline-offset-[0.25em];
+    }
+
+    @media (max-width: 767px) {
+      .project-pillar,
+      .project-pillar.is-active {
+        @apply min-w-0 flex-none;
+      }
+
+      .project-pillar::after {
+        background: linear-gradient(180deg, rgb(2 9 24 / 65%), #041023 4.75rem);
+      }
+
+      .project-pillar:has(.project-pillar-cover)::after {
+        background: linear-gradient(180deg, rgb(2 9 24 / 40%), transparent 35%, #041023 85%);
+      }
+
+      .project-pillar-trigger,
+      .project-pillar.is-active .project-pillar-trigger {
+        @apply relative inset-auto grid h-auto min-h-19 grid-cols-[minmax(0,1fr)_1rem] items-center gap-3;
+        padding: 1rem 1.25rem;
+      }
+
+      .project-pillar-name,
+      .project-pillar.is-active .project-pillar-name {
+        @apply static max-w-none transform-none [writing-mode:horizontal-tb];
+      }
+
+      .project-pillar-name,
+      .project-pillar.is-active .project-pillar-name {
+        @apply text-[1.1rem];
+      }
+
+      .project-pillar-toggle::before,
+      .project-pillar-toggle::after {
+        @apply absolute top-[calc(50%-1px)] h-0.5 w-full [content:''];
+        background: #bed5ef;
+      }
+
+      .project-pillar-toggle::after {
+        @apply transform-[rotate(90deg)];
+        transition: transform 350ms ease;
+      }
+
+      .project-pillar.is-active .project-pillar-toggle::after {
+        @apply transform-[rotate(0)];
+      }
+
+      .project-pillar-details {
+        transition:
+          grid-template-rows 350ms ease,
+          opacity 350ms ease,
+          visibility 350ms;
+      }
+
+      .project-pillar.is-active .project-pillar-details {
+        @apply grid-rows-[1fr];
+      }
+
+      .project-pillar-content {
+        padding: 0 1.25rem 1.25rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .project-pillars *,
+      .project-pillars *::before,
+      .project-pillars *::after {
+        animation: none !important;
+        transition: none;
+      }
+    }
+  }
+</style>
