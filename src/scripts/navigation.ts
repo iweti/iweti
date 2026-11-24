@@ -1,3 +1,5 @@
+import { navigate } from 'astro:transitions/client';
+import { getLateralPageIndex, lateralPages } from '../data/navigation';
 import { onPageLoad } from '../lib/page-lifecycle';
 
 onPageLoad((signal) => {
@@ -74,16 +76,10 @@ onPageLoad((signal) => {
       )
         return;
       if (window.getSelection()?.toString()) return;
-      const links = Array.from(
-        document.querySelectorAll<HTMLAnchorElement>('.header-page-indicator a'),
-      );
-      const current = links.findIndex(
-        (link) =>
-          link.pathname === location.pathname.replace(/\/$/, '') ||
-          (link.pathname === '/' && location.pathname === '/'),
-      );
+      const current = getLateralPageIndex(location.pathname);
       if (current < 0) return;
-      links[current + (dx < 0 ? 1 : -1)]?.click();
+      const destination = lateralPages[current + (dx < 0 ? 1 : -1)];
+      if (destination) void navigate(destination.href);
     },
     { passive: true, signal },
   );

@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { sitePages } from '../data/navigation';
 
 export const blogPageSize = 6;
 
@@ -10,7 +11,8 @@ export async function getBlogPosts() {
 }
 
 export function blogPageHref(page: number) {
-  return page === 1 ? '/blog' : `/blog/pagina/${page}`;
+  const { href } = sitePages.blog;
+  return page === 1 ? href : `${href}/pagina/${page}`;
 }
 
 export const blogDate = new Intl.DateTimeFormat('pt-BR', {

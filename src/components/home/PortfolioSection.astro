@@ -1,4 +1,5 @@
 ---
+import { sitePages } from '../../data/navigation';
 import { projects } from '../../data/projects';
 
 const covers: Record<string, string> = {
@@ -108,7 +109,7 @@ const projectMarks: Record<string, string> = {
     </div>
     <a
       class="home-projects-link col-1 row-2 btn self-start justify-self-start btn-primary max-md:row-3"
-      href="/portifolios"
+      href={sitePages.portifolios.href}
     >
       Ver projetos →
     </a>

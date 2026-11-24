@@ -1,4 +1,6 @@
 ---
+import { sitePages } from '../../data/navigation';
+
 const headlineWords = ['experiências', 'digitais'];
 ---
 
@@ -32,7 +34,7 @@ const headlineWords = ['experiências', 'digitais'];
       possibilidades.
     </p>
     <div class="actions mt-6 flex flex-wrap gap-3">
-      <a class="btn btn-primary" href="/contact">
+      <a class="btn btn-primary" href={sitePages.contact.href}>
         Conversar sobre meu projeto →
       </a>
     </div>

@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { sitePages } from '../../data/navigation';
 import { blogDate, blogPageHref } from '../../lib/blog';
 
 interface Props {
@@ -20,7 +21,7 @@ const { posts, page, totalPages } = Astro.props;
           <time datetime={data.date.toISOString().slice(0, 10)}>{blogDate.format(data.date)}</time>
         </p>
         <h2 class="mt-3 text-xl">
-          <a class="underline-offset-4 hover:underline" href={`/blog/${id}`}>
+          <a class="underline-offset-4 hover:underline" href={`${sitePages.blog.href}/${id}`}>
             {data.title}
           </a>
         </h2>

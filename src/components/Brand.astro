@@ -1,10 +1,12 @@
 ---
+import { sitePages } from '../data/navigation';
+
 interface Props {
   href?: string;
   current?: boolean;
 }
 
-const { href = '/', current = false } = Astro.props;
+const { href = sitePages.home.href, current = false } = Astro.props;
 ---
 
 <a
