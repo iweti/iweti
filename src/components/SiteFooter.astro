@@ -1,5 +1,6 @@
 ---
 import Brand from './Brand.astro';
+import { navigationPages, sitePages } from '../data/navigation';
 import { whatsappLink, whatsappNumber } from '../lib/whatsapp';
 
 interface Props {
@@ -15,13 +16,15 @@ const {
   contactAnchor = false,
   showCta = true,
   currentPage,
-  ctaHref = '/contact',
+  ctaHref = sitePages.contact.href,
 } = Astro.props;
 
+const homeHref = home ? '#home' : sitePages.home.href;
+const explorePages = navigationPages.filter((page) => page.footerExplore);
 const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre um projeto.');
 ---
 
-<footer id={contactAnchor ? 'contato' : undefined} class="site-footer md:pt-14">
+<footer id={contactAnchor ? 'contato' : undefined} class="site-footer section-divider pt-10 md:pt-14">
   {showCta && (
   <div class="footer-cta shell mb-9 flex flex-col items-start gap-6 pb-9 md:mb-12 md:flex-row md:items-center md:justify-between md:pb-12">
     <div>
@@ -35,7 +38,7 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
   )}
   <div class="shell grid grid-cols-2 gap-x-6 gap-y-8 pb-9 md:grid-cols-4 md:gap-8 md:pb-12">
     <div class="col-span-2">
-      <Brand href={home ? '#home' : '/'} />
+      <Brand href={homeHref} />
       <p class="mt-5 mb-4 max-w-72 text-xs leading-[1.9] text-muted">
         Sites, sistemas e aplicações sob medida.
         <br />
@@ -45,15 +48,16 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
     </div>
     <nav aria-label="Explore a IWETI">
       <h3>Explore</h3>
-      <a href={home ? '#home' : '/'}>Início</a>
-      <a href="/about">Quem somos</a>
-      <a href="/portifolios">Nossos projetos</a>
-      <a href="/blog">Blog</a>
+      {explorePages.map((page) => (
+        <a href={page.id === 'home' ? homeHref : page.href}>
+          {typeof page.footerExplore === 'string' ? page.footerExplore : page.label}
+        </a>
+      ))}
     </nav>
     <div>
       <h3>Vamos conversar</h3>
-      <a class="footer-link" href="/contact">
-        Fale conosco
+      <a class="footer-link" href={sitePages.contact.href}>
+        {sitePages.contact.label}
       </a>
       <a class="footer-link break-all" href="mailto:contato@iweti.com">
         contato@iweti.com
@@ -68,21 +72,23 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
   <div class="footer-bottom shell flex flex-col gap-3 border-t border-border py-5 text-[0.65rem] text-muted md:flex-row md:justify-between">
     <span>
       IWETI © {new Date().getFullYear()} · Desenvolvido por{' '}
-      <a class="underline underline-offset-2 hover:text-cyan" href="/">
+      <a class="underline underline-offset-2 hover:text-cyan" href={sitePages.home.href}>
         IWETI
       </a>
     </span>
     <a
       class="hover:text-cyan"
-      href="/privacy"
+      href={sitePages.privacy.href}
       aria-current={currentPage === 'privacy' ? 'page' : undefined}
     >
-      Política de Privacidade
+      {sitePages.privacy.label}
     </a>
   </div>
 </footer>
 
 <style>
+  @reference '../styles/styles.css';
+
   .site-footer h3 {
     margin: 0.25rem 0 1.25rem;
     font-size: 0.8rem;
@@ -104,5 +110,19 @@ const whatsappHref = whatsappLink(whatsappNumber, 'Olá! Quero conversar sobre u
   .footer-link:hover,
   .footer-link:focus-visible {
     color: var(--color-cyan);
+  }
+
+  @layer utilities {
+    .site-footer {
+      background: #020b25;
+    }
+
+    .footer-cta {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .footer-cta p {
+      @apply mt-2 text-[0.82rem] text-muted;
+    }
   }
 </style>

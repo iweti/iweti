@@ -1,4 +1,6 @@
 ---
+import { sitePages } from '../../data/navigation';
+
 const headlineWords = ['experiências', 'digitais'];
 ---
 
@@ -32,7 +34,7 @@ const headlineWords = ['experiências', 'digitais'];
       possibilidades.
     </p>
     <div class="actions mt-6 flex flex-wrap gap-3">
-      <a class="btn btn-primary" href="/contact">
+      <a class="btn btn-primary" href={sitePages.contact.href}>
         Conversar sobre meu projeto →
       </a>
     </div>
@@ -114,3 +116,71 @@ const headlineWords = ['experiências', 'digitais'];
     return () => animations.forEach((animation) => animation.cancel());
   });
 </script>
+
+<style>
+  @reference '../../styles/styles.css';
+
+  @layer utilities {
+    .hero h1 {
+      @apply text-[clamp(3rem,4.2vw,4rem)] leading-[1.12] font-extrabold tracking-[-0.045em] text-balance;
+    }
+
+    .hero h1 strong {
+      display: inline;
+    }
+
+    .hero strong {
+      @apply text-heading-accent;
+    }
+
+    .hero strong.hero-wave {
+      --wave-duration: 2.5s;
+      --wave-pause: 3s;
+      --wave-start-delay: 2s;
+      @apply text-cyan;
+      text-shadow: 0 0 24px rgb(0 216 255 / 24%);
+    }
+
+    .hero-visual::before {
+      @apply absolute top-[50%] left-[50%] aspect-[1] w-[min(84%,38rem)] rounded-full [content:''];
+      background: radial-gradient(
+        ellipse,
+        rgb(0 126 255 / 24%) 0%,
+        rgb(0 91 222 / 12%) 38%,
+        transparent 72%
+      );
+      filter: blur(12px);
+      @apply transform-[translate(-50%,-50%)];
+    }
+
+    .hero-mascot {
+      filter: drop-shadow(0 20px 36px rgb(0 0 0 / 45%));
+    }
+
+    @media (min-width: 901px) and (max-width: 1024px) {
+      .hero-visual::before {
+        top: calc(50% + 8.5rem);
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 900px) {
+      .hero {
+        padding-block: 3rem 0;
+      }
+
+      .hero h1 {
+        @apply text-[clamp(2.75rem,5vw,3.5rem)] tracking-[-0.045em];
+      }
+    }
+
+    @media (max-width: 767px) {
+      .hero {
+        padding-block: 3rem 0;
+      }
+
+      .hero h1 {
+        @apply text-[clamp(2.35rem,10vw,2.8rem)] tracking-[-0.045em];
+      }
+    }
+  }
+</style>

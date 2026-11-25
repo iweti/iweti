@@ -13,3 +13,45 @@ const { name, quote } = Astro.props;
   </figcaption>
   <blockquote>“{quote}”</blockquote>
 </figure>
+
+<style>
+  @reference '../../styles/styles.css';
+
+  @layer utilities {
+    .quote {
+      background: var(--color-card);
+      transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+    }
+
+    .quote:hover {
+      @apply border-cyan/35;
+      box-shadow: 0 12px 30px rgb(0 0 0 / 18%);
+      @apply transform-[translateY(-3px)];
+    }
+
+    .quote blockquote {
+      @apply text-[0.875rem] leading-[1.6] text-[#e2e8f0];
+    }
+
+    .quote figcaption {
+      @apply mb-3 flex flex-col text-[0.875rem];
+    }
+
+    .quote figcaption b {
+      color: var(--color-cyan);
+    }
+
+    .quote figcaption span {
+      @apply mt-1 text-[0.75rem] text-muted;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .quote {
+        transition: none;
+      }
+    }
+  }
+</style>

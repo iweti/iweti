@@ -49,6 +49,7 @@ const testimonials = [
   class="contact-testimonials group/carousel py-[clamp(2.5rem,5vw,4rem)]"
   aria-labelledby="contact-testimonials-title"
   data-testimonial-carousel
+  data-no-swipe
 >
   <div class="contact-testimonials-heading shell mb-[clamp(3rem,6vw,5rem)] text-center">
     <div>
@@ -120,3 +121,74 @@ const testimonials = [
       });
   });
 </script>
+
+<style>
+  @reference '../../styles/styles.css';
+
+  @layer utilities {
+    .contact-testimonials {
+      background: radial-gradient(ellipse at 70% 0, rgb(0 141 255 / 10%), transparent 70%);
+    }
+
+    .contact-testimonials-heading > div {
+      @apply col-2;
+    }
+
+    .contact-testimonials-heading h2 {
+      @apply mt-3 text-[clamp(2.25rem,5.5vw,4.5rem)] leading-none font-extrabold tracking-[-0.045em] text-balance;
+    }
+
+    .contact-testimonials-heading h2 span {
+      @apply block text-heading-accent;
+    }
+
+    .contact-testimonials-track {
+      width: max-content;
+      animation: contact-testimonials-scroll 65s linear infinite;
+    }
+
+    .contact-testimonial {
+      background: linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--color-cyan) 8%, var(--color-card)),
+        var(--color-card)
+      );
+    }
+
+    .contact-testimonial blockquote {
+      @apply flex-1 text-[0.9rem] leading-[1.8] text-[#d6e1ef];
+    }
+
+    .contact-testimonial figcaption {
+      @apply mb-6 flex items-center gap-3 text-[0.8rem];
+    }
+
+    .contact-testimonial figcaption b {
+      color: var(--color-cyan);
+    }
+
+    .contact-testimonial-avatar {
+      @apply bg-cyan/12;
+    }
+
+    .contact-testimonials[data-paused='true'] .contact-testimonials-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes contact-testimonials-scroll {
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .contact-testimonials-track {
+        animation: none;
+      }
+
+      .contact-testimonials-set[aria-hidden='true'] {
+        @apply hidden;
+      }
+    }
+  }
+</style>

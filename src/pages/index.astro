@@ -13,9 +13,14 @@ import TestimonialsSection from '../components/home/TestimonialsSection.astro';
   title="IwetI | Tecnologia sem limites"
   description="IwetI - tecnologia, ideias e resultados sem limites."
 >
-  <Hero slot="hero" />
+  <div
+    class="home-hero relative pt-(--site-header-height) min-h-170 overflow-hidden max-[901px]:min-h-0"
+    id="home"
+  >
+    <Hero />
+  </div>
   <main>
-    <div class="home-projects-services">
+    <div class="home-projects-services section-divider">
       <PortfolioSection />
       <Services />
     </div>
@@ -23,3 +28,36 @@ import TestimonialsSection from '../components/home/TestimonialsSection.astro';
     <TestimonialsSection />
   </main>
 </BaseLayout>
+
+<style>
+  @reference '../styles/styles.css';
+
+  @layer utilities {
+    .home-hero {
+      background:
+        linear-gradient(90deg, rgb(1 7 18 / 34%) 0%, rgb(1 7 18 / 12%) 52%, rgb(1 7 18 / 8%) 100%),
+        linear-gradient(
+          180deg,
+          rgb(1 8 22 / 56%) 0%,
+          rgb(1 8 22 / 42%) 35%,
+          rgb(1 8 22 / 72%) 100%
+        ),
+        var(--iweti-background) center bottom/cover no-repeat;
+    }
+
+    .home-projects-services {
+      background:
+        radial-gradient(ellipse 45rem 36rem at 82% 24%, rgb(0 141 255 / 10%), transparent),
+        radial-gradient(ellipse 40rem 32rem at 18% 78%, rgb(0 141 255 / 8%), transparent),
+        var(--color-ink);
+    }
+
+    .home-projects-services > :global(.services) {
+      background: transparent;
+    }
+
+    .home-projects-services > :global(.home-projects) {
+      @apply portfolio-background;
+    }
+  }
+</style>

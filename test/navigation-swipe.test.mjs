@@ -3,32 +3,31 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import ts from 'typescript';
+import { getLateralPageIndex, lateralPages } from '../src/data/navigation.ts';
 
 const source = ts.transpile(
   readFileSync(new URL('../src/scripts/navigation.ts', import.meta.url), 'utf8').replace(
-    /^import .*;\n/,
+    /^import .*;\n/gm,
     '',
   ),
 );
 
 function setup(path = '/portifolios', mobile = true) {
   const handlers = {};
-  const clicks = [];
+  const destinations = [];
   class Element {
     closest() {
       return null;
     }
   }
   const target = new Element();
-  const links = ['/', '/about', '/portifolios', '/blog', '/contact'].map((pathname) => ({
-    pathname,
-    click: () => clicks.push(pathname),
-  }));
   vm.runInNewContext(source, {
     onPageLoad: (fn) => fn({}),
+    getLateralPageIndex,
+    lateralPages,
+    navigate: (href) => destinations.push(href),
     document: {
       querySelector: () => null,
-      querySelectorAll: () => links,
       addEventListener: (name, fn) => {
         handlers[name] = fn;
       },
@@ -45,21 +44,21 @@ function setup(path = '/portifolios', mobile = true) {
     handlers.touchmove({ touches: [touch(endX, 200 + moveY)] });
     handlers.touchend({ touches: [], changedTouches: [touch(endX, 200 + y)] });
   }
-  return { gesture, clicks, target, handlers };
+  return { gesture, destinations, target, handlers };
 }
 
 test('swipes advance and return through adjacent pages', () => {
   const app = setup();
   app.gesture(280, 100);
   app.gesture(100, 280);
-  assert.deepEqual(app.clicks, ['/blog', '/about']);
+  assert.deepEqual(app.destinations, ['/blog', '/about']);
 });
 
-test('blog swipes connect projects and contact', () => {
-  const app = setup('/blog');
+test('blog swipes connect projects and contact, including URLs with a trailing slash', () => {
+  const app = setup('/blog/');
   app.gesture(280, 100);
   app.gesture(100, 280);
-  assert.deepEqual(app.clicks, ['/contact', '/portifolios']);
+  assert.deepEqual(app.destinations, ['/contact', '/portifolios']);
 });
 
 test('swipes stop at the first and last page and ignore unsupported routes', () => {
@@ -67,10 +66,11 @@ test('swipes stop at the first and last page and ignore unsupported routes', () 
     ['/', 100, 280],
     ['/contact', 280, 100],
     ['/privacy', 280, 100],
+    ['/blog/post', 280, 100],
   ]) {
     const app = setup(path);
     app.gesture(start, end);
-    assert.deepEqual(app.clicks, []);
+    assert.deepEqual(app.destinations, []);
   }
 });
 
@@ -80,17 +80,17 @@ test('scrolling, short gestures, screen edges and desktop do not navigate', () =
   app.gesture(200, 170);
   app.gesture(10, 200);
   app.gesture(280, 100, 0, 80);
-  assert.deepEqual(app.clicks, []);
+  assert.deepEqual(app.destinations, []);
   const desktop = setup('/portifolios', false);
   desktop.gesture(280, 100);
-  assert.deepEqual(desktop.clicks, []);
+  assert.deepEqual(desktop.destinations, []);
 });
 
 test('interactive areas and cancelled touches do not navigate', () => {
   const app = setup();
   app.target.closest = () => ({});
   app.gesture(280, 100);
-  assert.deepEqual(app.clicks, []);
+  assert.deepEqual(app.destinations, []);
   app.target.closest = () => null;
   app.handlers.touchstart({
     target: app.target,
@@ -101,5 +101,5 @@ test('interactive areas and cancelled touches do not navigate', () => {
     touches: [],
     changedTouches: [{ clientX: 100, clientY: 200, identifier: 1 }],
   });
-  assert.deepEqual(app.clicks, []);
+  assert.deepEqual(app.destinations, []);
 });

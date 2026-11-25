@@ -3,20 +3,18 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import vm from 'node:vm';
 import ts from 'typescript';
+import { getLateralPageIndex } from '../src/data/navigation.ts';
 
 const transition = readFileSync(
   new URL('../src/scripts/page-transitions.js', import.meta.url),
   'utf8',
-);
+).replace(/^import .*;\n/, '');
 
-function swap(from, to, paths = ['/', '/about', '/portifolios', '/blog', '/contact']) {
+function swap(from, to) {
   const dataset = {};
   vm.runInNewContext(transition, {
+    getLateralPageIndex,
     document: {
-      querySelectorAll(selector) {
-        assert.equal(selector, '.header-page-indicator a');
-        return paths.map((pathname) => ({ pathname }));
-      },
       addEventListener(name, callback) {
         assert.equal(name, 'astro:before-swap');
         callback({
@@ -30,19 +28,16 @@ function swap(from, to, paths = ['/', '/about', '/portifolios', '/blog', '/conta
   return dataset.pageDirection;
 }
 
-test('uses one lateral transition for any destination in the indicator', () => {
+test('uses the configured navigation order without reading the page indicator', () => {
   assert.equal(swap('/', '/about'), 'forward');
   assert.equal(swap('/', '/contact'), 'forward');
   assert.equal(swap('/contact', '/'), 'backward');
   assert.equal(swap('/portifolios', '/blog/'), 'forward');
+  assert.equal(swap('/blog', '/about'), 'backward');
   assert.equal(swap('/about/', '/#portfolio'), 'backward');
 });
 
-test('uses the rendered indicator order for the direction', () => {
-  assert.equal(swap('/blog', '/about', ['/', '/blog', '/about']), 'forward');
-});
-
-test('leaves anchor changes and routes outside the indicator to Astro', () => {
+test('leaves anchor changes and routes outside lateral navigation to Astro', () => {
   assert.equal(swap('/', '/#solucoes'), undefined);
   assert.equal(swap('/blog/', '/blog/post'), undefined);
   assert.equal(swap('/privacy', '/contact'), undefined);

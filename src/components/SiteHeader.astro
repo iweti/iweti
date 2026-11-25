@@ -1,20 +1,15 @@
 ---
 import Brand from './Brand.astro';
 import HeaderPageIndicator from './HeaderPageIndicator.astro';
+import { navigationPages, sitePages, type SitePageId } from '../data/navigation';
 
 interface Props {
   home?: boolean;
-  currentPage?: 'about' | 'contact' | 'portifolios' | 'blog' | 'privacy';
+  currentPage?: Exclude<SitePageId, 'home'>;
 }
 
 const { home = false, currentPage } = Astro.props;
-const pageSegments = [
-  { label: 'Início', href: '/', active: home },
-  { label: 'Quem somos', href: '/about', active: currentPage === 'about' },
-  { label: 'Projetos', href: '/portifolios', active: currentPage === 'portifolios' },
-  { label: 'Blog', href: '/blog', active: currentPage === 'blog' },
-  { label: 'Fale conosco', href: '/contact', active: currentPage === 'contact' },
-];
+const menuPages = navigationPages.filter((page) => page.menu);
 ---
 
 <header class="site-nav fixed z-100">
@@ -22,7 +17,7 @@ const pageSegments = [
     class="nav relative z-30 shell flex min-h-20 items-center justify-between"
     aria-label="Navegação principal"
   >
-    <Brand href={home ? '#home' : '/'} current={home} />
+    <Brand href={home ? '#home' : sitePages.home.href} current={home} />
     <button
       class="menu-toggle hidden max-[961px]:flex max-[961px]:shrink-0 max-[961px]:flex-col max-[961px]:gap-1.5 max-[961px]:p-2"
       type="button"
@@ -38,44 +33,275 @@ const pageSegments = [
       class="nav-links flex items-center gap-6 text-[clamp(1rem,1.2vw,1.125rem)] font-semibold text-[#e2e8f0] max-[961px]:absolute max-[961px]:top-[calc(100%-0.5rem)] max-[961px]:left-0 max-[961px]:z-1 max-[961px]:hidden max-[961px]:w-full max-[961px]:flex-col max-[961px]:items-stretch max-[961px]:rounded-xl max-[961px]:border max-[961px]:border-[rgb(0_141_255/30%)] max-[961px]:p-5 max-[961px]:text-center"
       id="menu"
     >
-      <a href="/about" aria-current={currentPage === 'about' ? 'page' : undefined}>
-        <span>Quem somos</span>
-      </a>
-      <a href="/portifolios" aria-current={currentPage === 'portifolios' ? 'page' : undefined}>
-        <span>Projetos</span>
-      </a>
-      <a
-        href="/blog"
-        data-astro-prefetch="false"
-        aria-current={currentPage === 'blog' ? 'page' : undefined}
-      >
-        <span>Blog</span>
-      </a>
-      <a
-        class="nav-contact"
-        href="/contact"
-        aria-current={currentPage === 'contact' ? 'page' : undefined}
-      >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.75"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
+      {menuPages.map((page) => (
+        <a
+          class={page.id === 'contact' ? 'nav-contact' : undefined}
+          href={page.href}
+          data-nav-page={page.id}
+          data-astro-prefetch={page.prefetch}
+          aria-current={page.id === currentPage ? 'page' : undefined}
         >
-          <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3H13a8.5 8.5 0 0 1 8 8v.5Z" />
-          <path d="M8 10h8M8 14h5" />
-        </svg>
-        <span>Fale conosco</span>
-      </a>
+          {page.id === 'contact' && (
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3H13a8.5 8.5 0 0 1 8 8v.5Z" />
+              <path d="M8 10h8M8 14h5" />
+            </svg>
+          )}
+          <span>{page.label}</span>
+        </a>
+      ))}
     </div>
   </nav>
   <div class="shell">
-    <HeaderPageIndicator pages={pageSegments} />
+    <HeaderPageIndicator currentPage={home ? 'home' : currentPage} />
   </div>
 </header>
+
+<style is:global>
+  @reference '../styles/styles.css';
+
+  @layer utilities {
+    .site-nav {
+      inset: 0 0 auto;
+      view-transition-name: site-navigation;
+      background: rgb(1 9 31 / 82%);
+      backdrop-filter: blur(14px);
+    }
+
+    @media (min-width: 962px) {
+      .site-nav .nav {
+        display: grid;
+        grid-auto-columns: minmax(0, 1fr);
+        grid-auto-flow: column;
+        min-height: calc(var(--site-header-height) - 0.5rem);
+        gap: 0.5rem;
+      }
+
+      .site-nav .nav-links {
+        display: contents;
+      }
+
+      .site-nav .brand,
+      .site-nav .nav-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: stretch;
+        align-self: stretch;
+        padding-top: 1rem;
+        text-align: center;
+      }
+    }
+
+    .header-page-indicator {
+      display: grid;
+      grid-auto-columns: minmax(0, 1fr);
+      grid-auto-flow: column;
+      gap: 0.5rem;
+    }
+
+    .header-page-indicator a {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      min-height: 0.5rem;
+    }
+
+    .header-page-indicator span {
+      width: 100%;
+      height: 2px;
+      background: rgb(0 216 255 / 16%);
+      transition:
+        background-color 180ms ease,
+        box-shadow 180ms ease;
+    }
+
+    .header-page-indicator a:not([aria-current='page']):is(:hover, :focus-visible) span {
+      background: rgb(0 216 255 / 45%);
+      box-shadow: 0 0 8px rgb(0 216 255 / 18%);
+    }
+
+    .header-page-indicator a[aria-current='page'] span {
+      background: var(--color-cyan);
+      box-shadow: 0 0 10px rgb(0 216 255 / 30%);
+    }
+
+    .header-page-indicator a[aria-current='page']::before {
+      content: '';
+      position: absolute;
+      inset: auto 0 2px;
+      height: calc(var(--site-header-height) - 2px);
+      pointer-events: none;
+      opacity: 0.5;
+      mask-image: linear-gradient(to right, transparent, #000 30%, #000 70%, transparent);
+      background: linear-gradient(
+        to top,
+        rgb(0 216 255 / 16%),
+        rgb(0 216 255 / 5%) 45%,
+        transparent 100%
+      );
+    }
+
+    @media (max-width: 961px) {
+      .header-page-indicator a[aria-current='page']::before {
+        content: none;
+      }
+
+      .header-page-indicator a span {
+        box-shadow: none;
+      }
+
+      .site-nav .nav-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.75rem;
+      }
+    }
+
+    .nav-links a {
+      @apply relative;
+      transition: color 180ms ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      @apply text-white;
+    }
+
+    @media (min-width: 962px) {
+      .header-page-indicator a::after {
+        content: '';
+        position: absolute;
+        inset: auto 0 2px;
+        height: calc(var(--site-header-height) - 2px);
+        pointer-events: none;
+        background: linear-gradient(
+          to top,
+          rgb(0 216 255 / 12%),
+          rgb(0 216 255 / 4%) 45%,
+          transparent
+        );
+        mask-image: linear-gradient(to right, transparent, #000 30%, #000 70%, transparent);
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: bottom;
+        transition:
+          opacity 180ms ease,
+          transform 220ms ease-out;
+      }
+
+      .site-nav:has(.brand:focus-visible) .header-page-indicator a[data-nav-page='home']::after,
+      .site-nav:has(.nav-links a[data-nav-page='portifolios']:focus-visible)
+        .header-page-indicator
+        a[data-nav-page='portifolios']::after,
+      .site-nav:has(.nav-links a[data-nav-page='about']:focus-visible)
+        .header-page-indicator
+        a[data-nav-page='about']::after,
+      .site-nav:has(.nav-links a[data-nav-page='blog']:focus-visible)
+        .header-page-indicator
+        a[data-nav-page='blog']::after,
+      .site-nav:has(.nav-links a[data-nav-page='contact']:focus-visible)
+        .header-page-indicator
+        a[data-nav-page='contact']::after,
+      .header-page-indicator a:focus-visible::after {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+
+      @media (hover: hover) {
+        .site-nav:has(.brand:hover) .header-page-indicator a[data-nav-page='home']::after,
+        .site-nav:has(.nav-links a[data-nav-page='portifolios']:hover)
+          .header-page-indicator
+          a[data-nav-page='portifolios']::after,
+        .site-nav:has(.nav-links a[data-nav-page='about']:hover)
+          .header-page-indicator
+          a[data-nav-page='about']::after,
+        .site-nav:has(.nav-links a[data-nav-page='blog']:hover)
+          .header-page-indicator
+          a[data-nav-page='blog']::after,
+        .site-nav:has(.nav-links a[data-nav-page='contact']:hover)
+          .header-page-indicator
+          a[data-nav-page='contact']::after,
+        .header-page-indicator a:hover::after {
+          opacity: 1;
+          transform: scaleY(1);
+        }
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .header-page-indicator a::after {
+        transition: none;
+      }
+    }
+
+    .nav-links .nav-contact {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .nav-contact svg {
+      flex-shrink: 0;
+    }
+
+    .nav-links a[aria-current='page'] {
+      color: var(--color-cyan);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .site-nav .brand > :is(img, small),
+      .site-nav .nav-links a > :is(span, svg) {
+        transition: translate 180ms ease-out;
+      }
+
+      .site-nav .brand[aria-current='page'] > :is(img, small),
+      .site-nav .nav-links a[aria-current='page'] > :is(span, svg) {
+        translate: 0 -3px;
+      }
+
+      @media (hover: hover) {
+        .site-nav .brand:hover > :is(img, small),
+        .site-nav .nav-links a:hover > :is(span, svg) {
+          translate: 0 -3px;
+        }
+      }
+    }
+
+    @media (max-width: 960px) {
+      .nav-links {
+        background: rgb(1 9 28 / 96%);
+        box-shadow: 0 20px 30px rgb(0 0 0 / 35%);
+        backdrop-filter: blur(12px);
+      }
+
+      .nav-links.open {
+        @apply flex;
+      }
+
+      .menu-toggle span:not(.sr-only) {
+        @apply block h-px w-6;
+        background: #fff;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .header-page-indicator span {
+        transition: none;
+      }
+    }
+  }
+</style>

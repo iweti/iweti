@@ -17,6 +17,7 @@ const unknownOutcome =
   'Não foi possível confirmar o resultado do envio. Seus dados foram mantidos. A mensagem pode ter sido encaminhada; evite reenviá-la sem confirmar com a IWETI.';
 
 export const CONTACT_TIMEOUT_MS = 60_000;
+const DEFAULT_CONTACT_API_URL = 'https://api.iweti.com';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -26,9 +27,13 @@ function isNewsletterStatus(value: unknown): value is NewsletterStatus {
   return value === 'inscrito' || value === 'ja_inscrito' || value === 'nao_solicitada';
 }
 
-export async function sendContact(apiUrl: string, payload: ContactPayload): Promise<ContactResult> {
+export async function sendContact(
+  apiUrl: string | undefined,
+  payload: ContactPayload,
+): Promise<ContactResult> {
   try {
-    const response = await fetch(`${apiUrl.trim().replace(/\/+$/, '')}/contato`, {
+    const baseUrl = apiUrl?.trim() || DEFAULT_CONTACT_API_URL;
+    const response = await fetch(`${baseUrl.replace(/\/+$/, '')}/contato`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       credentials: 'omit',

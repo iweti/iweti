@@ -41,6 +41,16 @@ test('contato encaminhado com erro de newsletter não sugere novo envio', async 
   assert.deepEqual(await sendContact('https://api.example.com', payload), { kind: 'partial' });
 });
 
+test('usa a URL padrão quando o endereço da API está ausente ou em branco', async (t) => {
+  t.mock.method(globalThis, 'fetch', async (url) => {
+    assert.equal(url, 'https://api.iweti.com/contato');
+    return Response.json({ sucesso: true });
+  });
+  for (const apiUrl of [undefined, '   ']) {
+    assert.deepEqual(await sendContact(apiUrl, payload), { kind: 'success' });
+  }
+});
+
 test('trata limite mesmo quando o proxy responde HTML', async (t) => {
   t.mock.method(
     globalThis,

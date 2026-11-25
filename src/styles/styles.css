@@ -19,10 +19,14 @@
 @layer base {
   html {
     --site-header-height: 5.5rem;
+    --iweti-background: url('/assets/images/hero-background-1600.webp');
     @apply scroll-smooth motion-reduce:scroll-auto;
     scroll-padding-top: var(--site-header-height);
     scrollbar-gutter: stable;
     line-height: normal;
+    @media (max-width: 767px) {
+      --iweti-background: url('/assets/images/hero-background-900.webp');
+    }
     @media (min-width: 962px) {
       --site-header-height: 6.5rem;
     }
@@ -92,6 +96,25 @@
   @media (max-width: 767px) {
     @apply py-14;
   }
+}
+
+@utility section-divider {
+  border-top: 1px solid var(--color-border);
+}
+
+@utility portfolio-background {
+  --mountain-height: clamp(42rem, 70vw, 65rem);
+  background:
+    linear-gradient(
+        to bottom,
+        rgb(1 9 31 / 72%),
+        rgb(1 9 31 / 42%) calc(var(--mountain-height) * 0.5),
+        var(--color-ink) var(--mountain-height)
+      )
+      center var(--portfolio-background-offset, 0px) / 100% var(--mountain-height) no-repeat,
+    var(--iweti-background) center var(--portfolio-background-offset, 0px) / auto
+      var(--mountain-height) no-repeat,
+    var(--color-ink);
 }
 
 @utility eyebrow {

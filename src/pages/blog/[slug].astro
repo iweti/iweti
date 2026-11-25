@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
+import { sitePages } from '../../data/navigation';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { blogDate, getBlogPosts } from '../../lib/blog';
 
@@ -18,7 +19,11 @@ const { title, description, date, author, category } = post.data;
   <main class="blog-page py-20">
     <article class="shell">
       <div class="mx-auto max-w-160">
-        <a href="/blog" class="underline underline-offset-4" data-astro-prefetch="false">
+        <a
+          href={sitePages.blog.href}
+          class="underline underline-offset-4"
+          data-astro-prefetch={sitePages.blog.prefetch}
+        >
           Voltar ao blog
         </a>
         <header class="mt-8 mb-10">

@@ -8,7 +8,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Política de privacidade da IwetI."
 >
   <main>
-    <section class="privacy-page min-h-[calc(100vh-12rem)] py-20">
+    <section class="privacy-page section-divider min-h-[calc(100vh-12rem)] py-20">
       <article class="privacy-content shell">
         <p class="eyebrow">PRIVACIDADE E PROTEÇÃO DE DADOS</p>
         <h1>Política de Privacidade</h1>
@@ -189,3 +189,35 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  @reference '../styles/styles.css';
+
+  @layer utilities {
+    .privacy-document-link a {
+      @apply text-cyan underline underline-offset-[0.2em];
+    }
+
+    .privacy-policy h2 {
+      margin-block: 2.5rem 0.9rem;
+      @apply text-[clamp(1.2rem,2.5vw,1.55rem)] leading-[1.35] font-bold text-white;
+    }
+
+    .privacy-policy p + p {
+      @apply mt-4;
+    }
+
+    .privacy-policy ul,
+    .privacy-policy ol {
+      @apply mt-3 grid gap-[0.65rem] pl-6;
+    }
+
+    .privacy-policy li {
+      @apply pl-1;
+    }
+
+    .privacy-policy a {
+      @apply text-cyan underline underline-offset-[0.2em];
+    }
+  }
+</style>

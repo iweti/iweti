@@ -131,3 +131,64 @@ const services = [
 <script>
   import '../../scripts/service-dialogs';
 </script>
+
+<style>
+  @reference '../../styles/styles.css';
+
+  @layer utilities {
+    .services > .shell > .eyebrow,
+    .services .section-heading {
+      @apply text-center;
+    }
+
+    .services .section-heading {
+      @apply items-center justify-center;
+    }
+
+    .services .section-heading h2 {
+      @apply text-[clamp(2rem,4vw,2.75rem)] font-extrabold;
+    }
+
+    .service-card {
+      background: var(--color-card);
+      transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+    }
+
+    .service-card:hover {
+      @apply border-cyan/38;
+      box-shadow: 0 12px 30px rgb(0 0 0 / 18%);
+      @apply transform-[translateY(-4px)];
+    }
+
+    .service-icon {
+      background: rgb(0 141 255 / 6%);
+    }
+
+    .service-icon img {
+      @apply h-16 w-16 object-contain;
+    }
+
+    .service-card h3 {
+      @apply text-[1.125rem] leading-[1.3] font-bold text-balance;
+    }
+
+    .service-card p {
+      margin-block: 0.5rem 0.75rem;
+      @apply text-[0.95rem] leading-relaxed text-balance text-muted;
+    }
+
+    .service-more:hover,
+    .service-more:focus-visible {
+      @apply underline underline-offset-[0.2em];
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .service-card {
+        transition: none;
+      }
+    }
+  }
+</style>

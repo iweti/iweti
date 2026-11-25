@@ -55,11 +55,7 @@ O Tailwind é compilado pelo plugin `@tailwindcss/vite`, conforme a [integraçã
 
 Layout, espaçamento, tipografia e responsividade ficam nas classes dos componentes Astro. `src/styles/components.css` reúne efeitos decorativos e seletores contextuais com `@apply`; eles compartilham a camada `utilities` para preservar a precedência dos estados sobre as classes de base. As classes semânticas usadas pelos scripts de navegação, animação e diálogos continuam disponíveis.
 
-<<<<<<< HEAD
-A página `contact.html` permite preparar a mensagem para envio por e-mail a `contato@iweti.com.br` ou por WhatsApp a `+55 11 97853-8445`. Os campos precisam estar preenchidos antes do envio. Como o site é estático e não possui backend, o formulário abre o aplicativo correspondente com a mensagem pronta, sem enviá-la diretamente pelo navegador.
-=======
 As imagens estão em `public/` para preservar os arquivos e seus endereços. Documentos de manutenção ficam em `docs/`; somente os PDFs públicos ficam em `public/docs/`.
->>>>>>> dev
 
 ## Pessoas em “Quem somos”
 

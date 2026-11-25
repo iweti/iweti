@@ -1,18 +1,21 @@
 ---
+import { lateralPages, type SitePageId } from '../data/navigation';
+
 interface Props {
-  pages: { label: string; href: string; active: boolean }[];
+  currentPage?: SitePageId;
 }
 
-const { pages } = Astro.props;
+const { currentPage } = Astro.props;
 ---
 
 <nav class="header-page-indicator" aria-label="Localização nas páginas do site">
-  {pages.map((page) => (
+  {lateralPages.map((page) => (
     <a
       href={page.href}
+      data-nav-page={page.id}
       aria-label={page.label}
-      aria-current={page.active ? 'page' : undefined}
-      data-astro-prefetch={page.href === '/blog' ? 'false' : undefined}
+      aria-current={page.id === currentPage ? 'page' : undefined}
+      data-astro-prefetch={page.prefetch}
     >
       <span aria-hidden="true"></span>
     </a>

@@ -1,10 +1,12 @@
 ---
+import { sitePages } from '../data/navigation';
+
 interface Props {
   href?: string;
   current?: boolean;
 }
 
-const { href = '/', current = false } = Astro.props;
+const { href = sitePages.home.href, current = false } = Astro.props;
 ---
 
 <a
@@ -24,3 +26,19 @@ const { href = '/', current = false } = Astro.props;
     TECNOLOGIA <br /> SEM LIMITES
   </small>
 </a>
+
+<style>
+  @reference '../styles/styles.css';
+
+  @layer utilities {
+    .brand small {
+      @apply mt-1 block text-[0.6rem] leading-none font-medium tracking-[0.18em] whitespace-nowrap;
+    }
+
+    @media (max-width: 380px) {
+      .brand small {
+        @apply hidden;
+      }
+    }
+  }
+</style>
