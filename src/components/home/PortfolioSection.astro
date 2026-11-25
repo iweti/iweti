@@ -70,6 +70,11 @@ const projectMarks: Record<string, string> = {
                   aria-expanded={expanded}
                   aria-controls={`pillar-${slug}-details`}
                 >
+                  <span class="hidden max-md:block" aria-hidden="true">
+                    {project.cover && (
+                      <img class="project-pillar-thumbnail" src={project.cover.src} alt="" loading="lazy" />
+                    )}
+                  </span>
                   <span class="project-pillar-name absolute bottom-6 left-[50%] transform-[translateX(-50%)_rotate(180deg)] text-[1rem] leading-[1.2] font-semibold whitespace-nowrap [writing-mode:vertical-rl]">
                     {project.name}
                   </span>
@@ -308,6 +313,32 @@ const projectMarks: Record<string, string> = {
 
       .project-pillar-content {
         padding: 0 1.25rem 1.25rem;
+      }
+    }
+
+
+    @media (max-width: 767px) {
+      .project-pillar-trigger,
+      .project-pillar.is-active .project-pillar-trigger {
+        grid-template-columns: 3.5rem minmax(0, 1fr) 1rem;
+      }
+
+      .project-pillar-thumbnail {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 0.65rem;
+        object-fit: cover;
+      }
+
+      .project-pillar,
+      .project-pillar.is-active {
+        background: #07152b;
+      }
+
+      .project-pillar-cover,
+      .project-pillar-mark,
+      .project-pillar::after {
+        display: none;
       }
     }
 
