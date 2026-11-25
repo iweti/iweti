@@ -1,102 +1,10 @@
 # IWETI
 
-Site institucional da IWETI com **Astro estático**, TypeScript e **Tailwind CSS 4**. A estrutura compartilha layouts e componentes e preserva o visual e as URLs anteriores.
+A IWETI é uma empresa de tecnologia que cria soluções digitais para empresas. Unimos estratégia, design e desenvolvimento para fortalecer a presença digital dos nossos clientes e facilitar o trabalho das suas equipes.
 
-## Requisitos e comandos
+## O que fazemos
 
-- Node.js 22.23.4 ou superior, conforme o requisito do Astro instalado.
-- npm e dependências instaladas com `npm ci`.
-
-```sh
-npm run dev       # Desenvolvimento local
-npm run check     # Verificação de Astro e TypeScript
-npm run build     # Verificação e build estático em dist/
-npm run preview   # Conferir o build localmente
-npm run format    # Padronizar os arquivos com Prettier e suporte a Astro
-npm run format:check # Conferir a formatação sem alterar arquivos
-```
-
-O TypeScript permanece na versão 6, compatível com `@astrojs/check`. As versões exatas estão registradas em `package-lock.json`.
-
-## Organização
-
-```text
-.
-├── public/                       # Arquivos copiados sem processamento
-│   ├── assets/images/            # Imagens e favicon; URLs /assets/images/...
-│   └── docs/                     # PDFs públicos; URLs /docs/...
-├── src/
-│   ├── components/
-│   │   ├── Brand.astro
-│   │   ├── SiteHeader.astro
-│   │   ├── SiteFooter.astro
-│   │   ├── home/                 # Seções da página inicial
-│   │   ├── contact/              # Formulário de contato
-│   │   └── portfolio/            # Galerias e diálogos
-│   ├── layouts/BaseLayout.astro  # Documento HTML e metadados compartilhados
-│   ├── lib/contact.ts            # Contrato e cliente HTTP da API
-│   ├── pages/                    # Páginas e rotas do Astro
-│   ├── scripts/                  # Menu, animações, modais, portfólio e contato
-│   ├── styles/                   # Tema Tailwind, utilitários compartilhados e efeitos
-│   └── env.d.ts                  # Tipos da configuração pública
-├── docs/contact-api.md           # Contrato proposto e limites da integração
-├── tests/                        # Verificação de navegador e API local simulada
-├── .env.example                  # Configuração pública de exemplo
-├── astro.config.mjs
-├── playwright.config.ts
-├── package.json
-├── package-lock.json
-└── tsconfig.json
-```
-
-As páginas são `/`, `/about`, `/contact`, `/portifolios` e `/privacy`. `build.format: 'directory'` gera um `index.html` por página para servir as rotas sem extensão; `/` serve a página inicial.
-
-O Tailwind é compilado pelo plugin `@tailwindcss/vite`, conforme a [integração oficial com Astro](https://tailwindcss.com/docs/installation/framework-guides/astro). O layout compartilhado importa `src/styles/styles.css`, que define as cores e a fonte em `@theme`, os ajustes de base e os utilitários reutilizáveis `shell`, `section`, `eyebrow`, `btn`, `btn-primary`, `btn-ghost` e `reveal`.
-
-Layout, espaçamento, tipografia e responsividade ficam nas classes dos componentes Astro. `src/styles/components.css` reúne efeitos decorativos e seletores contextuais com `@apply`; eles compartilham a camada `utilities` para preservar a precedência dos estados sobre as classes de base. As classes semânticas usadas pelos scripts de navegação, animação e diálogos continuam disponíveis.
-
-As imagens estão em `public/` para preservar os arquivos e seus endereços. Documentos de manutenção ficam em `docs/`; somente os PDFs públicos ficam em `public/docs/`.
-
-## Pessoas em “Quem somos”
-
-Os perfis da seção **Construímos juntos**, em `/about#pessoas`, são definidos em `src/data/participants.ts`.
-Cada pessoa tem `name` (nome), `contribution` (contribuição), `photo` (foto opcional) e `description` (descrição opcional).
-Coloque as fotos em `public/assets/images/` e informe o caminho público, como `/assets/images/pessoa.jpg`.
-Enquanto a lista estiver vazia, a seção mostra três espaços reservados. Ao adicionar os perfis, os cartões passam a exibir os dados reais; sem foto, mostram as iniciais do nome.
-
-## Contato e variáveis de ambiente
-
-Copie `.env.example` para `.env.local` se precisar alterar a configuração local:
-
-```dotenv
-PUBLIC_API_URL=https://api.iweti.com
-```
-
-O botão **Enviar por e-mail** chama diretamente `POST <PUBLIC_API_URL>/contato`, com JSON e sem `X-API-Key`. A variável é **pública**, inserida no build; seu valor pode ser visto no navegador. O padrão é `https://api.iweti.com`. Não coloque chaves ou outros segredos nessa variável.
-
-O botão **Enviar por WhatsApp** abre uma nova aba para o número `+55 11 97853-8445`, com nome, assunto, mensagem e e-mail preenchidos. O visitante confirma o envio no WhatsApp. Essa opção não chama a API nem inscreve em novidades; a inscrição opcional vale apenas para o envio por e-mail. Ambos os canais exigem os campos válidos e ficam bloqueados durante o envio pela API ou após uma confirmação parcial, para evitar duplicação.
-
-O destinatário e o remetente são configurados no servidor da API. O e-mail do visitante deve ser usado como `Reply-To`. As rotas administrativas não são chamadas pelo site e não precisam de credenciais neste projeto.
-
-O contrato de `/contato` ainda é uma **proposta ligada à issue #2**. A implementação externa precisa confirmar o CORS, os limites de texto, os limites de frequência e as respostas definitivas antes do uso em produção. Veja [o contrato e os estados do formulário](./docs/contact-api.md).
-
-## Vercel
-
-Configure o projeto como Astro, com instalação `npm ci`, build `npm run build` e saída `dist`. O site é estático e não precisa de adaptador de servidor nem de uma rota intermediária.
-
-Defina `PUBLIC_API_URL` nos ambientes apropriados da Vercel e gere um novo deployment após alterar o valor. A API deve permitir via CORS as origens de produção, desenvolvimento e previews autorizados, incluindo preflight `OPTIONS` para `POST` com `Content-Type: application/json`. CORS não substitui validação nem proteção contra abuso na API.
-
-Nenhum deployment é realizado automaticamente pelos comandos deste repositório.
-
-## Verificação
-
-```sh
-npx playwright install chromium
-npm test
-```
-
-Os testes iniciam uma API HTTP simulada em `127.0.0.1:4399`, constroem o site apontando para ela em `.astro/test-dist/` e servem esse build em `127.0.0.1:4321`. Esse build fica separado de `dist/`, destinado à produção.
-
-Verificam as URLs, os arquivos públicos, o menu mobile, os diálogos, as galerias e o fluxo do formulário, incluindo inscrição opcional, falha parcial, erros e prevenção de envios simultâneos.
-
-Os testes não enviam e-mails nem alteram o banco real. O mock representa o contrato fornecido; não comprova a implementação da API externa.
+- **Desenvolvimento de sites.** Criamos sites institucionais e landing pages para apresentar negócios e gerar contatos.
+- **Sistemas sob medida.** Desenvolvemos ferramentas adaptadas aos processos de cada empresa.
+- **Aplicações web e mobile.** Criamos aplicativos para clientes e equipes internas.
+- **Consultoria em tecnologia.** Ajudamos a escolher ferramentas, planejar projetos e acompanhar a implementação.
