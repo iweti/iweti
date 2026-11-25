@@ -47,10 +47,10 @@ const projectMarks: Record<string, string> = {
               data-project={slug}
               aria-labelledby={`pillar-${slug}-trigger`}
             >
-              {covers[project.name] ? (
+              {(covers[project.name] || project.cover) ? (
                 <img
                   class="project-pillar-cover absolute inset-0 -z-2 h-[80%] w-full object-cover object-top-left opacity-100"
-                  src={covers[project.name]}
+                  src={project.cover?.src ?? covers[project.name]}
                   alt=""
                   loading="lazy"
                 />
@@ -309,6 +309,22 @@ const projectMarks: Record<string, string> = {
       .project-pillar-content {
         padding: 0 1.25rem 1.25rem;
       }
+    }
+
+
+    @media (min-width: 768px) {
+      .project-pillar.is-active { background: #07152b; }
+      .project-pillar.is-active::after { background: none; }
+      .project-pillar.is-active .project-pillar-cover {
+        height: 61%;
+        object-position: center;
+      }
+      .project-pillar.is-active .project-pillar-trigger {
+        top: 61%;
+        height: 3rem;
+      }
+      .project-pillar.is-active .project-pillar-name { top: 0.8rem; }
+      .project-pillar.is-active .project-pillar-details { bottom: 0.65rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
